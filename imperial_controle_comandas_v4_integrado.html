@@ -4345,10 +4345,12 @@
     function upgradeV4() {
       state.settings = { ...V4_DEFAULTS, ...(state.settings || {}) };
       (state.operations || []).forEach(op => {
+        op.team = Array.isArray(op.team) ? op.team : [];
+        op.commands = Array.isArray(op.commands) ? op.commands : [];
         op.mass = op.mass || { stock: { flourKg: 0, sugarG: 0, saltG: 0, eggs: 0, oilMl: 0, waterL: 0, yeastG: 0 }, stockSaved: false, batches: [] };
         op.mass.stock = { flourKg: 0, sugarG: 0, saltG: 0, eggs: 0, oilMl: 0, waterL: 0, yeastG: 0, ...(op.mass.stock || {}) };
         op.mass.batches = Array.isArray(op.mass.batches) ? op.mass.batches : [];
-        (op.commands || []).forEach(c => {
+        op.commands.forEach(c => {
           c.pizzas = Number.isFinite(Number(c.pizzas)) ? Number(c.pizzas) : 1;
           c.special = { volcano: 0, esfiha: 0, sweet: 0, ...(c.special || {}) };
           c.dispatch = { status: 'aguardando', beverage: false, change: false, changeAmount: '', ketchup: false, mayonnaise: false, note: '', receivedAt: null, checkedAt: null, outForDeliveryAt: null, ...(c.dispatch || {}) };
