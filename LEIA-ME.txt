@@ -3,6 +3,7 @@ Versão 4.0
 
 PRINCIPAIS NOVIDADES
 
+
 CONFIGURAÇÕES
 - Engrenagem discreta no topo.
 - Limite de numeração das comandas.
