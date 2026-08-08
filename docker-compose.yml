@@ -1,0 +1,36 @@
+services:
+  app:
+    build: ./docker/php
+    container_name: imperialpizza_app
+    ports:
+      - "8080:80"
+    volumes:
+      - ./app:/var/www/html
+    environment:
+      DB_HOST: db
+      DB_NAME: imperialpizza
+      DB_USER: imperial
+      DB_PASS: imperial123
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: mysql:8.4
+    container_name: imperialpizza_db
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_DATABASE: imperialpizza
+      MYSQL_USER: imperial
+      MYSQL_PASSWORD: imperial123
+      MYSQL_ROOT_PASSWORD: root123
+    volumes:
+      - imperialpizza_mysql:/var/lib/mysql
+      - ./mysql-scripts:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot123"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+volumes:
+  imperialpizza_mysql:

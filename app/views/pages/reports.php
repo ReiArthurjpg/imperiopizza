@@ -1,0 +1,1 @@
+<section class="col-12"><div class="card"><div class="card-body"><h2 class="h4">Relatórios</h2><p>Total de <?= e($stats['commands']) ?> comandas, <?= e($stats['equivalent']) ?> pizzas equivalentes, <?= e($stats['dispatch']) ?> no despacho e <?= e($stats['errors']) ?> erros.</p></div></div></section>
