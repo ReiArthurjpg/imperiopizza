@@ -1,0 +1,6 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Imperial Pizza | PHP FDD</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><link href="/assets/app.css" rel="stylesheet"></head><body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm"><div class="container-fluid"><a class="navbar-brand fw-bold" href="/">Imperial Pizza</a><span class="badge text-bg-light">Operação <?= e($operation['status']) ?></span></div></nav>
+<main class="container-fluid py-4"><div class="row g-4">
+<section class="col-12"><form class="d-flex gap-2 align-items-end"><div><label class="form-label">Data da operação</label><input class="form-control" type="date" name="date" value="<?= e($operation['operation_date']) ?>"></div><button class="btn btn-outline-primary">Carregar</button></form></section>
+<?php include __DIR__ . '/pages/dashboard.php'; include __DIR__ . '/pages/team.php'; include __DIR__ . '/pages/production.php'; include __DIR__ . '/pages/mass.php'; include __DIR__ . '/pages/dispatch.php'; include __DIR__ . '/pages/reports.php'; ?>
+</div></main></body></html>
