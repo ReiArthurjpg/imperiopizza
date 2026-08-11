@@ -1,6 +1,7 @@
 -- 1. Limpa os testes antigos
 TRUNCATE TABLE lotes_massa;
 
+
 -- 2. Remove colunas desnecessárias e adiciona contador de batidas e chave única
 ALTER TABLE lotes_massa
     DROP COLUMN note,
