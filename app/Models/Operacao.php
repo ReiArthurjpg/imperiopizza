@@ -44,6 +44,10 @@ class Operacao
                 if (isset($op['commands']) && is_array($op['commands'])) {
                     Comanda::syncAll($op['id'], $op['commands']);
                 }
+
+                if (isset($op['mass']) && is_array($op['mass'])) {
+                    \App\Models\Massa::syncAll($op['id'], $op['mass']);
+                }
             }
         }
     }

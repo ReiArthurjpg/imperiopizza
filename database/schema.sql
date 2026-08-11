@@ -48,6 +48,7 @@ CREATE TABLE IF NOT EXISTS lotes_massa (
     id INT AUTO_INCREMENT PRIMARY KEY,
     operacao_id VARCHAR(36) NOT NULL,
     worker_id VARCHAR(36) NOT NULL,
+    batch_count INT DEFAULT 1,
     flour_kg DECIMAL(10,2) DEFAULT 0,
     sugar_g DECIMAL(10,2) DEFAULT 0,
     salt_g DECIMAL(10,2) DEFAULT 0,
@@ -55,8 +56,7 @@ CREATE TABLE IF NOT EXISTS lotes_massa (
     oil_ml DECIMAL(10,2) DEFAULT 0,
     water_l DECIMAL(10,2) DEFAULT 0,
     yeast_g DECIMAL(10,2) DEFAULT 0,
-    note TEXT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_op_worker (operacao_id, worker_id),
     FOREIGN KEY (operacao_id) REFERENCES operacoes(id) ON DELETE CASCADE,
     FOREIGN KEY (worker_id) REFERENCES equipe(id) ON DELETE CASCADE
 );
