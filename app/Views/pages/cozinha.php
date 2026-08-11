@@ -1,4 +1,4 @@
-    <section id="page-production" class="page">
+    <section id="page-production" class="page active">
       <div class="page-head">
         <div>
           <h2>Produção</h2>

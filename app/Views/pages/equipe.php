@@ -1,4 +1,4 @@
-    <section id="page-team" class="page">
+    <section id="page-team" class="page active">
       <div class="page-head">
         <div>
           <h2>Equipe do dia</h2>

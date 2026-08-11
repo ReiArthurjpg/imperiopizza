@@ -1,4 +1,4 @@
-    <section id="page-reports" class="page">
+    <section id="page-reports" class="page active">
       <div class="page-head">
         <div>
           <h2>Relatórios e histórico</h2>

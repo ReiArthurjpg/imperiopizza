@@ -1,4 +1,4 @@
-    <section id="page-dispatch" class="page">
+    <section id="page-dispatch" class="page active">
       <div class="page-head">
         <div>
           <h2>Atendimento / Despacho</h2>

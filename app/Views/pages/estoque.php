@@ -1,4 +1,4 @@
-    <section id="page-mass" class="page">
+    <section id="page-mass" class="page active">
       <div class="page-head">
         <div>
           <h2>Controle de Massas</h2>

@@ -426,7 +426,7 @@
     const originalShowPage = showPage;
     showPage = function (name) {
       document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === `page-${name}`));
-      document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.page === name));
+      // document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.page === name));
       if (name === 'dashboard') renderDashboard();
       if (name === 'team') renderTeam();
       if (name === 'production') renderProduction();
