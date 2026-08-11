@@ -64,7 +64,6 @@ CREATE TABLE IF NOT EXISTS lotes_massa (
 CREATE TABLE IF NOT EXISTS comandas (
     id VARCHAR(36) PRIMARY KEY,
     operacao_id VARCHAR(36) NOT NULL,
-    assembler_id VARCHAR(36) NOT NULL,
     number INT NOT NULL,
     pizzas INT DEFAULT 1,
     volcano INT DEFAULT 0,
@@ -85,6 +84,17 @@ CREATE TABLE IF NOT EXISTS comandas (
     forno_time DATETIME NULL,
     despacho_time DATETIME NULL,
     entrega_time DATETIME NULL,
+    UNIQUE KEY idx_operacao_number (operacao_id, number),
+    FOREIGN KEY (operacao_id) REFERENCES operacoes(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS comandas_lotes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    operacao_id VARCHAR(36) NOT NULL,
+    assembler_id VARCHAR(36) NOT NULL,
+    comanda_inicio INT NOT NULL,
+    comanda_fim INT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (operacao_id) REFERENCES operacoes(id) ON DELETE CASCADE,
     FOREIGN KEY (assembler_id) REFERENCES equipe(id) ON DELETE CASCADE
 );
