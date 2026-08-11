@@ -1,1 +1,0 @@
-<section class="col-md-6"><div class="card"><div class="card-body"><h2 class="h4">Massas</h2><p class="text-muted">Feature FDD reservada para estoque de farinha, água, fermento, sal, óleo e batidas por masseiro conforme a tela original.</p></div></div></section>

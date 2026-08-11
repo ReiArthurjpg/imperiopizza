@@ -1,36 +1,65 @@
+version: '3.8'
+
 services:
-  app:
-    build: ./docker/php
-    container_name: imperialpizza_app
+  web:
+    image: nginx:alpine
     ports:
-      - "8080:80"
+      - "${WEB_PORT:-8000}:80"
     volumes:
-      - ./app:/var/www/html
+      - .:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - imperial_network
+
+  app:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    env_file:
+      - .env
     environment:
       DB_HOST: db
-      DB_NAME: imperialpizza
-      DB_USER: imperial
-      DB_PASS: imperial123
-    depends_on:
-      db:
-        condition: service_healthy
-  db:
-    image: mysql:8.4
-    container_name: imperialpizza_db
-    ports:
-      - "3307:3306"
-    environment:
-      MYSQL_DATABASE: imperialpizza
-      MYSQL_USER: imperial
-      MYSQL_PASSWORD: imperial123
-      MYSQL_ROOT_PASSWORD: root123
+      DB_PORT: 3306
+      DB_DATABASE: ${DB_DATABASE:-imperial_pizza}
+      DB_USERNAME: ${DB_USERNAME:-imperial}
+      DB_PASSWORD: ${DB_PASSWORD:-secret}
     volumes:
-      - imperialpizza_mysql:/var/lib/mysql
-      - ./mysql-scripts:/docker-entrypoint-initdb.d:ro
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot123"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
+      - .:/var/www/html
+    networks:
+      - imperial_network
+
+  db:
+    image: mysql:8.0
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-imperial_pizza}
+      MYSQL_USER: ${DB_USERNAME:-imperial}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root_secret}
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - imperial_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "${PMA_PORT:-8080}:80"
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root_secret}
+    depends_on:
+      - db
+    networks:
+      - imperial_network
+
 volumes:
-  imperialpizza_mysql:
+  db_data:
+
+networks:
+  imperial_network:
+    driver: bridge
