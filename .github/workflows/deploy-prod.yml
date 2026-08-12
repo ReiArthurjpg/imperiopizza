@@ -1,0 +1,90 @@
+name: Deploy de PROD para Hostinger
+
+on:
+  push:
+    branches:
+      - prod
+
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Build e Deploy para Hostinger
+    runs-on: ubuntu-latest
+
+    environment:
+      name: production
+
+    steps:
+      # ============================================================
+      # 1. Baixar código
+      # ============================================================
+      - name: ⬇️ Baixar código do repositório
+        uses: actions/checkout@v4
+
+      # ============================================================
+      # 2. Configurar PHP
+      # ============================================================
+      - name: 🐘 Configurar PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, intl, pdo, pdo_mysql
+          tools: composer:v2
+          coverage: none
+
+      # ============================================================
+      # 3. Validar Composer
+      # ============================================================
+      - name: 🔎 Validar composer.json
+        run: composer validate --no-check-publish
+
+      # ============================================================
+      # 4. Instalar dependências PHP
+      # ============================================================
+      - name: 📦 Instalar dependências PHP
+        run: composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
+
+      # ============================================================
+      # 5. Configurar Node.js
+      # ============================================================
+      - name: 🟢 Configurar Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # ============================================================
+      # 6. Instalar dependências Node
+      # ============================================================
+      - name: 📦 Instalar dependências Node
+        run: npm ci
+
+      # ============================================================
+      # 7. Compilar Tailwind / Frontend
+      # ============================================================
+      - name: 🛠️ Compilar Tailwind CSS
+        run: npm run build
+
+      # ============================================================
+      # 8. Deploy para Hostinger
+      # ============================================================
+      - name: 🚀 Deploy para Hostinger via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ${{ secrets.FTP_TARGET }}
+
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/docker/**
+            docker-compose.yml
+            tailwind.config.js
+            package.json
+            package-lock.json
+            README.md
+            LEIA-ME.txt
