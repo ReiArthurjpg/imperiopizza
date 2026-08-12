@@ -40,6 +40,18 @@ if ($uri === '/api/equipe' && $method === 'POST') {
     exit;
 }
 
+// Swagger UI
+if ($uri === '/' || $uri === '/docs') {
+    require_once __DIR__ . '/../Views/swagger.php';
+    exit;
+}
+
+if ($uri === '/api/swagger.json') {
+    header('Content-Type: application/json');
+    require_once __DIR__ . '/../Views/swagger.json.php';
+    exit;
+}
+
 // 404 Not Found
 http_response_code(404);
 echo json_encode(['error' => 'Route not found']);
