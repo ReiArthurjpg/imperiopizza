@@ -48,10 +48,10 @@ jobs:
       # ============================================================
       # 5. Configurar Node.js
       # ============================================================
-      - name: 🟢 Configurar Node.js 20
+      - name: 🟢 Configurar Node.js 24
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
           cache: 'npm'
 
       # ============================================================
@@ -75,7 +75,7 @@ jobs:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: ${{ secrets.FTP_TARGET }}
+          server-dir: ${{ secrets.FTP_TARGET }}/
 
           exclude: |
             **/.git*
