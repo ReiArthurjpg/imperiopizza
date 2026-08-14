@@ -30,20 +30,6 @@
       <p class="mt-2 text-xs font-medium text-[#737373]">Total de pedidos</p>
     </div>
 
-    <!-- Card Pizzas (Na Cozinha) -->
-    <div class="relative overflow-hidden bg-white p-5 rounded-xl border border-[#E7E7E7] transition-all duration-200 hover:shadow-[0_4px_12px_rgb(0,0,0,0.05)] hover:-translate-y-0.5">
-      <div class="flex justify-between items-start mb-4">
-        <h3 class="text-sm font-medium text-[#737373]">Total Produzido</h3>
-        <div class="p-2 rounded-lg bg-gray-50 text-gray-400">
-          <i data-lucide="chef-hat" class="w-[18px] h-[18px]"></i>
-        </div>
-      </div>
-      <div class="flex items-baseline gap-2">
-        <span id="dashPizzas" class="text-3xl font-bold tracking-tight text-[#171717]">0</span>
-      </div>
-      <p class="mt-2 text-xs font-medium text-[#737373]">Pizzas finalizadas</p>
-    </div>
-
     <!-- Card Cozinha -->
     <div class="relative overflow-hidden bg-white p-5 rounded-xl border border-[#E7E7E7] transition-all duration-200 hover:shadow-[0_4px_12px_rgb(0,0,0,0.05)] hover:-translate-y-0.5">
       <div class="flex justify-between items-start mb-4">
@@ -58,18 +44,18 @@
       <p class="mt-2 text-xs font-medium text-[#737373]">Em preparação</p>
     </div>
 
-    <!-- Card Forno -->
+    <!-- Card Pizzas feitas -->
     <div class="relative overflow-hidden bg-white p-5 rounded-xl border border-[#E7E7E7] transition-all duration-200 hover:shadow-[0_4px_12px_rgb(0,0,0,0.05)] hover:-translate-y-0.5">
       <div class="flex justify-between items-start mb-4">
-        <h3 class="text-sm font-medium text-[#737373]">No Forno</h3>
+        <h3 class="text-sm font-medium text-[#737373]">Pizzas feitas</h3>
         <div class="p-2 rounded-lg bg-gray-50 text-gray-400">
-          <i data-lucide="flame" class="w-[18px] h-[18px]"></i>
+          <i data-lucide="chef-hat" class="w-[18px] h-[18px]"></i>
         </div>
       </div>
       <div class="flex items-baseline gap-2">
-        <span id="dashOven" class="text-3xl font-bold tracking-tight text-[#171717]">0</span>
+        <span id="dashPizzas" class="text-3xl font-bold tracking-tight text-[#171717]">0</span>
       </div>
-      <p class="mt-2 text-xs font-medium text-[#737373]">Em processamento</p>
+      <p class="mt-2 text-xs font-medium text-[#737373]">Pizzas finalizadas</p>
     </div>
 
     <!-- Card Despacho / Pendentes -->
