@@ -20,9 +20,41 @@ $swagger = [
         ],
         "/api/dashboard/kpis" => [
             "get" => [
-                "summary" => "Obter estatísticas de KPI do Dashboard",
+                "summary" => "Obter KPIs do Dashboard (Comandas e Pizzas Feitas)",
+                "parameters" => [
+                    [
+                        "name" => "start_date",
+                        "in" => "query",
+                        "required" => false,
+                        "schema" => ["type" => "string", "format" => "date"],
+                        "example" => "2026-08-01",
+                        "description" => "Data inicial do período (YYYY-MM-DD). Se omitido, usa a operação ativa do dia."
+                    ],
+                    [
+                        "name" => "end_date",
+                        "in" => "query",
+                        "required" => false,
+                        "schema" => ["type" => "string", "format" => "date"],
+                        "example" => "2026-08-14",
+                        "description" => "Data final do período (YYYY-MM-DD). Se omitido, usa a operação ativa do dia."
+                    ]
+                ],
                 "responses" => [
-                    "200" => ["description" => "KPIs obtidos com sucesso"]
+                    "200" => [
+                        "description" => "KPIs obtidos com sucesso",
+                        "content" => [
+                            "application/json" => [
+                                "schema" => [
+                                    "type" => "object",
+                                    "properties" => [
+                                        "comandas" => ["type" => "integer", "description" => "Total de comandas no período"],
+                                        "pizzas"   => ["type" => "integer", "description" => "Total de pizzas finalizadas (status despacho ou completed)"]
+                                    ]
+                                ],
+                                "example" => ["comandas" => 8, "pizzas" => 6]
+                            ]
+                        ]
+                    ]
                 ]
             ]
         ],

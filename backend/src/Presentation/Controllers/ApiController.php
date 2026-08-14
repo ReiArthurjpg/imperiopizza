@@ -114,22 +114,16 @@ class ApiController
                 if (!$op) {
                     $this->jsonResponse([
                         'comandas' => 0,
-                        'cozinha' => 0,
-                        'pizzas' => 0,
-                        'pendentes' => 0,
-                        'erros' => 0
+                        'pizzas'   => 0,
                     ]);
                 }
                 $kpis = Comanda::getKpisByOperacao($op['id']);
             }
             
-            $kpis['comandas'] = (int)($kpis['comandas'] ?? 0);
-            $kpis['cozinha'] = (int)($kpis['cozinha'] ?? 0);
-            $kpis['pizzas'] = (int)($kpis['pizzas'] ?? 0);
-            $kpis['pendentes'] = (int)($kpis['pendentes'] ?? 0);
-            $kpis['erros'] = (int)($kpis['erros'] ?? 0);
-            
-            $this->jsonResponse($kpis);
+            $this->jsonResponse([
+                'comandas' => (int)($kpis['comandas'] ?? 0),
+                'pizzas'   => (int)($kpis['pizzas'] ?? 0),
+            ]);
         } catch (\Exception $e) {
             $this->jsonResponse(['error' => $e->getMessage()], 500);
         }
