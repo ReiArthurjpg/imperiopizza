@@ -37,7 +37,7 @@
         if (isActive) {
           b.classList.remove('text-gray-600', 'hover:bg-[#FDECEB]', 'hover:text-[#B5120B]');
           b.classList.add('bg-[#FDECEB]', 'text-[#B5120B]');
-          const icon = b.querySelector('i');
+          const icon = b.querySelector('i, svg');
           if (icon) {
             icon.classList.remove('text-gray-400', 'group-hover:text-[#B5120B]');
             icon.classList.add('text-[#B5120B]');
@@ -45,7 +45,7 @@
         } else {
           b.classList.add('text-gray-600', 'hover:bg-[#FDECEB]', 'hover:text-[#B5120B]');
           b.classList.remove('bg-[#FDECEB]', 'text-[#B5120B]');
-          const icon = b.querySelector('i');
+          const icon = b.querySelector('i, svg');
           if (icon) {
             icon.classList.add('text-gray-400', 'group-hover:text-[#B5120B]');
             icon.classList.remove('text-[#B5120B]');
@@ -601,15 +601,8 @@
 
     const originalShowPage = showPage;
     showPage = function (name) {
-      document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === `page-${name}`));
-      document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.page === name));
-      if (name === 'dashboard') renderDashboard();
-      if (name === 'team') renderTeam();
-      if (name === 'production') renderProduction();
+      originalShowPage(name);
       if (name === 'mass') renderMass();
-      if (name === 'dispatch') renderDispatch();
-      if (name === 'reports') renderReports();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     commandNumberSets = function (op) {
