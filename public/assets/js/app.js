@@ -5,7 +5,7 @@
     const el = { globalDate: $('globalDate'), phasePill: $('phasePill'), dashboardBanner: $('dashboardBanner'), dashCommands: $('dashCommands'), dashPizzas: $('dashPizzas'), dashKitchen: $('dashKitchen'), dashOven: $('dashOven'), dashDispatch: $('dashDispatch'), dashErrors: $('dashErrors'), dashboardTeam: $('dashboardTeam'), dashboardRank: $('dashboardRank'), dashboardLive: $('dashboardLive'), personForm: $('personForm'), personName: $('personName'), personRole: $('personRole'), peopleChecklist: $('peopleChecklist'), dayTeamGroups: $('dayTeamGroups'), teamOperationNotice: $('teamOperationNotice'), saveTeamBtn: $('saveTeamBtn'), startOperationBtn: $('startOperationBtn'), manageTeamBtn: $('manageTeamBtn'), manageTeamDispatchBtn: $('manageTeamDispatchBtn'), productionGate: $('productionGate'), productionContent: $('productionContent'), productionSubtotals: $('productionSubtotals'), openRegisterCommandBtn: $('openRegisterCommandBtn'), openUpdateCommandsBtn: $('openUpdateCommandsBtn'), updatePendingBadge: $('updatePendingBadge'), productionRecent: $('productionRecent'), commandHistoryPanel: $('commandHistoryPanel'), registerCommandModal: $('registerCommandModal'), closeAndUpdateBtn: $('closeAndUpdateBtn'), assemblerSearch: $('assemblerSearch'), assemblerId: $('assemblerId'), assemblerSuggestions: $('assemblerSuggestions'), assemblerPickerBtn: $('assemblerPickerBtn'), assemblerPickerValue: $('assemblerPickerValue'), assemblerPickerModal: $('assemblerPickerModal'), assemblerPickerSearch: $('assemblerPickerSearch'), assemblerPickerList: $('assemblerPickerList'), pickerManageTeamBtn: $('pickerManageTeamBtn'), commandNumber: $('commandNumber'), pizzaQty: $('pizzaQty'), commandSuggestions: $('commandSuggestions'), commandNote: $('commandNote'), initialOven: $('initialOven'), addCommandBtn: $('addCommandBtn'), prodSearch: $('prodSearch'), prodStatus: $('prodStatus'), prodAssembler: $('prodAssembler'), clearProdFilters: $('clearProdFilters'), productionBody: $('productionBody'), productionMobileList: $('productionMobileList'), productionEmpty: $('productionEmpty'), closeKitchenBtn: $('closeKitchenBtn'), reopenKitchenBtn: $('reopenKitchenBtn'), dispatchGate: $('dispatchGate'), dispatchContent: $('dispatchContent'), dispatchSubtotals: $('dispatchSubtotals'), dispatchSearch: $('dispatchSearch'), dispatchFilter: $('dispatchFilter'), clearDispatchFilters: $('clearDispatchFilters'), dispatchGrid: $('dispatchGrid'), dispatchEmpty: $('dispatchEmpty'), finishDayBtn: $('finishDayBtn'), historyList: $('historyList'), reportOverview: $('reportOverview'), reportCards: $('reportCards'), backupBtn: $('backupBtn'), restoreBtn: $('restoreBtn'), restoreFile: $('restoreFile'), editModal: $('editModal'), editForm: $('editForm'), editId: $('editId'), editNumber: $('editNumber'), editQty: $('editQty'), editAssembler: $('editAssembler'), editStatus: $('editStatus'), editNote: $('editNote'), deleteCommandBtn: $('deleteCommandBtn'), errorModal: $('errorModal'), errorForm: $('errorForm'), errorId: $('errorId'), errorType: $('errorType'), errorNote: $('errorNote'), clearErrorBtn: $('clearErrorBtn'), toast: $('toast') };
 
     function save() {
-      fetch('/api/sync', {
+      fetch('http://localhost:8001/api/sync', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(state)
@@ -124,7 +124,7 @@
       }
       op.team = selected;
       save();
-      fetch('/api/equipe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ team: selected }) });
+      fetch('http://localhost:8001/api/equipe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ team: selected }) });
       renderHeader(); renderCheckedTeam(); renderProduction(); renderDispatch(); renderDashboard();
       if (show && !kept.length) toast(op.status === 'draft' ? 'Equipe salva.' : 'Equipe atualizada durante a operação.');
       return true;
@@ -164,7 +164,7 @@
       const newCmd = { id: commandId, number: n, pizzas: q, assemblerId: a.personId, assemblerName: a.name, note: el.commandNote.value.trim(), status, createdAt: now, updatedAt: now, statusTimes: { cozinha: now, forno: status === 'forno' ? now : null, despacho: null }, error: { active: false, type: '', note: '', createdAt: null }, dispatch: { status: 'aguardando', beverage: false, change: false, changeAmount: '', ketchup: false, mayonnaise: false, note: '', checkedAt: null, releasedAt: null } };
       op.commands.push(newCmd);
       save();
-      fetch('/api/comandas', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: commandId, assembler_id: a.personId, number: n, pizzas: q, note: el.commandNote.value.trim() }) });
+      fetch('http://localhost:8001/api/comandas', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: commandId, assembler_id: a.personId, number: n, pizzas: q, note: el.commandNote.value.trim() }) });
       resetRegistration(); renderProduction(); renderDashboard(); toast(`Comanda ${n} registrada com ${q} pizza${q > 1 ? 's' : ''}.`);
     }
     function move(c, dir) {
@@ -178,7 +178,7 @@
       }
       c.updatedAt = now;
       save();
-      fetch('/api/comandas/status', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: c.id, status: c.status }) });
+      fetch('http://localhost:8001/api/comandas/status', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: c.id, status: c.status }) });
       renderProduction(); renderDispatch(); renderDashboard();
     }
     function openEdit(c) { const op = currentOperation(); el.editId.value = c.id; el.editNumber.value = c.number; el.editQty.value = c.pizzas; el.editStatus.value = c.status; el.editNote.value = c.note || ''; el.editAssembler.innerHTML = assemblers(op).map(p => `<option value="${p.personId}" ${p.personId === c.assemblerId ? 'selected' : ''}>${esc(p.name)}</option>`).join(''); el.editModal.classList.add('show') }
@@ -901,7 +901,7 @@
     };
 
     function loadState() {
-      fetch('/api/init')
+      fetch('http://localhost:8001/api/init')
         .then(res => res.json())
         .then(data => {
           state = data;

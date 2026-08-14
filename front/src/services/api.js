@@ -1,4 +1,4 @@
-const API_URL = '/api'; // Or use an env variable like process.env.VITE_API_URL
+const API_URL = 'http://localhost:8001/api'; // Or use an env variable like process.env.VITE_API_URL
 
 export async function fetchApi(endpoint, options = {}) {
     const url = `${API_URL}${endpoint}`;
