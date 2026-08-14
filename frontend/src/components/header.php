@@ -11,7 +11,7 @@
 
   <div class="flex items-center gap-3 sm:gap-4">
     <!-- Date picker or selector (represented as read-only badge here) -->
-    <div class="hidden sm:flex items-center bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 text-sm font-medium text-gray-600">
+    <div class="flex max-sm:hidden items-center bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 text-sm font-medium text-gray-600">
       <i data-lucide="calendar" class="w-[14px] h-[14px] mr-2 text-gray-400"></i>
       <input id="globalDate" type="date" class="bg-transparent border-none outline-none text-gray-600 font-medium text-sm p-0 cursor-pointer" style="color-scheme: light;" />
     </div>

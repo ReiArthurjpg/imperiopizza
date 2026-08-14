@@ -100,4 +100,38 @@ class ApiController
         // TODO: Sync team to database
         $this->jsonResponse(['success' => true]);
     }
+
+    public function getDashboardKpis()
+    {
+        try {
+            $startDate = $_GET['start_date'] ?? null;
+            $endDate = $_GET['end_date'] ?? null;
+
+            if ($startDate && $endDate) {
+                $kpis = Comanda::getKpisByPeriod($startDate, $endDate);
+            } else {
+                $op = Operacao::getCurrent();
+                if (!$op) {
+                    $this->jsonResponse([
+                        'comandas' => 0,
+                        'cozinha' => 0,
+                        'pizzas' => 0,
+                        'pendentes' => 0,
+                        'erros' => 0
+                    ]);
+                }
+                $kpis = Comanda::getKpisByOperacao($op['id']);
+            }
+            
+            $kpis['comandas'] = (int)($kpis['comandas'] ?? 0);
+            $kpis['cozinha'] = (int)($kpis['cozinha'] ?? 0);
+            $kpis['pizzas'] = (int)($kpis['pizzas'] ?? 0);
+            $kpis['pendentes'] = (int)($kpis['pendentes'] ?? 0);
+            $kpis['erros'] = (int)($kpis['erros'] ?? 0);
+            
+            $this->jsonResponse($kpis);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['error' => $e->getMessage()], 500);
+        }
+    }
 }

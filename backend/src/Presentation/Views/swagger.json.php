@@ -18,6 +18,14 @@ $swagger = [
                 ]
             ]
         ],
+        "/api/dashboard/kpis" => [
+            "get" => [
+                "summary" => "Obter estatísticas de KPI do Dashboard",
+                "responses" => [
+                    "200" => ["description" => "KPIs obtidos com sucesso"]
+                ]
+            ]
+        ],
         "/api/sync" => [
             "post" => [
                 "summary" => "Sincronizar estado (Comandas, lotes, etc)",

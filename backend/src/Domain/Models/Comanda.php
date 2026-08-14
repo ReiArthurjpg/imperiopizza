@@ -191,4 +191,32 @@ class Comanda
         $stmt = $db->prepare("UPDATE comandas SET status = :status $timeField WHERE id = :id");
         $stmt->execute(['status' => $status, 'id' => $id]);
     }
+
+    public static function getKpisByOperacao($operacao_id)
+    {
+        $db = Database::getInstance()->getConnection();
+        $stmt = $db->prepare("SELECT 
+            COUNT(*) as comandas,
+            COALESCE(SUM(CASE WHEN status = 'cozinha' THEN 1 ELSE 0 END), 0) as cozinha,
+            COALESCE(SUM(CASE WHEN status = 'despacho' OR status = 'completed' THEN 1 ELSE 0 END), 0) as pizzas,
+            COALESCE(SUM(CASE WHEN status = 'despacho' AND dispatch_status = 'aguardando' THEN 1 ELSE 0 END), 0) as pendentes,
+            COALESCE(SUM(CASE WHEN status != 'despacho' AND status != 'completed' AND updated_at < NOW() - INTERVAL 30 MINUTE THEN 1 ELSE 0 END), 0) as erros
+            FROM comandas WHERE operacao_id = ?");
+        $stmt->execute([$operacao_id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public static function getKpisByPeriod($startDate, $endDate)
+    {
+        $db = Database::getInstance()->getConnection();
+        $stmt = $db->prepare("SELECT 
+            COUNT(*) as comandas,
+            COALESCE(SUM(CASE WHEN status = 'cozinha' THEN 1 ELSE 0 END), 0) as cozinha,
+            COALESCE(SUM(CASE WHEN status = 'despacho' OR status = 'completed' THEN 1 ELSE 0 END), 0) as pizzas,
+            COALESCE(SUM(CASE WHEN status = 'despacho' AND dispatch_status = 'aguardando' THEN 1 ELSE 0 END), 0) as pendentes,
+            COALESCE(SUM(CASE WHEN status != 'despacho' AND status != 'completed' AND updated_at < NOW() - INTERVAL 30 MINUTE THEN 1 ELSE 0 END), 0) as erros
+            FROM comandas WHERE DATE(created_at) BETWEEN ? AND ?");
+        $stmt->execute([$startDate, $endDate]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }

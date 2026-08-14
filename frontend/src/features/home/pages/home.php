@@ -9,81 +9,60 @@
     <!-- Será preenchido dinamicamente pelo JS (StatusBanner) -->
   </div>
 
-  <!-- KPI Grid (5 colunas) -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-6 mb-6">
-    <!-- Card Comandas -->
-    <div class="relative overflow-hidden bg-white p-5 rounded-xl border border-[#E7E7E7] transition-all duration-200 hover:shadow-[0_4px_12px_rgb(0,0,0,0.05)] hover:-translate-y-0.5 border-[#B5120B]/30 ring-1 ring-[#B5120B]/10">
-      <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#B5120B] to-[#FFBF00]"></div>
-      <div class="flex justify-between items-start mb-4">
-        <h3 class="text-sm font-medium text-[#B5120B]">Comandas</h3>
-        <div class="p-2 rounded-lg bg-[#FDECEB] text-[#B5120B]">
-          <i data-lucide="receipt" class="w-[18px] h-[18px]"></i>
+  <!-- Unified KPI & Period Section -->
+  <div class="bg-white rounded-xl border border-[#E7E7E7] shadow-[0_4px_12px_rgba(0,0,0,0.02)] p-5 mb-6">
+    <!-- Top header of the section (Period selector) -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#E7E7E7] mb-5">
+      <div>
+        <h3 class="text-base font-semibold text-[#173F69]">Período de Análise</h3>
+        <p class="text-xs text-gray-400 mt-0.5">Filtre e consolide as comandas e pizzas finalizadas no intervalo selecionado.</p>
+      </div>
+      <div class="flex items-center gap-2.5 self-start sm:self-auto">
+        <!-- Data Inicial -->
+        <div class="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 text-sm">
+          <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">De</span>
+          <input id="globalStartDate" type="date" class="bg-transparent border-none outline-none text-gray-700 font-semibold text-sm p-0 cursor-pointer w-[125px]" style="color-scheme: light;" />
+        </div>
+        
+        <i data-lucide="arrow-right" class="w-4 h-4 text-gray-400"></i>
+        
+        <!-- Data Final -->
+        <div class="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 text-sm">
+          <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Até</span>
+          <input id="globalEndDate" type="date" class="bg-transparent border-none outline-none text-gray-700 font-semibold text-sm p-0 cursor-pointer w-[125px]" style="color-scheme: light;" />
         </div>
       </div>
-      <div class="flex items-baseline gap-2">
-        <span id="dashCommands" class="text-3xl font-bold tracking-tight text-[#171717]">0</span>
-        <span class="flex items-center text-xs font-medium text-emerald-600">
-          <i data-lucide="trending-up" class="w-3 h-3 mr-1"></i>
-          +12% hoje
-        </span>
-      </div>
-      <p class="mt-2 text-xs font-medium text-[#737373]">Total de pedidos</p>
     </div>
 
-    <!-- Card Cozinha -->
-    <div class="relative overflow-hidden bg-white p-5 rounded-xl border border-[#E7E7E7] transition-all duration-200 hover:shadow-[0_4px_12px_rgb(0,0,0,0.05)] hover:-translate-y-0.5">
-      <div class="flex justify-between items-start mb-4">
-        <h3 class="text-sm font-medium text-[#737373]">Na Cozinha</h3>
-        <div class="p-2 rounded-lg bg-gray-50 text-gray-400">
-          <i data-lucide="chef-hat" class="w-[18px] h-[18px]"></i>
+    <!-- KPI Grid (2 colunas) inside the same section -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+      <!-- Card Comandas -->
+      <div class="relative overflow-hidden bg-gray-50/50 p-5 rounded-xl border border-[#E7E7E7] transition-all duration-200 hover:shadow-[0_2px_8px_rgb(0,0,0,0.03)] border-l-4 border-l-[#B5120B]">
+        <div class="flex justify-between items-start mb-4">
+          <h3 class="text-sm font-semibold text-[#B5120B]">Comandas</h3>
+          <div class="p-2 rounded-lg bg-[#FDECEB] text-[#B5120B]">
+            <i data-lucide="receipt" class="w-[18px] h-[18px]"></i>
+          </div>
         </div>
+        <div class="flex items-baseline gap-2">
+          <span id="dashCommands" class="text-3xl font-bold tracking-tight text-[#171717]">0</span>
+        </div>
+        <p class="mt-2 text-xs font-medium text-[#737373]">Total de pedidos</p>
       </div>
-      <div class="flex items-baseline gap-2">
-        <span id="dashKitchen" class="text-3xl font-bold tracking-tight text-[#171717]">0</span>
-      </div>
-      <p class="mt-2 text-xs font-medium text-[#737373]">Em preparação</p>
-    </div>
 
-    <!-- Card Pizzas feitas -->
-    <div class="relative overflow-hidden bg-white p-5 rounded-xl border border-[#E7E7E7] transition-all duration-200 hover:shadow-[0_4px_12px_rgb(0,0,0,0.05)] hover:-translate-y-0.5">
-      <div class="flex justify-between items-start mb-4">
-        <h3 class="text-sm font-medium text-[#737373]">Pizzas feitas</h3>
-        <div class="p-2 rounded-lg bg-gray-50 text-gray-400">
-          <i data-lucide="chef-hat" class="w-[18px] h-[18px]"></i>
+      <!-- Card Pizzas feitas -->
+      <div class="relative overflow-hidden bg-gray-50/50 p-5 rounded-xl border border-[#E7E7E7] transition-all duration-200 hover:shadow-[0_2px_8px_rgb(0,0,0,0.03)] border-l-4 border-l-emerald-600">
+        <div class="flex justify-between items-start mb-4">
+          <h3 class="text-sm font-semibold text-emerald-700">Pizzas feitas</h3>
+          <div class="p-2 rounded-lg bg-emerald-50 text-emerald-700">
+            <i data-lucide="chef-hat" class="w-[18px] h-[18px]"></i>
+          </div>
         </div>
-      </div>
-      <div class="flex items-baseline gap-2">
-        <span id="dashPizzas" class="text-3xl font-bold tracking-tight text-[#171717]">0</span>
-      </div>
-      <p class="mt-2 text-xs font-medium text-[#737373]">Pizzas finalizadas</p>
-    </div>
-
-    <!-- Card Despacho / Pendentes -->
-    <div class="relative overflow-hidden bg-white p-5 rounded-xl border border-[#E7E7E7] transition-all duration-200 hover:shadow-[0_4px_12px_rgb(0,0,0,0.05)] hover:-translate-y-0.5">
-      <div class="flex justify-between items-start mb-4">
-        <h3 class="text-sm font-medium text-[#737373]">Pendentes</h3>
-        <div class="p-2 rounded-lg bg-gray-50 text-gray-400">
-          <i data-lucide="truck" class="w-[18px] h-[18px]"></i>
+        <div class="flex items-baseline gap-2">
+          <span id="dashPizzas" class="text-3xl font-bold tracking-tight text-[#171717]">0</span>
         </div>
+        <p class="mt-2 text-xs font-medium text-[#737373]">Pizzas finalizadas</p>
       </div>
-      <div class="flex items-baseline gap-2">
-        <span id="dashDispatch" class="text-3xl font-bold tracking-tight text-[#171717]">0</span>
-      </div>
-      <p class="mt-2 text-xs font-medium text-[#737373]">Aguardando entrega</p>
-    </div>
-
-    <!-- Card Erros/Atrasos (Substitui Erros simples por layout de alerta condicional) -->
-    <div id="errorsCard" class="relative overflow-hidden bg-white p-5 rounded-xl border border-[#E7E7E7] transition-all duration-200 hover:shadow-[0_4px_12px_rgb(0,0,0,0.05)] hover:-translate-y-0.5 col-span-full sm:col-span-1 lg:col-span-1">
-      <div class="flex justify-between items-start mb-4">
-        <h3 class="text-sm font-medium text-[#737373]">Erros/Atrasos</h3>
-        <div class="p-2 rounded-lg bg-gray-50 text-gray-400">
-          <i data-lucide="triangle-alert" class="w-[18px] h-[18px]"></i>
-        </div>
-      </div>
-      <div class="flex items-baseline gap-2">
-        <span id="dashErrors" class="text-3xl font-bold tracking-tight text-[#171717]">0</span>
-      </div>
-      <p class="mt-2 text-xs font-medium text-[#737373]">Requer atenção</p>
     </div>
   </div>
 
