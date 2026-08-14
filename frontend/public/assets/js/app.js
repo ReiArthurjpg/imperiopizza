@@ -29,36 +29,98 @@
     function getCommand(op, id) { return op?.commands.find(c => c.id === id) || null }
     function ensureOperation() { let op = currentOperation(); if (!op) { op = { id: uid(), date: currentDate(), status: 'draft', team: [], startedAt: null, kitchenClosedAt: null, completedAt: null, commands: [] }; state.operations.push(op); save() } return op }
     function phaseLabel(op) { if (!op) return 'Sem operação'; return { draft: 'Equipe em preparação', production_open: 'Cozinha em operação', kitchen_closed: 'Cozinha encerrada · despacho ativo', completed: 'Operação finalizada' }[op.status] || op.status }
-    function showPage(name) { document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === `page-${name}`)); document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.page === name)); if (name === 'dashboard') renderDashboard(); if (name === 'team') renderTeam(); if (name === 'production') renderProduction(); if (name === 'dispatch') renderDispatch(); if (name === 'reports') renderReports(); window.scrollTo({ top: 0, behavior: 'smooth' }) }
+    function showPage(name) { 
+      document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === `page-${name}`)); 
+      document.querySelectorAll('.sidebar-nav-btn').forEach(b => {
+        const isActive = b.dataset.page === name;
+        b.classList.toggle('active', isActive);
+        if (isActive) {
+          b.classList.remove('text-gray-600', 'hover:bg-[#FDECEB]', 'hover:text-[#B5120B]');
+          b.classList.add('bg-[#FDECEB]', 'text-[#B5120B]');
+          const icon = b.querySelector('i');
+          if (icon) {
+            icon.classList.remove('text-gray-400', 'group-hover:text-[#B5120B]');
+            icon.classList.add('text-[#B5120B]');
+          }
+        } else {
+          b.classList.add('text-gray-600', 'hover:bg-[#FDECEB]', 'hover:text-[#B5120B]');
+          b.classList.remove('bg-[#FDECEB]', 'text-[#B5120B]');
+          const icon = b.querySelector('i');
+          if (icon) {
+            icon.classList.add('text-gray-400', 'group-hover:text-[#B5120B]');
+            icon.classList.remove('text-[#B5120B]');
+          }
+        }
+      });
+      if (name === 'dashboard') renderDashboard(); 
+      if (name === 'team') renderTeam(); 
+      if (name === 'production') renderProduction(); 
+      if (name === 'dispatch') renderDispatch(); 
+      if (name === 'reports') renderReports(); 
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
     function renderHeader() { const op = currentOperation(); el.phasePill.textContent = phaseLabel(op); el.phasePill.className = 'phase-pill'; if (op?.status === 'production_open') el.phasePill.classList.add('open'); if (op?.status === 'kitchen_closed') el.phasePill.classList.add('kitchen-closed'); if (op?.status === 'completed') el.phasePill.classList.add('done') }
     function stats(op) { const cs = op?.commands || []; return { commands: cs.length, pizzas: cs.reduce((a, c) => a + (Number(c.pizzas) || 1), 0), kitchen: cs.filter(c => c.status === 'cozinha').length, oven: cs.filter(c => c.status === 'forno').length, dispatchPending: cs.filter(c => c.status === 'despacho' && c.dispatch?.status !== 'liberado').length, released: cs.filter(c => c.status === 'despacho' && c.dispatch?.status === 'liberado').length, errors: cs.filter(c => c.error?.active).length } }
     function pendingToFinish(op) { return (op?.commands || []).filter(c => c.status !== 'despacho' || c.dispatch?.status !== 'liberado').length }
     function empty(title, text) { return `<div class="empty"><strong>${esc(title)}</strong>${esc(text)}</div>` }
-    function teamHtml(team) { if (!team?.length) return empty('Equipe não definida', 'Selecione os profissionais do dia.'); const g = {}; SECTORS.forEach(s => g[s] = []); team.forEach(p => (g[p.role] ||= []).push(p)); return `<div class="team-groups">${Object.entries(g).filter(([, ps]) => ps.length).map(([s, ps]) => `<div class="team-group"><div class="team-head"><h4>${esc(s)}</h4><span class="count">${ps.length}</span></div><div class="chips">${ps.map(p => `<span class="chip">${esc(p.name)}</span>`).join('')}</div></div>`).join('')}</div>` }
+    function teamHtml(team) { 
+      if (!team?.length) return empty('Equipe não definida', 'Selecione os profissionais do dia.'); 
+      return `<div class="space-y-3">${team.map(member => `
+        <div class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 transition-colors -mx-2">
+          <div class="flex items-center gap-3">
+            <div class="relative">
+              <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-semibold text-gray-600 border border-gray-300">
+                ${assemblerInitials(member.name)}
+              </div>
+              <div class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-white bg-emerald-500"></div>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-[#171717]">${esc(member.name)}</p>
+              <p class="text-[11px] text-gray-500">${esc(member.role)}</p>
+            </div>
+          </div>
+        </div>`).join('')}</div>`;
+    }
     function ranking(op) { const m = {}; (op?.team || []).filter(p => p.role === 'Montagem').forEach(p => m[p.personId] = { personId: p.personId, name: p.name, commands: 0, pizzas: 0, errors: 0 }); (op?.commands || []).forEach(c => { m[c.assemblerId] ||= { personId: c.assemblerId, name: c.assemblerName, commands: 0, pizzas: 0, errors: 0 }; m[c.assemblerId].commands++; m[c.assemblerId].pizzas += Number(c.pizzas) || 1; if (c.error?.active) m[c.assemblerId].errors++ }); return Object.values(m).sort((a, b) => b.pizzas - a.pizzas || b.commands - a.commands || a.name.localeCompare(b.name, 'pt-BR')) }
     function rankHtml(op) { const r = ranking(op), total = stats(op).pizzas; if (!r.length) return empty('Sem resultado de montagem', 'O ranking aparece após o registro das comandas.'); return `<div class="rank-table">${r.map((x, i) => `<div class="rank-row"><div class="rank-pos">${i + 1}º</div><div class="rank-name"><strong>${esc(x.name)}</strong><small>${total ? ((x.pizzas / total) * 100).toFixed(1) : '0.0'}% das pizzas</small></div><div class="rank-metric"><strong>${x.pizzas}</strong><small>pizzas</small></div><div class="rank-metric"><strong>${x.commands}</strong><small>comandas</small></div><div class="rank-metric"><strong>${x.errors}</strong><small>erros</small></div></div>`).join('')}</div>` }
 
-
     function dashboardTop5Html(op) {
-      const list = ranking(op).slice(0, 5), total = stats(op).pizzas, leader = list[0]?.pizzas || 1;
+      const list = ranking(op).slice(0, 5), total = stats(op).pizzas;
       if (!list.length) return empty('Top 5 ainda vazio', 'O ranking começa após o registro das pizzas.');
-      return `<div class="top5-list">${list.map((x, i) => {
-        const participation = total ? ((x.pizzas / total) * 100).toFixed(1) : '0.0';
-        const progress = Math.max(8, Math.round((x.pizzas / leader) * 100));
-        return `<div class="top5-row" style="--rank-progress:${progress}%">
-      <div class="top5-position">${i === 0 ? '★' : `${i + 1}º`}</div>
-      <div class="top5-name"><strong>${esc(x.name)}</strong><small>${participation}% da produção · ${x.commands} comanda${x.commands === 1 ? '' : 's'} · ${x.errors} erro${x.errors === 1 ? '' : 's'}</small></div>
-      <div class="top5-metrics"><strong>${x.pizzas}</strong><small>pizzas</small></div>
-    </div>`}).join('')}</div>`;
+      return `<div class="space-y-4">${list.map((x, i) => `
+        <div class="flex items-center justify-between group">
+          <div class="flex items-center gap-3">
+            <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${i === 0 ? 'bg-[#FFF9E5] text-[#D97706] ring-1 ring-[#FDE68A]' : 'bg-gray-100 text-gray-500'}">
+              ${i + 1}
+            </div>
+            <div>
+              <p class="text-sm font-medium text-[#171717] group-hover:text-[#B5120B] transition-colors">${esc(x.name)}</p>
+              <p class="text-[11px] text-gray-500">Montador</p>
+            </div>
+          </div>
+          <div class="text-sm font-semibold text-[#171717]">
+            ${x.pizzas} <span class="text-xs text-gray-400 font-normal">pizzas</span>
+          </div>
+        </div>`).join('')}</div>`;
     }
     function dashboardLiveHtml(op) {
       const recent = [...(op?.commands || [])].sort((a, b) => (b.updatedAt || b.createdAt).localeCompare(a.updatedAt || a.createdAt)).slice(0, 5);
       if (!recent.length) return `<div class="dashboard-live-empty">${empty('Sem movimento ainda', 'As últimas comandas aparecerão aqui em tempo real.')}</div>`;
-      return `<div class="live-sample">${recent.map(c => `<div class="live-item">
-    <span class="live-dot"></span>
-    <div><strong>Comanda #${String(c.number).padStart(3, '0')} · ${esc(c.assemblerName)}</strong><small>${statusText(c)} · atualizado ${formatTime(c.updatedAt || c.createdAt)}</small></div>
-    <span class="live-pizzas">${c.pizzas} pizza${Number(c.pizzas) === 1 ? '' : 's'}</span>
-  </div>`).join('')}</div>`;
+      return `
+        <div class="absolute left-[11px] top-2 bottom-2 w-px bg-gray-200"></div>
+        <div class="space-y-6">${recent.map(c => {
+          let colorClass = 'bg-emerald-500';
+          if (c.status === 'cozinha') colorClass = 'bg-blue-500';
+          if (c.status === 'forno') colorClass = 'bg-orange-500';
+          if (c.error?.active) colorClass = 'bg-red-500';
+          return `
+          <div class="relative flex items-start gap-4">
+            <div class="relative z-10 w-2.5 h-2.5 rounded-full mt-1.5 ring-4 ring-white ${colorClass}"></div>
+            <div>
+              <p class="text-sm text-[#171717]">Comanda #${String(c.number).padStart(3, '0')} · ${esc(c.assemblerName)}</p>
+              <p class="text-xs text-gray-400 mt-0.5">${statusText(c)} · atualizado ${formatTime(c.updatedAt || c.createdAt)}</p>
+            </div>
+          </div>`}).join('')}</div>`;
     }
     function animateMetric(node, target) {
       if (!node) return;
@@ -81,6 +143,36 @@
       node._metricFrame = requestAnimationFrame(tick);
     }
 
+    function renderPipeline(op) {
+      const container = document.getElementById('pipelineContainer');
+      if (!container) return;
+      if (!op) {
+        container.innerHTML = empty('Fluxo inativo', 'Inicie a operação.');
+        return;
+      }
+      const s = stats(op);
+      const pipelineSteps = [
+        { stage: 'Comandas', count: s.commands, color: 'border-l-blue-500' },
+        { stage: 'Cozinha', count: s.kitchen, color: 'border-l-orange-500' },
+        { stage: 'Forno', count: s.oven, color: 'border-l-red-500' },
+        { stage: 'Despacho', count: s.dispatchPending, color: 'border-l-green-500' },
+        { stage: 'Finalizadas', count: s.released, color: 'border-l-gray-500' }
+      ];
+      
+      container.innerHTML = pipelineSteps.map((step, idx) => `
+        <div class="flex-1 min-w-[120px] bg-gray-50 rounded-lg p-4 border border-gray-100 flex flex-col items-center justify-center text-center relative group hover:bg-white hover:border-gray-200 hover:shadow-sm transition-all">
+          <div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 rounded-r-md bg-gray-300 ${step.color} border-l-4 group-hover:h-12 transition-all"></div>
+          <span class="text-2xl font-bold text-[#171717] mb-1">${step.count}</span>
+          <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">${step.stage}</span>
+        </div>
+        ${idx < pipelineSteps.length - 1 ? `
+          <div class="hidden md:flex text-gray-300">
+            <i data-lucide="chevron-right" class="w-5 h-5"></i>
+          </div>
+        ` : ''}
+      `).join('');
+    }
+
     function renderDashboard() {
       renderHeader();
       const op = currentOperation(), s = stats(op);
@@ -90,23 +182,83 @@
       animateMetric(el.dashOven, s.oven);
       animateMetric(el.dashDispatch, s.dispatchPending);
       animateMetric(el.dashErrors, s.errors);
+      
+      // Update team badge
+      const onlineBadge = document.getElementById('dashboardTeamOnlineBadge');
+      if (onlineBadge) {
+        onlineBadge.textContent = `${op ? op.team.length : 0} Online`;
+      }
+      
+      renderPipeline(op);
+      
       if (!op) {
-        el.dashboardBanner.innerHTML = `<div><h3>Nenhuma operação em ${formatDate(currentDate())}</h3><p>Cadastre a equipe para iniciar.</p></div><div class="actions"><button class="btn btn-primary" data-go="team">Adicionar equipe</button></div>`;
+        el.dashboardBanner.innerHTML = `<div class="flex items-center justify-between p-4 rounded-xl border bg-gray-50 border-gray-200 w-full">
+          <div class="flex items-center gap-3">
+            <div class="relative flex h-3 w-3">
+              <span class="relative inline-flex rounded-full h-3 w-3 bg-gray-400"></span>
+            </div>
+            <div>
+              <h3 class="font-semibold text-sm text-gray-700">Operação não iniciada</h3>
+              <p class="text-xs text-gray-500 mt-0.5">Cadastre a equipe e abra a produção para começar.</p>
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <button class="px-4 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors" data-go="team">Organizar Equipe</button>
+            <button class="px-4 py-2 text-xs font-medium text-white bg-[#B5120B] rounded-lg hover:bg-[#9a0f09] shadow-sm transition-colors" data-go="team">Abrir Produção</button>
+          </div>
+        </div>`;
         el.dashboardTeam.innerHTML = empty('Equipe não cadastrada', 'Abra a página Equipe.');
         el.dashboardRank.innerHTML = empty('Top 5 ainda vazio', 'O ranking será calculado pela quantidade de pizzas.');
         el.dashboardLive.innerHTML = `<div class="dashboard-live-empty">${empty('Sem movimento', 'Inicie a produção para acompanhar as comandas.')}</div>`;
-        return
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+        return;
       }
       const pend = pendingToFinish(op);
       let desc = '';
-      if (op.status === 'draft') desc = `${op.team.length} pessoas selecionadas · aguardando início`;
-      if (op.status === 'production_open') desc = `Iniciada às ${formatTime(op.startedAt)} · cozinha em operação`;
-      if (op.status === 'kitchen_closed') desc = `Cozinha encerrada às ${formatTime(op.kitchenClosedAt)} · ${pend} pedidos ainda não finalizados`;
-      if (op.status === 'completed') desc = `Dia finalizado às ${formatTime(op.completedAt)} · ${s.pizzas} pizzas produzidas`;
-      el.dashboardBanner.innerHTML = `<div><h3>${phaseLabel(op)} — ${formatDate(op.date)}</h3><p>${desc}</p></div><div class="actions"><button class="btn btn-soft" data-go="team">Equipe</button><button class="btn btn-primary" data-go="${op.status === 'completed' ? 'reports' : op.status === 'kitchen_closed' ? 'dispatch' : 'production'}">${op.status === 'completed' ? 'Relatórios' : op.status === 'kitchen_closed' ? 'Abrir despacho' : 'Abrir produção'}</button></div>`;
+      if (op.status === 'draft') desc = `Produção em preparação • ${op.team.length} pessoas selecionadas`;
+      if (op.status === 'production_open') desc = `Produção iniciada às ${formatTime(op.startedAt)}`;
+      if (op.status === 'kitchen_closed') desc = `Cozinha encerrada às ${formatTime(op.kitchenClosedAt)} • ${pend} pendentes`;
+      if (op.status === 'completed') desc = `Dia finalizado às ${formatTime(op.completedAt)} • ${s.pizzas} pizzas`;
+      
+      const isActive = op.status === 'production_open';
+      el.dashboardBanner.innerHTML = `<div class="flex items-center justify-between p-4 rounded-xl border ${isActive ? 'bg-[#E7F8F0] border-[#A7F3D0]' : 'bg-gray-50 border-gray-200'} w-full">
+        <div class="flex items-center gap-3">
+          <div class="relative flex h-3 w-3">
+            ${isActive ? '<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>' : ''}
+            <span class="relative inline-flex rounded-full h-3 w-3 ${isActive ? 'bg-emerald-500' : 'bg-gray-400'}"></span>
+          </div>
+          <div>
+            <h3 class="font-semibold text-sm ${isActive ? 'text-emerald-900' : 'text-gray-700'}">${phaseLabel(op)}</h3>
+            <p class="text-xs ${isActive ? 'text-emerald-700' : 'text-gray-500'} mt-0.5">${desc}</p>
+          </div>
+        </div>
+        ${op.status === 'draft' ? `
+          <div class="flex gap-2">
+            <button class="px-4 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors" data-go="team">Organizar Equipe</button>
+            <button class="px-4 py-2 text-xs font-medium text-white bg-[#B5120B] rounded-lg hover:bg-[#9a0f09] shadow-sm transition-colors" id="startOperationBtn">Abrir Produção</button>
+          </div>
+        ` : ''}
+      </div>`;
       el.dashboardTeam.innerHTML = teamHtml(op.team);
       el.dashboardRank.innerHTML = dashboardTop5Html(op);
       el.dashboardLive.innerHTML = dashboardLiveHtml(op);
+      
+      // Simula Alertas
+      const alertsContainer = document.getElementById('alertsContainer');
+      if (alertsContainer) {
+        const alertsList = [];
+        if (s.oven > 3) alertsList.push("🟡 3 comandas ou mais aguardando forno");
+        if (s.errors > 0) alertsList.push(`🔴 ${s.errors} erro(s) ou atraso(s) requerendo atenção na operação`);
+        
+        alertsContainer.innerHTML = alertsList.map(alert => `
+          <div class="flex items-center justify-between bg-white px-4 py-2.5 rounded-lg border border-gray-200 shadow-sm">
+            <span class="text-sm font-medium text-[#171717] flex items-center gap-2">${alert}</span>
+            <button class="text-gray-400 hover:text-gray-600" onclick="this.parentElement.remove()"><i data-lucide="x" class="w-4 h-4"></i></button>
+          </div>
+        `).join('');
+      }
+      
+      if (typeof lucide !== 'undefined') lucide.createIcons();
     }
     function renderTeam() { renderHeader(); const op = currentOperation(), selected = new Set(op?.team.map(t => t.personId) || []), usedIds = new Set(op?.commands.map(c => c.assemblerId) || []); if (!state.people.length) el.peopleChecklist.innerHTML = empty('Nenhum profissional cadastrado', 'Use o formulário acima.'); else el.peopleChecklist.innerHTML = [...state.people].sort((a, b) => a.role.localeCompare(b.role, 'pt-BR') || a.name.localeCompare(b.name, 'pt-BR')).map(p => `<div class="check-person"><label><input type="checkbox" data-team-id="${p.id}" ${selected.has(p.id) ? 'checked' : ''} ${usedIds.has(p.id) ? 'data-used-in-production="1"' : ''}><span><strong>${esc(p.name)}</strong><br><small>${esc(p.role)}${usedIds.has(p.id) ? ' · já possui produção' : ''}</small></span></label><button class="btn btn-soft-red btn-small" data-remove-person="${p.id}">Remover</button></div>`).join(''); renderCheckedTeam(); el.saveTeamBtn.disabled = op?.status === 'completed'; el.startOperationBtn.disabled = !!op && op.status !== 'draft'; el.startOperationBtn.textContent = op?.status === 'production_open' ? 'Operação em andamento' : op?.status === 'kitchen_closed' ? 'Cozinha encerrada' : op?.status === 'completed' ? 'Dia finalizado' : 'Iniciar operação'; if (!op) el.teamOperationNotice.innerHTML = ''; else if (op.status === 'completed') el.teamOperationNotice.innerHTML = `<div class="banner"><div><h3>Operação finalizada</h3><p>A lista de presença está fechada e disponível nos relatórios.</p></div><button class="btn btn-primary" data-go="reports">Abrir relatórios</button></div>`; else if (op.status === 'draft') el.teamOperationNotice.innerHTML = `<div class="banner"><div><h3>Equipe em preparação</h3><p>Selecione os presentes e inicie a operação.</p></div></div>`; else el.teamOperationNotice.innerHTML = `<div class="banner"><div><h3>Equipe acionável durante a operação</h3><p>Você pode cadastrar e incluir novas pessoas até finalizar completamente o dia.</p></div><div class="operation-team-actions"><button class="btn btn-primary" data-go="${op.status === 'production_open' ? 'production' : 'dispatch'}">Voltar à operação</button></div></div>` }
     function checkedTeam() { return [...document.querySelectorAll('[data-team-id]:checked')].map(i => { const p = getPerson(i.dataset.teamId); return { personId: p.id, name: p.name, role: p.role } }) }
@@ -202,7 +354,31 @@
     function backup() { downloadHtml(`backup_imperial_${today()}.json`, JSON.stringify(state, null, 2)) }
 
     // navegação
-    document.addEventListener('click', e => { const n = e.target.closest('[data-page]'); if (n) showPage(n.dataset.page); const g = e.target.closest('[data-go]'); if (g) showPage(g.dataset.go) }); el.globalDate.addEventListener('change', () => { el.assemblerId.value = ''; el.assemblerSearch.value = ''; renderAll() });
+    document.addEventListener('click', e => { 
+      const n = e.target.closest('[data-page]'); 
+      if (n) {
+        showPage(n.dataset.page); 
+        document.getElementById('sidebar').classList.add('-translate-x-full'); 
+        document.getElementById('mobileSidebarOverlay').classList.add('hidden'); 
+      }
+      const g = e.target.closest('[data-go]'); 
+      if (g) {
+        showPage(g.dataset.go); 
+        document.getElementById('sidebar').classList.add('-translate-x-full'); 
+        document.getElementById('mobileSidebarOverlay').classList.add('hidden'); 
+      }
+      const toggle = e.target.closest('#toggleMobileMenuBtn'); 
+      if (toggle) { 
+        document.getElementById('sidebar').classList.remove('-translate-x-full'); 
+        document.getElementById('mobileSidebarOverlay').classList.remove('hidden'); 
+      }
+      const overlay = e.target.closest('#mobileSidebarOverlay'); 
+      if (overlay) { 
+        document.getElementById('sidebar').classList.add('-translate-x-full'); 
+        overlay.classList.add('hidden'); 
+      }
+    }); 
+    el.globalDate.addEventListener('change', () => { el.assemblerId.value = ''; el.assemblerSearch.value = ''; renderAll() });
     // equipe
     el.personForm.addEventListener('submit', e => { e.preventDefault(); const name = proper(el.personName.value), role = el.personRole.value; if (name.length < 2 || !role) return toast('Preencha nome e setor.', 'error'); if (state.people.some(p => norm(p.name) === norm(name) && p.role === role)) return toast('Este profissional já está cadastrado neste setor.', 'warn'); state.people.push({ id: uid(), name, role, createdAt: new Date().toISOString() }); save(); el.personForm.reset(); renderTeam(); toast('Profissional cadastrado.') }); el.peopleChecklist.addEventListener('change', e => { const box = e.target.closest('[data-team-id]'); if (box && !box.checked && box.dataset.usedInProduction === '1') { box.checked = true; toast('Este montador já possui produção registrada e deve permanecer na equipe.', 'warn') } renderCheckedTeam() }); el.peopleChecklist.addEventListener('click', e => { const b = e.target.closest('[data-remove-person]'); if (!b) return; const p = getPerson(b.dataset.removePerson), used = state.operations.some(o => o.team.some(t => t.personId === p.id) || o.commands.some(c => c.assemblerId === p.id)); if (used) return toast('Este profissional já está vinculado a operações.', 'warn'); if (confirm(`Remover ${p.name}?`)) { state.people = state.people.filter(x => x.id !== p.id); save(); renderTeam(); toast('Profissional removido.', 'warn') } }); el.saveTeamBtn.addEventListener('click', () => saveTeam(true)); el.startOperationBtn.addEventListener('click', () => { const op = ensureOperation(); if (op.status !== 'draft') return toast('A operação já foi iniciada.', 'warn'); saveTeam(false); if (!op.team.length) return toast('Selecione a equipe do dia.', 'error'); if (!op.team.some(p => p.role === 'Montagem')) return toast('Inclua ao menos um montador.', 'error'); op.status = 'production_open'; op.startedAt = new Date().toISOString(); save(); showPage('production'); toast('Operação iniciada.') });
     // central moderna de produção
