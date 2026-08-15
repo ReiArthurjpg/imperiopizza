@@ -90,4 +90,18 @@ class Operacao
         $stmt = $db->prepare("UPDATE operacoes SET status = 'production_open', started_at = ? WHERE id = ?");
         $stmt->execute([$startedAt, $operacaoId]);
     }
+
+    public static function getEquipe($operacaoId)
+    {
+        $db = Database::getInstance()->getConnection();
+        
+        $stmt = $db->prepare("
+            SELECT e.id as personId, e.nome as name, e.cargo as role 
+            FROM operacao_equipe oe
+            JOIN equipe e ON oe.equipe_id = e.id
+            WHERE oe.operacao_id = ?
+        ");
+        $stmt->execute([$operacaoId]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
 }

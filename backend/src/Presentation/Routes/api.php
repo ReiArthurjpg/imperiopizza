@@ -82,6 +82,13 @@ if ($uri === '/api/operacao/iniciar' && $method === 'POST') {
     exit;
 }
 
+if ($uri === '/api/operacao/equipe' && $method === 'GET') {
+    require_once __DIR__ . '/../Controllers/ApiController.php';
+    $controller = new \App\Back\Presentation\Controllers\ApiController();
+    $controller->getEquipeOperacao();
+    exit;
+}
+
 if ($uri === '/api/profissionais' && $method === 'POST') {
     require_once __DIR__ . '/../Controllers/ApiController.php';
     $controller = new \App\Back\Presentation\Controllers\ApiController();

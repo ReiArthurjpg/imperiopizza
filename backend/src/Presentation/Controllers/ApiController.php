@@ -45,6 +45,27 @@ class ApiController
                     }
                 }
             }
+
+            // Sync database operations teams and metadata back to init data
+            if (isset($data['operations']) && is_array($data['operations'])) {
+                $db = \App\Core\Database::getInstance()->getConnection();
+                $opStmt = $db->prepare("SELECT status, started_at, kitchen_closed_at, completed_at FROM operacoes WHERE id = ?");
+                foreach ($data['operations'] as &$op) {
+                    if (isset($op['id'])) {
+                        $opStmt->execute([$op['id']]);
+                        $dbOp = $opStmt->fetch(\PDO::FETCH_ASSOC);
+                        if ($dbOp) {
+                            $op['status'] = $dbOp['status'];
+                            $op['startedAt'] = $dbOp['started_at'] ? (new \DateTime($dbOp['started_at']))->format(\DateTime::ATOM) : null;
+                            $op['kitchenClosedAt'] = $dbOp['kitchen_closed_at'] ? (new \DateTime($dbOp['kitchen_closed_at']))->format(\DateTime::ATOM) : null;
+                            $op['completedAt'] = $dbOp['completed_at'] ? (new \DateTime($dbOp['completed_at']))->format(\DateTime::ATOM) : null;
+                        }
+
+                        $dbTeam = \App\Models\Operacao::getEquipe($op['id']);
+                        $op['team'] = $dbTeam ?: [];
+                    }
+                }
+            }
         } catch (\Exception $e) {
             // Silence DB errors if DB is initializing
         }
@@ -120,6 +141,21 @@ class ApiController
         try {
             \App\Models\Operacao::start($data['operacao_id'], $data['startedAt'] ?? null);
             $this->jsonResponse(['success' => true]);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getEquipeOperacao()
+    {
+        $operacaoId = $_GET['operacao_id'] ?? null;
+        if (!$operacaoId) {
+            $this->jsonResponse(['error' => 'Missing operacao_id'], 400);
+        }
+
+        try {
+            $team = \App\Models\Operacao::getEquipe($operacaoId);
+            $this->jsonResponse(['success' => true, 'count' => count($team), 'team' => $team]);
         } catch (\Exception $e) {
             $this->jsonResponse(['error' => $e->getMessage()], 500);
         }
@@ -284,47 +320,6 @@ class ApiController
                 'data'            => $op['date'],
                 'total'           => count($movimentacoes),
                 'movimentacoes'   => $movimentacoes,
-            ]);
-        } catch (\Exception $e) {
-            $this->jsonResponse(['error' => $e->getMessage()], 500);
-        }
-    }
-
-    public function getEquipeOperacao()
-    {
-        try {
-            $op = Operacao::getCurrent();
-
-            if (!$op || $op['status'] === 'draft') {
-                $this->jsonResponse([
-                    'operacao_ativa' => false,
-                    'status'         => 'inativa',
-                    'mensagem'       => 'Nenhuma operação ativa no momento.',
-                    'equipe'         => [],
-                ]);
-            }
-
-            // Busca a equipe da operação atual no state.json
-            $file = __DIR__ . '/../../../../storage/state.json';
-            $team = [];
-            if (file_exists($file)) {
-                $jsonData = json_decode(file_get_contents($file), true);
-                if (isset($jsonData['operations']) && is_array($jsonData['operations'])) {
-                    foreach ($jsonData['operations'] as $stateOp) {
-                        if (isset($stateOp['id']) && $stateOp['id'] === $op['id']) {
-                            $team = $stateOp['team'] ?? [];
-                            break;
-                        }
-                    }
-                }
-            }
-
-            $this->jsonResponse([
-                'operacao_ativa'  => true,
-                'operacao_id'     => $op['id'],
-                'operacao_status' => $op['status'],
-                'data'            => $op['date'],
-                'equipe'          => $team,
             ]);
         } catch (\Exception $e) {
             $this->jsonResponse(['error' => $e->getMessage()], 500);

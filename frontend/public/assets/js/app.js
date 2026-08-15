@@ -5,7 +5,7 @@
     const el = { globalDate: $('globalDate'), globalStartDate: $('globalStartDate'), globalEndDate: $('globalEndDate'), phasePill: $('phasePill'), dashboardBanner: $('dashboardBanner'), dashCommands: $('dashCommands'), dashPizzas: $('dashPizzas'), dashKitchen: $('dashKitchen'), dashOven: $('dashOven'), dashDispatch: $('dashDispatch'), dashErrors: $('dashErrors'), dashboardTeam: $('dashboardTeam'), dashboardRank: $('dashboardRank'), dashboardLive: $('dashboardLive'), personForm: $('personForm'), personName: $('personName'), personRole: $('personRole'), editPersonModal: $('editPersonModal'), editPersonForm: $('editPersonForm'), editPersonId: $('editPersonId'), editPersonName: $('editPersonName'), editPersonRole: $('editPersonRole'), peopleChecklist: $('peopleChecklist'), dayTeamGroups: $('dayTeamGroups'), teamOperationNotice: $('teamOperationNotice'), saveTeamBtn: $('saveTeamBtn'), startOperationBtn: $('startOperationBtn'), manageTeamBtn: $('manageTeamBtn'), manageTeamDispatchBtn: $('manageTeamDispatchBtn'), productionGate: $('productionGate'), productionContent: $('productionContent'), productionSubtotals: $('productionSubtotals'), openRegisterCommandBtn: $('openRegisterCommandBtn'), openUpdateCommandsBtn: $('openUpdateCommandsBtn'), updatePendingBadge: $('updatePendingBadge'), productionRecent: $('productionRecent'), commandHistoryPanel: $('commandHistoryPanel'), registerCommandModal: $('registerCommandModal'), closeAndUpdateBtn: $('closeAndUpdateBtn'), assemblerSearch: $('assemblerSearch'), assemblerId: $('assemblerId'), assemblerSuggestions: $('assemblerSuggestions'), assemblerPickerBtn: $('assemblerPickerBtn'), assemblerPickerValue: $('assemblerPickerValue'), assemblerPickerModal: $('assemblerPickerModal'), assemblerPickerSearch: $('assemblerPickerSearch'), assemblerPickerList: $('assemblerPickerList'), pickerManageTeamBtn: $('pickerManageTeamBtn'), commandNumber: $('commandNumber'), pizzaQty: $('pizzaQty'), commandSuggestions: $('commandSuggestions'), commandNote: $('commandNote'), initialOven: $('initialOven'), addCommandBtn: $('addCommandBtn'), prodSearch: $('prodSearch'), prodStatus: $('prodStatus'), prodAssembler: $('prodAssembler'), clearProdFilters: $('clearProdFilters'), productionBody: $('productionBody'), productionMobileList: $('productionMobileList'), productionEmpty: $('productionEmpty'), closeKitchenBtn: $('closeKitchenBtn'), reopenKitchenBtn: $('reopenKitchenBtn'), dispatchGate: $('dispatchGate'), dispatchContent: $('dispatchContent'), dispatchSubtotals: $('dispatchSubtotals'), dispatchSearch: $('dispatchSearch'), dispatchFilter: $('dispatchFilter'), clearDispatchFilters: $('clearDispatchFilters'), dispatchGrid: $('dispatchGrid'), dispatchEmpty: $('dispatchEmpty'), finishDayBtn: $('finishDayBtn'), historyList: $('historyList'), reportOverview: $('reportOverview'), reportCards: $('reportCards'), backupBtn: $('backupBtn'), restoreBtn: $('restoreBtn'), restoreFile: $('restoreFile'), editModal: $('editModal'), editForm: $('editForm'), editId: $('editId'), editNumber: $('editNumber'), editQty: $('editQty'), editAssembler: $('editAssembler'), editStatus: $('editStatus'), editNote: $('editNote'), deleteCommandBtn: $('deleteCommandBtn'), errorModal: $('errorModal'), errorForm: $('errorForm'), errorId: $('errorId'), errorType: $('errorType'), errorNote: $('errorNote'), clearErrorBtn: $('clearErrorBtn'), toast: $('toast') };
 
     function save() {
-      fetch('http://localhost:8001/api/sync', {
+      fetch('/api/sync', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(state)
@@ -214,7 +214,7 @@
     function fetchTopMontadoresMensal() {
       initHeaderMonthPicker();
       const picker = document.getElementById('headerMonthPicker');
-      let url = 'http://localhost:8001/api/dashboard/top-montadores-mensal';
+      let url = '/api/dashboard/top-montadores-mensal';
       
       if (picker && picker.value) {
         const [ano, mes] = picker.value.split('-');
@@ -272,7 +272,7 @@
         endDate = new Date(y, now.getMonth() + 1, 0).toISOString().split('T')[0];
       }
 
-      fetch(`http://localhost:8001/api/dashboard/kpis?start_date=${startDate}&end_date=${endDate}`)
+      fetch(`/api/dashboard/kpis?start_date=${startDate}&end_date=${endDate}`)
         .then(res => res.json())
         .then(kpis => {
           animateMetric(el.dashCommands, kpis.comandas);
@@ -451,18 +451,25 @@
       const peopleCount = document.getElementById('teamPeopleCount');
       if (peopleCount) peopleCount.textContent = allPeople.length;
 
-      const teamToday = op?.team || [];
-
-      // Badge dinâmico na lista de presença
       const selBadge = document.getElementById('teamSelectedBadge');
-      if (selBadge) {
-        const count = teamToday.length;
-        selBadge.textContent = count === 0 ? '0 selecionados' : `${count} ${count === 1 ? 'selecionado' : 'selecionados'}`;
-        selBadge.className = `px-2.5 py-0.5 rounded-full text-xs font-semibold border transition-all ${
-          count > 0
-            ? 'bg-[#E7F8F0] text-[#10B981] border-[#A7F3D0]'
-            : 'bg-gray-100 text-[#737373] border-gray-200'
-        }`;
+      if (selBadge && op && op.id) {
+        fetch(`/api/operacao/equipe?operacao_id=${op.id}`)
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              const count = data.count || 0;
+              selBadge.textContent = count === 0 ? '0 selecionados' : `${count} ${count === 1 ? 'selecionado' : 'selecionados'}`;
+              selBadge.className = `px-2.5 py-0.5 rounded-full text-xs font-semibold border transition-all ${
+                count > 0
+                  ? 'bg-[#E7F8F0] text-[#10B981] border-[#A7F3D0]'
+                  : 'bg-gray-100 text-[#737373] border-gray-200'
+              }`;
+            }
+          })
+          .catch(err => console.error('Erro ao buscar quantidade de equipe', err));
+      } else if (selBadge) {
+        selBadge.textContent = '0 selecionados';
+        selBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-semibold border transition-all bg-gray-100 text-[#737373] border-gray-200';
       }
     }
 
@@ -684,7 +691,7 @@
       const newCmd = { id: commandId, number: n, pizzas: q, assemblerId: a.personId, assemblerName: a.name, note: el.commandNote.value.trim(), status, createdAt: now, updatedAt: now, statusTimes: { cozinha: now, forno: status === 'forno' ? now : null, despacho: null }, error: { active: false, type: '', note: '', createdAt: null }, dispatch: { status: 'aguardando', beverage: false, change: false, changeAmount: '', ketchup: false, mayonnaise: false, note: '', checkedAt: null, releasedAt: null } };
       op.commands.push(newCmd);
       save();
-      fetch('http://localhost:8001/api/comandas', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: commandId, assembler_id: a.personId, number: n, pizzas: q, note: el.commandNote.value.trim() }) });
+      fetch('/api/comandas', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: commandId, assembler_id: a.personId, number: n, pizzas: q, note: el.commandNote.value.trim() }) });
       resetRegistration(); renderProduction(); renderDashboard(); toast(`Comanda ${n} registrada com ${q} pizza${q > 1 ? 's' : ''}.`);
     }
     function move(c, dir) {
@@ -698,7 +705,7 @@
       }
       c.updatedAt = now;
       save();
-      fetch('http://localhost:8001/api/comandas/status', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: c.id, status: c.status }) });
+      fetch('/api/comandas/status', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: c.id, status: c.status }) });
       renderProduction(); renderDispatch(); renderDashboard();
     }
     function openEdit(c) { const op = currentOperation(); el.editId.value = c.id; el.editNumber.value = c.number; el.editQty.value = c.pizzas; el.editStatus.value = c.status; el.editNote.value = c.note || ''; el.editAssembler.innerHTML = assemblers(op).map(p => `<option value="${p.personId}" ${p.personId === c.assemblerId ? 'selected' : ''}>${esc(p.name)}</option>`).join(''); el.editModal.classList.add('show') }
@@ -1521,7 +1528,7 @@
     };
 
     function loadState() {
-      fetch('http://localhost:8001/api/init')
+      fetch('/api/init')
         .then(res => res.json())
         .then(data => {
           state = data;

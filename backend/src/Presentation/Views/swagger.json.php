@@ -346,6 +346,47 @@ $swagger = [
                 ]
             ]
         ],
+        "/api/operacao/equipe" => [
+            "get" => [
+                "tags" => ["Operação"],
+                "summary" => "Obter profissionais selecionados para a operação (Lista de presença)",
+                "parameters" => [
+                    [
+                        "name" => "operacao_id",
+                        "in" => "query",
+                        "required" => true,
+                        "schema" => ["type" => "string"]
+                    ]
+                ],
+                "responses" => [
+                    "200" => [
+                        "description" => "Lista de presença retornada com sucesso",
+                        "content" => [
+                            "application/json" => [
+                                "schema" => [
+                                    "type" => "object",
+                                    "properties" => [
+                                        "success" => ["type" => "boolean"],
+                                        "count" => ["type" => "integer"],
+                                        "team" => [
+                                            "type" => "array",
+                                            "items" => [
+                                                "type" => "object",
+                                                "properties" => [
+                                                    "personId" => ["type" => "string"],
+                                                    "name" => ["type" => "string"],
+                                                    "role" => ["type" => "string"]
+                                                ]
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ],
         "/api/profissionais" => [
             "get" => [
                 "tags" => ["Equipe"],
