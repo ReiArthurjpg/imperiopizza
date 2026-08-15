@@ -75,6 +75,20 @@ if ($uri === '/api/equipe' && $method === 'POST') {
     exit;
 }
 
+if ($uri === '/api/profissionais' && $method === 'POST') {
+    require_once __DIR__ . '/../Controllers/ApiController.php';
+    $controller = new \App\Back\Presentation\Controllers\ApiController();
+    $controller->createProfissional();
+    exit;
+}
+
+if ($uri === '/api/profissionais' && $method === 'GET') {
+    require_once __DIR__ . '/../Controllers/ApiController.php';
+    $controller = new \App\Back\Presentation\Controllers\ApiController();
+    $controller->getProfissionais();
+    exit;
+}
+
 // Swagger UI
 if ($uri === '/' || $uri === '/docs') {
     require_once __DIR__ . '/../Views/swagger.php';

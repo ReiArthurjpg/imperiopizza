@@ -51,4 +51,33 @@ class Operacao
             }
         }
     }
+
+    public static function syncEquipe($operacaoId, $team)
+    {
+        $db = Database::getInstance()->getConnection();
+        
+        // Ensure table exists
+        $db->exec("CREATE TABLE IF NOT EXISTS operacao_equipe (
+            operacao_id VARCHAR(36) NOT NULL,
+            equipe_id VARCHAR(36) NOT NULL,
+            PRIMARY KEY (operacao_id, equipe_id),
+            FOREIGN KEY (operacao_id) REFERENCES operacoes(id) ON DELETE CASCADE,
+            FOREIGN KEY (equipe_id) REFERENCES equipe(id) ON DELETE CASCADE
+        )");
+
+        // Delete old team for this operation
+        $stmt = $db->prepare("DELETE FROM operacao_equipe WHERE operacao_id = ?");
+        $stmt->execute([$operacaoId]);
+
+        if (is_array($team) && count($team) > 0) {
+            $insertStmt = $db->prepare("INSERT IGNORE INTO operacao_equipe (operacao_id, equipe_id) VALUES (?, ?)");
+            foreach ($team as $member) {
+                // Front sends personId for the team member
+                $personId = $member['personId'] ?? $member['id'] ?? null;
+                if ($personId) {
+                    $insertStmt->execute([$operacaoId, $personId]);
+                }
+            }
+        }
+    }
 }

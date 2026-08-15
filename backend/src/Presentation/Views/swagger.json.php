@@ -291,9 +291,90 @@ $swagger = [
         "/api/equipe" => [
             "post" => [
                 "tags" => ["Equipe"],
-                "summary" => "Sincronizar equipe",
+                "summary" => "Salvar profissionais na operação do dia (Lista de presença)",
+                "requestBody" => [
+                    "required" => true,
+                    "content" => [
+                        "application/json" => [
+                            "schema" => [
+                                "type" => "object",
+                                "properties" => [
+                                    "operacao_id" => ["type" => "string"],
+                                    "team" => [
+                                        "type" => "array",
+                                        "items" => [
+                                            "type" => "object",
+                                            "properties" => [
+                                                "personId" => ["type" => "string"],
+                                                "name" => ["type" => "string"],
+                                                "role" => ["type" => "string"]
+                                            ]
+                                        ]
+                                    ]
+                                ],
+                                "required" => ["operacao_id", "team"]
+                            ]
+                        ]
+                    ]
+                ],
                 "responses" => [
-                    "200" => ["description" => "Equipe sincronizada"]
+                    "200" => ["description" => "Equipe sincronizada com a operação"]
+                ]
+            ]
+        ],
+        "/api/profissionais" => [
+            "get" => [
+                "tags" => ["Equipe"],
+                "summary" => "Obter todos os profissionais cadastrados",
+                "responses" => [
+                    "200" => [
+                        "description" => "Lista de profissionais retornada com sucesso",
+                        "content" => [
+                            "application/json" => [
+                                "schema" => [
+                                    "type" => "object",
+                                    "properties" => [
+                                        "success" => ["type" => "boolean"],
+                                        "profissionais" => [
+                                            "type" => "array",
+                                            "items" => [
+                                                "type" => "object",
+                                                "properties" => [
+                                                    "id" => ["type" => "string"],
+                                                    "name" => ["type" => "string"],
+                                                    "role" => ["type" => "string"]
+                                                ]
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            "post" => [
+                "tags" => ["Equipe"],
+                "summary" => "Cadastrar novo profissional",
+                "requestBody" => [
+                    "required" => true,
+                    "content" => [
+                        "application/json" => [
+                            "schema" => [
+                                "type" => "object",
+                                "properties" => [
+                                    "id" => ["type" => "string"],
+                                    "name" => ["type" => "string", "example" => "João Silva"],
+                                    "role" => ["type" => "string", "example" => "Montagem"]
+                                ],
+                                "required" => ["id", "name", "role"]
+                            ]
+                        ]
+                    ]
+                ],
+                "responses" => [
+                    "200" => ["description" => "Profissional cadastrado com sucesso"],
+                    "400" => ["description" => "Dados inválidos"]
                 ]
             ]
         ]

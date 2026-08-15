@@ -579,7 +579,18 @@
     }
 
     // ── renderTeam() — orquestrador principal ──────────────────────────────────
-    function renderTeam() {
+    async function renderTeam() {
+      try {
+        const res = await fetch('/api/profissionais');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.profissionais) {
+            state.people = data.profissionais;
+          }
+        }
+      } catch (e) {
+        console.error("Erro ao buscar profissionais", e);
+      }
       renderHeader();
       const op = currentOperation();
 
@@ -633,7 +644,7 @@
       }
       op.team = selected;
       save();
-      fetch('http://localhost:8001/api/equipe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ team: selected }) });
+      fetch('/api/equipe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ operacao_id: op.id, team: selected }) });
       renderHeader(); renderCheckedTeam(); renderProduction(); renderDispatch(); renderDashboard();
       if (show && !kept.length) toast(op.status === 'draft' ? 'Equipe salva.' : 'Equipe atualizada durante a operação.');
       return true;
@@ -739,7 +750,7 @@
     if (el.globalEndDate) el.globalEndDate.addEventListener('change', () => { el.assemblerId.value = ''; el.assemblerSearch.value = ''; renderAll() });
     // equipe
     // equipe
-    el.personForm.addEventListener('submit', e => { e.preventDefault(); const name = proper(el.personName.value), role = el.personRole.value; if (name.length < 2 || !role) return toast('Preencha nome e setor.', 'error'); if (state.people.some(p => norm(p.name) === norm(name) && p.role === role)) return toast('Este profissional já está cadastrado neste setor.', 'warn'); state.people.push({ id: uid(), name, role, createdAt: new Date().toISOString() }); save(); el.personForm.reset(); const addModal = $('addPersonModal'); if (addModal) addModal.classList.remove('show'); renderTeam(); toast('Profissional cadastrado.') });
+    el.personForm.addEventListener('submit', async e => { e.preventDefault(); const name = proper(el.personName.value), role = el.personRole.value; if (name.length < 2 || !role) return toast('Preencha nome e setor.', 'error'); if (state.people.some(p => norm(p.name) === norm(name) && p.role === role)) return toast('Este profissional já está cadastrado neste setor.', 'warn'); const newPerson = { id: uid(), name, role, createdAt: new Date().toISOString() }; try { const res = await fetch('/api/profissionais', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(newPerson) }); if (!res.ok) throw new Error('Erro ao salvar profissional no servidor'); state.people.push(newPerson); save(); el.personForm.reset(); const addModal = $('addPersonModal'); if (addModal) addModal.classList.remove('show'); renderTeam(); toast('Profissional cadastrado.'); } catch (err) { toast(err.message, 'error'); } });
     
     el.editPersonForm.addEventListener('submit', e => {
       e.preventDefault();

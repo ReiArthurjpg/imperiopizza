@@ -30,6 +30,14 @@ CREATE TABLE IF NOT EXISTS operacoes (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS operacao_equipe (
+    operacao_id VARCHAR(36) NOT NULL,
+    equipe_id VARCHAR(36) NOT NULL,
+    PRIMARY KEY (operacao_id, equipe_id),
+    FOREIGN KEY (operacao_id) REFERENCES operacoes(id) ON DELETE CASCADE,
+    FOREIGN KEY (equipe_id) REFERENCES equipe(id) ON DELETE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS estoque_massas (
     id INT AUTO_INCREMENT PRIMARY KEY,
     operacao_id VARCHAR(36) NOT NULL,

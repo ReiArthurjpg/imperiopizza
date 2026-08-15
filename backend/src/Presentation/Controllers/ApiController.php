@@ -97,8 +97,81 @@ class ApiController
 
     public function syncEquipe()
     {
-        // TODO: Sync team to database
-        $this->jsonResponse(['success' => true]);
+        $data = $this->getJsonInput();
+        if (!isset($data['operacao_id']) || !isset($data['team'])) {
+            $this->jsonResponse(['error' => 'Missing operacao_id or team'], 400);
+        }
+
+        try {
+            \App\Models\Operacao::syncEquipe($data['operacao_id'], $data['team']);
+            $this->jsonResponse(['success' => true]);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function createProfissional()
+    {
+        $data = $this->getJsonInput();
+        
+        if (!isset($data['id'], $data['name'], $data['role'])) {
+            $this->jsonResponse(['error' => 'Invalid data'], 400);
+        }
+
+        // Insert into database
+        Equipe::create($data['id'], $data['name'], $data['role']);
+
+        // Update state.json to keep it in sync since frontend still uses it
+        $file = __DIR__ . '/../../../../storage/state.json';
+        if (file_exists($file)) {
+            $jsonData = json_decode(file_get_contents($file), true);
+            if (is_array($jsonData)) {
+                if (!isset($jsonData['people'])) {
+                    $jsonData['people'] = [];
+                }
+                
+                // Check if person exists to update or insert
+                $found = false;
+                foreach ($jsonData['people'] as &$p) {
+                    if ($p['id'] == $data['id']) {
+                        $p['name'] = $data['name'];
+                        $p['role'] = $data['role'];
+                        $found = true;
+                        break;
+                    }
+                }
+                if (!$found) {
+                    $jsonData['people'][] = [
+                        'id' => $data['id'],
+                        'name' => $data['name'],
+                        'role' => $data['role'],
+                        'createdAt' => $data['createdAt'] ?? date('c')
+                    ];
+                }
+                
+                file_put_contents($file, json_encode($jsonData));
+            }
+        }
+
+        $this->jsonResponse(['success' => true, 'profissional' => $data]);
+    }
+
+    public function getProfissionais()
+    {
+        try {
+            $dbPeople = Equipe::getAll();
+            $people = [];
+            foreach ($dbPeople as $dp) {
+                $people[] = [
+                    'id' => $dp['id'],
+                    'name' => $dp['nome'],
+                    'role' => $dp['cargo']
+                ];
+            }
+            $this->jsonResponse(['success' => true, 'profissionais' => $people]);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function getDashboardKpis()
