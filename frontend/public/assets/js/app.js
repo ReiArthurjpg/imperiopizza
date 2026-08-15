@@ -65,7 +65,7 @@
     function empty(title, text) { return `<div class="empty"><strong>${esc(title)}</strong>${esc(text)}</div>` }
     function teamHtml(team) { 
       if (!team?.length) return empty('Equipe não definida', 'Selecione os profissionais do dia.'); 
-      return `<div class="space-y-3">${team.map(member => `
+      return `<div class="space-y-3 max-h-[170px] overflow-y-auto pr-2 custom-scrollbar">${team.map(member => `
         <div class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 transition-colors -mx-2">
           <div class="flex items-center gap-3">
             <div class="relative">
@@ -104,23 +104,38 @@
         </div>`).join('')}</div>`;
     }
     function dashboardLiveHtml(op) {
-      const recent = [...(op?.commands || [])].sort((a, b) => (b.updatedAt || b.createdAt).localeCompare(a.updatedAt || a.createdAt)).slice(0, 5);
+      const recent = [...(op?.commands || [])].sort((a, b) => (b.updatedAt || b.createdAt).localeCompare(a.updatedAt || a.createdAt));
       if (!recent.length) return `<div class="dashboard-live-empty">${empty('Sem movimento ainda', 'As últimas comandas aparecerão aqui em tempo real.')}</div>`;
-      return `
-        <div class="absolute left-[11px] top-2 bottom-2 w-px bg-gray-200"></div>
-        <div class="space-y-6">${recent.map(c => {
-          let colorClass = 'bg-emerald-500';
-          if (c.status === 'cozinha') colorClass = 'bg-blue-500';
-          if (c.status === 'forno') colorClass = 'bg-orange-500';
-          if (c.error?.active) colorClass = 'bg-red-500';
-          return `
-          <div class="relative flex items-start gap-4">
-            <div class="relative z-10 w-2.5 h-2.5 rounded-full mt-1.5 ring-4 ring-white ${colorClass}"></div>
-            <div>
-              <p class="text-sm text-[#171717]">Comanda #${String(c.number).padStart(3, '0')} · ${esc(c.assemblerName)}</p>
-              <p class="text-xs text-gray-400 mt-0.5">${statusText(c)} · atualizado ${formatTime(c.updatedAt || c.createdAt)}</p>
+
+      const statusConfig = {
+        cozinha:  { label: 'Na cozinha',  bg: 'bg-blue-50',   text: 'text-blue-700',   dot: 'bg-blue-500',    ring: 'ring-blue-100'   },
+        forno:    { label: 'No forno',    bg: 'bg-orange-50', text: 'text-orange-700', dot: 'bg-orange-500',  ring: 'ring-orange-100' },
+        despacho: { label: 'Despachada',  bg: 'bg-emerald-50',text: 'text-emerald-700',dot: 'bg-emerald-500', ring: 'ring-emerald-100' },
+      };
+
+      return `<div class="space-y-2 max-h-[170px] overflow-y-auto pr-2 custom-scrollbar">${recent.map(c => {
+        const cfg = statusConfig[c.status] || statusConfig.cozinha;
+        const equiv = (c.pizzas || 0) + (c.special?.volcano || 0) + (c.special?.esfiha || 0);
+        const time = formatTime(c.updatedAt || c.createdAt);
+        const num = String(c.number).padStart(3, '0');
+        const name = esc(c.assemblerName || 'Montador');
+        return `
+        <div class="flex items-center justify-between px-3 py-2.5 rounded-lg border border-gray-100 bg-gray-50/60 hover:bg-white hover:border-gray-200 hover:shadow-sm transition-all duration-150 group">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="relative shrink-0">
+              <div class="w-2 h-2 rounded-full ${cfg.dot} ring-4 ${cfg.ring}"></div>
             </div>
-          </div>`}).join('')}</div>`;
+            <div class="min-w-0">
+              <p class="text-sm font-semibold text-[#171717] group-hover:text-[#B5120B] transition-colors leading-tight">Comanda #${num}</p>
+              <p class="text-[11px] text-gray-500 mt-0.5 truncate">${name} · ${time}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <span class="text-xs font-semibold text-[#171717]">${equiv} <span class="font-normal text-gray-400">equiv.</span></span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold ${cfg.bg} ${cfg.text}">${cfg.label}</span>
+          </div>
+        </div>`;
+      }).join('')}</div>`;
     }
     function animateMetric(node, target) {
       if (!node) return;

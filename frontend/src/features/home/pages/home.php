@@ -69,30 +69,14 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Movimento Recente -->
-        <div class="bg-white rounded-xl border border-[#E7E7E7] shadow-[0_2px_10px_rgb(0,0,0,0.02)] p-5 h-full">
-          <div class="flex items-center justify-between mb-6">
-            <h2 class="text-base font-semibold text-[#171717]">Movimento Recente</h2>
-            <button class="text-xs font-medium text-[#B5120B] hover:underline" onclick="showPage('production')">Ver tudo</button>
-          </div>
-          <div id="dashboardLive" class="relative pl-2">
-            <!-- Populado pelo JS (Timeline) -->
-          </div>
+      <!-- Movimento Recente -->
+      <div class="bg-white rounded-xl border border-[#E7E7E7] shadow-[0_2px_10px_rgb(0,0,0,0.02)] p-5">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-base font-semibold text-[#171717]">Movimento Recente</h2>
+          <button class="text-xs font-medium text-[#B5120B] hover:underline" onclick="showPage('production')">Ver tudo</button>
         </div>
-
-        <!-- Relatório de Insumos (Empty state) -->
-        <div class="bg-white rounded-xl border border-[#E7E7E7] shadow-[0_2px_10px_rgb(0,0,0,0.02)] p-5 h-full flex flex-col items-center justify-center text-center py-12">
-          <div class="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-            <i data-lucide="bar-chart-3" class="w-6 h-6 text-gray-300"></i>
-          </div>
-          <h3 class="text-sm font-semibold text-[#171717] mb-1">Relatório de Insumos</h3>
-          <p class="text-xs text-gray-500 max-w-[200px] mb-4">
-            O consumo de ingredientes aparecerá aqui após o fechamento do primeiro ciclo.
-          </p>
-          <button class="text-xs font-medium text-[#B5120B] bg-[#FDECEB] px-3 py-1.5 rounded-lg hover:bg-red-100 transition-colors" onclick="showPage('reports')">
-            Configurar tracking
-          </button>
+        <div id="dashboardLive" class="relative pl-2">
+          <!-- Populado pelo JS (Timeline) -->
         </div>
       </div>
     </div>
