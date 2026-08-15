@@ -37,7 +37,7 @@
        Esquerda (sidebar): Cadastro + Lista de profissionais
        Direita (main): Lista de presença + Fluxo do dia
   ════════════════════════════════════════════════════ -->
-  <div class="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6 items-start">
+  <div class="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6 items-stretch">
 
     <!-- ─────────────────────────────────────────────
          COLUNA ESQUERDA
@@ -102,10 +102,10 @@
     <!-- ─────────────────────────────────────────────
          COLUNA DIREITA
     ──────────────────────────────────────────────── -->
-    <div class="space-y-4">
+    <div class="h-full">
 
       <!-- ── Lista de presença da operação ── -->
-      <div class="bg-white rounded-xl border border-[#E7E7E7] shadow-[0_4px_12px_rgba(0,0,0,0.02)] p-5">
+      <div class="bg-white rounded-xl border border-[#E7E7E7] shadow-[0_4px_12px_rgba(0,0,0,0.02)] p-5 h-full flex flex-col">
         <div class="flex items-center justify-between pb-4 border-b border-[#E7E7E7] mb-5">
           <div>
             <h3 class="text-base font-semibold text-[#171717]">Lista de Presença</h3>
@@ -119,14 +119,14 @@
         </div>
 
         <!-- Conteúdo da lista de presença (renderizado pelo JS) -->
-        <div id="dayTeamGroups" class="min-h-[80px]"></div>
+        <div id="dayTeamGroups" class="flex-1 max-h-[310px] min-h-[80px] overflow-y-auto pr-2 custom-scrollbar"></div>
 
         <!-- Ações principais -->
-        <div class="flex flex-col sm:flex-row gap-3 mt-5 pt-4 border-t border-[#E7E7E7]">
+        <div class="flex flex-col sm:flex-row gap-3 mt-auto pt-4 border-t border-[#E7E7E7]">
           <button
             id="saveTeamBtn"
-            class="flex-1 py-2.5 text-sm font-semibold border border-[#E7E7E7] text-[#171717]
-                   rounded-lg hover:bg-gray-50 transition-colors duration-150
+            class="flex-1 py-2.5 text-sm font-semibold text-white bg-[#2f9e64]
+                   rounded-lg hover:bg-[#257f4f] transition-all duration-150 shadow-sm
                    disabled:opacity-40 disabled:cursor-not-allowed
                    flex items-center justify-center gap-2"
           >
@@ -239,6 +239,102 @@
             >
               <i data-lucide="save" class="w-4 h-4"></i>
               Salvar
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  <!-- ═══════════════════════════════════════════════════
+       MODAL: EDITAR COLABORADOR (Design System Moderno)
+  ════════════════════════════════════════════════════ -->
+  <div id="editPersonModal" class="modal-bg">
+    <!-- Caixa do modal (dialog) -->
+    <div class="bg-white rounded-2xl border border-[#E7E7E7] shadow-[0_8px_32px_rgba(0,0,0,0.08)] w-[95%] max-w-[500px] overflow-hidden transform transition-all duration-200">
+      
+      <!-- Cabeçalho -->
+      <div class="flex items-center justify-between p-5 border-b border-[#E7E7E7] bg-gray-50/50">
+        <div>
+          <h3 class="text-lg font-bold text-[#171717]">Editar Colaborador</h3>
+          <p class="text-xs text-[#737373] mt-0.5">Altere os dados do profissional na base do sistema.</p>
+        </div>
+        <button 
+          class="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+          type="button" 
+          data-close="editPerson"
+        >
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Corpo -->
+      <div class="p-5">
+        <form id="editPersonForm" class="space-y-4">
+          <input type="hidden" id="editPersonId">
+          <!-- Nome -->
+          <div>
+            <label for="editPersonName" class="block text-xs font-semibold text-[#173F69] mb-1.5">
+              Nome Completo
+            </label>
+            <input
+              id="editPersonName"
+              type="text"
+              maxlength="80"
+              placeholder="Ex: João Silva"
+              required
+              class="w-full border border-[#E7E7E7] rounded-lg px-3 py-2.5 text-sm
+                     text-[#171717] placeholder-gray-400
+                     focus:outline-none focus:border-[#1F6FB2] focus:ring-2 focus:ring-[#eaf5ff]
+                     transition-all duration-150"
+            >
+          </div>
+
+          <!-- Setor -->
+          <div>
+            <label for="editPersonRole" class="block text-xs font-semibold text-[#173F69] mb-1.5">
+              Setor de Atuação
+            </label>
+            <select
+              id="editPersonRole"
+              required
+              class="w-full border border-[#E7E7E7] rounded-lg px-3 py-2.5 text-sm
+                     text-[#171717] bg-white
+                     focus:outline-none focus:border-[#1F6FB2] focus:ring-2 focus:ring-[#eaf5ff]
+                     transition-all duration-150"
+            >
+              <option value="">Selecione o setor...</option>
+              <option>Montagem</option>
+              <option>Massa</option>
+              <option>Cozinha</option>
+              <option>Forno</option>
+              <option>Despacho</option>
+              <option>Atendimento</option>
+              <option>Estoque</option>
+              <option>Liderança</option>
+              <option>Outros</option>
+            </select>
+          </div>
+
+          <!-- Ações (Rodapé) -->
+          <div class="flex items-center justify-end gap-3 pt-4 border-t border-[#E7E7E7] mt-6">
+            <button 
+              type="button" 
+              class="px-4 py-2.5 text-sm font-semibold text-gray-700 bg-gray-100 border border-transparent rounded-lg
+                     hover:bg-gray-200 active:scale-[0.98] transition-all duration-150
+                     flex items-center gap-1.5" 
+              data-close="editPerson"
+            >
+              <i data-lucide="x-circle" class="w-4 h-4"></i>
+              Cancelar
+            </button>
+            <button 
+              type="submit" 
+              class="px-6 py-2.5 text-sm font-semibold text-white bg-[#2f9e64] rounded-lg
+                     hover:bg-[#257f4f] active:scale-[0.98] transition-all duration-150 shadow-sm
+                     flex items-center gap-1.5"
+            >
+              <i data-lucide="save" class="w-4 h-4"></i>
+              Salvar Alterações
             </button>
           </div>
         </form>

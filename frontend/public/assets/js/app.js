@@ -2,7 +2,7 @@
     const SECTORS = ['Montagem', 'Massa', 'Cozinha', 'Forno', 'Despacho', 'Atendimento', 'Estoque', 'Liderança', 'Outros'];
     let state = { people: [], operations: [] }; let selectedReportOperationId = null;
     const $ = id => document.getElementById(id);
-    const el = { globalDate: $('globalDate'), globalStartDate: $('globalStartDate'), globalEndDate: $('globalEndDate'), phasePill: $('phasePill'), dashboardBanner: $('dashboardBanner'), dashCommands: $('dashCommands'), dashPizzas: $('dashPizzas'), dashKitchen: $('dashKitchen'), dashOven: $('dashOven'), dashDispatch: $('dashDispatch'), dashErrors: $('dashErrors'), dashboardTeam: $('dashboardTeam'), dashboardRank: $('dashboardRank'), dashboardLive: $('dashboardLive'), personForm: $('personForm'), personName: $('personName'), personRole: $('personRole'), peopleChecklist: $('peopleChecklist'), dayTeamGroups: $('dayTeamGroups'), teamOperationNotice: $('teamOperationNotice'), saveTeamBtn: $('saveTeamBtn'), startOperationBtn: $('startOperationBtn'), manageTeamBtn: $('manageTeamBtn'), manageTeamDispatchBtn: $('manageTeamDispatchBtn'), productionGate: $('productionGate'), productionContent: $('productionContent'), productionSubtotals: $('productionSubtotals'), openRegisterCommandBtn: $('openRegisterCommandBtn'), openUpdateCommandsBtn: $('openUpdateCommandsBtn'), updatePendingBadge: $('updatePendingBadge'), productionRecent: $('productionRecent'), commandHistoryPanel: $('commandHistoryPanel'), registerCommandModal: $('registerCommandModal'), closeAndUpdateBtn: $('closeAndUpdateBtn'), assemblerSearch: $('assemblerSearch'), assemblerId: $('assemblerId'), assemblerSuggestions: $('assemblerSuggestions'), assemblerPickerBtn: $('assemblerPickerBtn'), assemblerPickerValue: $('assemblerPickerValue'), assemblerPickerModal: $('assemblerPickerModal'), assemblerPickerSearch: $('assemblerPickerSearch'), assemblerPickerList: $('assemblerPickerList'), pickerManageTeamBtn: $('pickerManageTeamBtn'), commandNumber: $('commandNumber'), pizzaQty: $('pizzaQty'), commandSuggestions: $('commandSuggestions'), commandNote: $('commandNote'), initialOven: $('initialOven'), addCommandBtn: $('addCommandBtn'), prodSearch: $('prodSearch'), prodStatus: $('prodStatus'), prodAssembler: $('prodAssembler'), clearProdFilters: $('clearProdFilters'), productionBody: $('productionBody'), productionMobileList: $('productionMobileList'), productionEmpty: $('productionEmpty'), closeKitchenBtn: $('closeKitchenBtn'), reopenKitchenBtn: $('reopenKitchenBtn'), dispatchGate: $('dispatchGate'), dispatchContent: $('dispatchContent'), dispatchSubtotals: $('dispatchSubtotals'), dispatchSearch: $('dispatchSearch'), dispatchFilter: $('dispatchFilter'), clearDispatchFilters: $('clearDispatchFilters'), dispatchGrid: $('dispatchGrid'), dispatchEmpty: $('dispatchEmpty'), finishDayBtn: $('finishDayBtn'), historyList: $('historyList'), reportOverview: $('reportOverview'), reportCards: $('reportCards'), backupBtn: $('backupBtn'), restoreBtn: $('restoreBtn'), restoreFile: $('restoreFile'), editModal: $('editModal'), editForm: $('editForm'), editId: $('editId'), editNumber: $('editNumber'), editQty: $('editQty'), editAssembler: $('editAssembler'), editStatus: $('editStatus'), editNote: $('editNote'), deleteCommandBtn: $('deleteCommandBtn'), errorModal: $('errorModal'), errorForm: $('errorForm'), errorId: $('errorId'), errorType: $('errorType'), errorNote: $('errorNote'), clearErrorBtn: $('clearErrorBtn'), toast: $('toast') };
+    const el = { globalDate: $('globalDate'), globalStartDate: $('globalStartDate'), globalEndDate: $('globalEndDate'), phasePill: $('phasePill'), dashboardBanner: $('dashboardBanner'), dashCommands: $('dashCommands'), dashPizzas: $('dashPizzas'), dashKitchen: $('dashKitchen'), dashOven: $('dashOven'), dashDispatch: $('dashDispatch'), dashErrors: $('dashErrors'), dashboardTeam: $('dashboardTeam'), dashboardRank: $('dashboardRank'), dashboardLive: $('dashboardLive'), personForm: $('personForm'), personName: $('personName'), personRole: $('personRole'), editPersonModal: $('editPersonModal'), editPersonForm: $('editPersonForm'), editPersonId: $('editPersonId'), editPersonName: $('editPersonName'), editPersonRole: $('editPersonRole'), peopleChecklist: $('peopleChecklist'), dayTeamGroups: $('dayTeamGroups'), teamOperationNotice: $('teamOperationNotice'), saveTeamBtn: $('saveTeamBtn'), startOperationBtn: $('startOperationBtn'), manageTeamBtn: $('manageTeamBtn'), manageTeamDispatchBtn: $('manageTeamDispatchBtn'), productionGate: $('productionGate'), productionContent: $('productionContent'), productionSubtotals: $('productionSubtotals'), openRegisterCommandBtn: $('openRegisterCommandBtn'), openUpdateCommandsBtn: $('openUpdateCommandsBtn'), updatePendingBadge: $('updatePendingBadge'), productionRecent: $('productionRecent'), commandHistoryPanel: $('commandHistoryPanel'), registerCommandModal: $('registerCommandModal'), closeAndUpdateBtn: $('closeAndUpdateBtn'), assemblerSearch: $('assemblerSearch'), assemblerId: $('assemblerId'), assemblerSuggestions: $('assemblerSuggestions'), assemblerPickerBtn: $('assemblerPickerBtn'), assemblerPickerValue: $('assemblerPickerValue'), assemblerPickerModal: $('assemblerPickerModal'), assemblerPickerSearch: $('assemblerPickerSearch'), assemblerPickerList: $('assemblerPickerList'), pickerManageTeamBtn: $('pickerManageTeamBtn'), commandNumber: $('commandNumber'), pizzaQty: $('pizzaQty'), commandSuggestions: $('commandSuggestions'), commandNote: $('commandNote'), initialOven: $('initialOven'), addCommandBtn: $('addCommandBtn'), prodSearch: $('prodSearch'), prodStatus: $('prodStatus'), prodAssembler: $('prodAssembler'), clearProdFilters: $('clearProdFilters'), productionBody: $('productionBody'), productionMobileList: $('productionMobileList'), productionEmpty: $('productionEmpty'), closeKitchenBtn: $('closeKitchenBtn'), reopenKitchenBtn: $('reopenKitchenBtn'), dispatchGate: $('dispatchGate'), dispatchContent: $('dispatchContent'), dispatchSubtotals: $('dispatchSubtotals'), dispatchSearch: $('dispatchSearch'), dispatchFilter: $('dispatchFilter'), clearDispatchFilters: $('clearDispatchFilters'), dispatchGrid: $('dispatchGrid'), dispatchEmpty: $('dispatchEmpty'), finishDayBtn: $('finishDayBtn'), historyList: $('historyList'), reportOverview: $('reportOverview'), reportCards: $('reportCards'), backupBtn: $('backupBtn'), restoreBtn: $('restoreBtn'), restoreFile: $('restoreFile'), editModal: $('editModal'), editForm: $('editForm'), editId: $('editId'), editNumber: $('editNumber'), editQty: $('editQty'), editAssembler: $('editAssembler'), editStatus: $('editStatus'), editNote: $('editNote'), deleteCommandBtn: $('deleteCommandBtn'), errorModal: $('errorModal'), errorForm: $('errorForm'), errorId: $('errorId'), errorType: $('errorType'), errorNote: $('errorNote'), clearErrorBtn: $('clearErrorBtn'), toast: $('toast') };
 
     function save() {
       fetch('http://localhost:8001/api/sync', {
@@ -24,9 +24,9 @@
     function toast(msg, type = 'ok') { el.toast.textContent = msg; el.toast.className = `toast ${type} show`; clearTimeout(window.__t); window.__t = setTimeout(() => el.toast.classList.remove('show'), 3200) }
     function currentDate() { return el.globalStartDate ? el.globalStartDate.value : today() }
     function currentOperation() { return state.operations.find(o => o.date === currentDate()) || null }
-    function getOperation(id) { return state.operations.find(o => o.id === id) || null }
-    function getPerson(id) { return state.people.find(p => p.id === id) || null }
-    function getCommand(op, id) { return op?.commands.find(c => c.id === id) || null }
+    function getOperation(id) { return state.operations.find(o => o.id == id) || null }
+    function getPerson(id) { return state.people.find(p => p.id == id) || null }
+    function getCommand(op, id) { return op?.commands.find(c => c.id == id) || null }
     function ensureOperation() { let op = currentOperation(); if (!op) { op = { id: uid(), date: currentDate(), status: 'draft', team: [], startedAt: null, kitchenClosedAt: null, completedAt: null, commands: [] }; state.operations.push(op); save() } return op }
     function phaseLabel(op) { if (!op) return 'Sem operação'; return { draft: 'Equipe em preparação', production_open: 'Cozinha em operação', kitchen_closed: 'Cozinha encerrada · despacho ativo', completed: 'Operação finalizada' }[op.status] || op.status }
     function showPage(name) { 
@@ -63,9 +63,9 @@
     function stats(op) { const cs = op?.commands || []; return { commands: cs.length, pizzas: cs.reduce((a, c) => a + (Number(c.pizzas) || 1), 0), kitchen: cs.filter(c => c.status === 'cozinha').length, oven: cs.filter(c => c.status === 'forno').length, dispatchPending: cs.filter(c => c.status === 'despacho' && c.dispatch?.status !== 'liberado').length, released: cs.filter(c => c.status === 'despacho' && c.dispatch?.status === 'liberado').length, errors: cs.filter(c => c.error?.active).length } }
     function pendingToFinish(op) { return (op?.commands || []).filter(c => c.status !== 'despacho' || c.dispatch?.status !== 'liberado').length }
     function empty(title, text) { return `<div class="empty"><strong>${esc(title)}</strong>${esc(text)}</div>` }
-    function teamHtml(team) { 
+    function teamHtml(team, scrollClass = 'max-h-[170px] overflow-y-auto pr-2 custom-scrollbar') { 
       if (!team?.length) return empty('Equipe não definida', 'Selecione os profissionais do dia.'); 
-      return `<div class="space-y-3 max-h-[170px] overflow-y-auto pr-2 custom-scrollbar">${team.map(member => `
+      return `<div class="space-y-3 ${scrollClass}">${team.map(member => `
         <div class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 transition-colors -mx-2">
           <div class="flex items-center gap-3">
             <div class="relative">
@@ -416,12 +416,22 @@
               </div>
             </div>
           </label>
-          <button class="opacity-0 group-hover:opacity-100 transition-opacity duration-150 shrink-0
-                         p-1.5 rounded-md text-red-400 hover:bg-red-50 hover:text-red-600"
-                  data-remove-person="${p.id}"
-                  title="Remover profissional">
-            <i data-lucide="trash-2" class="w-3.5 h-3.5 pointer-events-none"></i>
-          </button>
+          <div class="flex items-center gap-1 shrink-0">
+            <button class="opacity-0 group-hover:opacity-100 transition-opacity duration-150
+                           p-1.5 rounded-md text-[#D97706] hover:bg-[#FFF9E5] hover:text-[#B45309]"
+                    type="button"
+                    data-edit-person="${p.id}"
+                    title="Editar profissional">
+              <i data-lucide="pencil" class="w-3.5 h-3.5 pointer-events-none"></i>
+            </button>
+            <button class="opacity-0 group-hover:opacity-100 transition-opacity duration-150
+                           p-1.5 rounded-md text-red-400 hover:bg-red-50 hover:text-red-600"
+                    type="button"
+                    data-remove-person="${p.id}"
+                    title="Remover profissional">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5 pointer-events-none"></i>
+            </button>
+          </div>
         </div>`;
     }
 
@@ -604,7 +614,7 @@
     }
     function checkedTeam() { return [...document.querySelectorAll('[data-team-id]:checked')].map(i => { const p = getPerson(i.dataset.teamId); return { personId: p.id, name: p.name, role: p.role } }) }
     function renderCheckedTeam() {
-      el.dayTeamGroups.innerHTML = teamHtml(checkedTeam());
+      el.dayTeamGroups.innerHTML = teamHtml(checkedTeam(), '');
       // Atualiza badge de selecionados e KPI de presentes
       const op = currentOperation();
       renderTeamKpis(op, state.people);
@@ -728,21 +738,83 @@
     if (el.globalStartDate) el.globalStartDate.addEventListener('change', () => { el.assemblerId.value = ''; el.assemblerSearch.value = ''; renderAll() });
     if (el.globalEndDate) el.globalEndDate.addEventListener('change', () => { el.assemblerId.value = ''; el.assemblerSearch.value = ''; renderAll() });
     // equipe
-    el.personForm.addEventListener('submit', e => { e.preventDefault(); const name = proper(el.personName.value), role = el.personRole.value; if (name.length < 2 || !role) return toast('Preencha nome e setor.', 'error'); if (state.people.some(p => norm(p.name) === norm(name) && p.role === role)) return toast('Este profissional já está cadastrado neste setor.', 'warn'); state.people.push({ id: uid(), name, role, createdAt: new Date().toISOString() }); save(); el.personForm.reset(); const addModal = $('addPersonModal'); if (addModal) addModal.classList.remove('show'); renderTeam(); toast('Profissional cadastrado.') }); el.peopleChecklist.addEventListener('change', e => { const box = e.target.closest('[data-team-id]'); if (box && !box.checked && box.dataset.usedInProduction === '1') { box.checked = true; toast('Este montador já possui produção registrada e deve permanecer na equipe.', 'warn') } renderCheckedTeam() }); el.peopleChecklist.addEventListener('click', e => { const b = e.target.closest('[data-remove-person]'); if (!b) return; const p = getPerson(b.dataset.removePerson), used = state.operations.some(o => o.team.some(t => t.personId === p.id) || o.commands.some(c => c.assemblerId === p.id)); if (used) return toast('Este profissional já está vinculado a operações.', 'warn'); if (confirm(`Remover ${p.name}?`)) { state.people = state.people.filter(x => x.id !== p.id); save(); renderTeam(); toast('Profissional removido.', 'warn') } }); el.saveTeamBtn.addEventListener('click', () => saveTeam(true)); el.startOperationBtn.addEventListener('click', () => { const op = ensureOperation(); if (op.status !== 'draft') return toast('A operação já foi iniciada.', 'warn'); saveTeam(false); if (!op.team.length) return toast('Selecione a equipe do dia.', 'error'); if (!op.team.some(p => p.role === 'Montagem')) return toast('Inclua ao menos um montador.', 'error'); op.status = 'production_open'; op.startedAt = new Date().toISOString(); save(); showPage('production'); toast('Operação iniciada.') });
+    // equipe
+    el.personForm.addEventListener('submit', e => { e.preventDefault(); const name = proper(el.personName.value), role = el.personRole.value; if (name.length < 2 || !role) return toast('Preencha nome e setor.', 'error'); if (state.people.some(p => norm(p.name) === norm(name) && p.role === role)) return toast('Este profissional já está cadastrado neste setor.', 'warn'); state.people.push({ id: uid(), name, role, createdAt: new Date().toISOString() }); save(); el.personForm.reset(); const addModal = $('addPersonModal'); if (addModal) addModal.classList.remove('show'); renderTeam(); toast('Profissional cadastrado.') });
+    
+    el.editPersonForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const id = el.editPersonId.value, name = proper(el.editPersonName.value), role = el.editPersonRole.value;
+      if (name.length < 2 || !role) return toast('Preencha nome e setor.', 'error');
+      if (state.people.some(p => p.id !== id && norm(p.name) === norm(name) && p.role === role)) return toast('Este profissional já está cadastrado neste setor.', 'warn');
+      const p = getPerson(id);
+      if (!p) return;
+      p.name = name;
+      p.role = role;
+      state.operations.forEach(op => {
+        const t = op.team.find(x => x.personId === id);
+        if (t) { t.name = name; t.role = role }
+        op.commands.forEach(c => { if (c.assemblerId === id) c.assemblerName = name });
+      });
+      save();
+      el.editPersonModal.classList.remove('show');
+      renderTeam();
+      renderProduction();
+      renderDispatch();
+      renderDashboard();
+      toast('Profissional atualizado.');
+    });
+
+    el.peopleChecklist.addEventListener('change', e => { const box = e.target.closest('[data-team-id]'); if (box && !box.checked && box.dataset.usedInProduction === '1') { box.checked = true; toast('Este montador já possui produção registrada e deve permanecer na equipe.', 'warn') } renderCheckedTeam() });
+    
+    el.peopleChecklist.addEventListener('click', e => {
+      const b = e.target.closest('[data-remove-person]');
+      if (b) {
+        const p = getPerson(b.dataset.removePerson), used = state.operations.some(o => o.team.some(t => t.personId === p.id) || o.commands.some(c => c.assemblerId === p.id));
+        if (used) return toast('Este profissional já está vinculado a operações.', 'warn');
+        if (confirm(`Remover ${p.name}?`)) {
+          state.people = state.people.filter(x => x.id !== p.id);
+          save();
+          renderTeam();
+          toast('Profissional removido.', 'warn')
+        }
+      }
+    });
+
+    el.saveTeamBtn.addEventListener('click', () => saveTeam(true)); el.startOperationBtn.addEventListener('click', () => { const op = ensureOperation(); if (op.status !== 'draft') return toast('A operação já foi iniciada.', 'warn'); saveTeam(false); if (!op.team.length) return toast('Selecione a equipe do dia.', 'error'); if (!op.team.some(p => p.role === 'Montagem')) return toast('Inclua ao menos um montador.', 'error'); op.status = 'production_open'; op.startedAt = new Date().toISOString(); save(); showPage('production'); toast('Operação iniciada.') });
     // Filtros da lista de profissionais (busca por nome + setor)
     document.addEventListener('input', e => { if (e.target.id === 'teamPersonSearch') renderPeopleList(); });
     document.addEventListener('change', e => { if (e.target.id === 'teamSectorFilter') renderPeopleList(); });
-    // Eventos da modal de adicionar colaborador (abrir e fechar clicando fora)
+    // Eventos de modais de equipe (abrir e fechar clicando fora)
     document.addEventListener('click', e => {
+      // Abrir cadastro
       const btn = e.target.closest('#openAddPersonModalBtn');
       if (btn) {
         const addModal = $('addPersonModal');
         if (addModal) addModal.classList.add('show');
       }
+
+      // Abrir edição
+      const editBtn = e.target.closest('[data-edit-person]');
+      if (editBtn) {
+        const p = getPerson(editBtn.dataset.editPerson);
+        if (p) {
+          el.editPersonId.value = p.id;
+          el.editPersonName.value = p.name;
+          el.editPersonRole.value = p.role;
+          el.editPersonModal.classList.add('show');
+        }
+      }
       
+      // Fechar cadastro ao clicar fora
       const addModal = $('addPersonModal');
       if (addModal && e.target === addModal) {
         addModal.classList.remove('show');
+      }
+
+      // Fechar edição ao clicar fora
+      const editModal = el.editPersonModal;
+      if (editModal && e.target === editModal) {
+        editModal.classList.remove('show');
       }
     });
     // central moderna de produção
@@ -769,7 +841,7 @@
     el.reopenKitchenBtn.addEventListener('click', () => { const op = currentOperation(); if (!op || op.status !== 'kitchen_closed') return; if (!confirm('Reabrir a cozinha para novos registros?')) return; op.status = 'production_open'; op.kitchenClosedAt = null; save(); renderAll(); toast('Cozinha reaberta.', 'warn') });
 
     // modais
-    document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => $(b.dataset.close + 'Modal').classList.remove('show')));[el.registerCommandModal, el.assemblerPickerModal, el.editModal, el.errorModal].forEach(m => m.addEventListener('click', e => { if (e.target === m) m.classList.remove('show') })); el.editForm.addEventListener('submit', e => { e.preventDefault(); const op = currentOperation(), c = getCommand(op, el.editId.value), n = Number(el.editNumber.value), q = Number(el.editQty.value); if (!c) return; if (!Number.isInteger(n) || n < 1 || n > 1000) return toast('Número inválido.', 'error'); if (op.commands.some(x => x.id !== c.id && x.number === n)) return toast('Essa comanda já existe.', 'warn'); if (!Number.isInteger(q) || q < 1 || q > 50) return toast('Quantidade inválida.', 'error'); const a = assemblers(op).find(p => p.personId === el.editAssembler.value); c.number = n; c.pizzas = q; c.assemblerId = a.personId; c.assemblerName = a.name; c.note = el.editNote.value.trim(); const st = el.editStatus.value, now = new Date().toISOString(); if (st !== c.status) { c.status = st; if (st === 'forno') c.statusTimes.forno ||= now; if (st === 'despacho') c.statusTimes.despacho ||= now; if (st !== 'despacho') { c.dispatch.status = 'aguardando'; c.dispatch.checkedAt = null; c.dispatch.releasedAt = null } } c.updatedAt = now; save(); el.editModal.classList.remove('show'); renderProduction(); renderDispatch(); renderDashboard(); toast('Comanda atualizada.') }); el.deleteCommandBtn.addEventListener('click', () => { const op = currentOperation(), c = getCommand(op, el.editId.value); if (c && confirm(`Excluir a comanda ${c.number}?`)) { op.commands = op.commands.filter(x => x.id !== c.id); save(); el.editModal.classList.remove('show'); renderProduction(); renderDispatch(); renderDashboard(); toast('Comanda excluída.', 'warn') } }); el.errorForm.addEventListener('submit', e => { e.preventDefault(); const c = getCommand(currentOperation(), el.errorId.value); if (!c || !el.errorType.value) return toast('Selecione o tipo de erro.', 'error'); c.error = { active: true, type: el.errorType.value, note: el.errorNote.value.trim(), createdAt: new Date().toISOString() }; save(); el.errorModal.classList.remove('show'); renderProduction(); renderDashboard(); toast('Erro registrado.', 'warn') }); el.clearErrorBtn.addEventListener('click', () => { const c = getCommand(currentOperation(), el.errorId.value); if (c) { c.error = { active: false, type: '', note: '', createdAt: null }; save(); el.errorModal.classList.remove('show'); renderProduction(); renderDashboard(); toast('Sinalização retirada.') } });
+    document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => $(b.dataset.close + 'Modal').classList.remove('show')));[el.registerCommandModal, el.assemblerPickerModal, el.editModal, el.errorModal, el.editPersonModal].forEach(m => m.addEventListener('click', e => { if (e.target === m) m.classList.remove('show') })); el.editForm.addEventListener('submit', e => { e.preventDefault(); const op = currentOperation(), c = getCommand(op, el.editId.value), n = Number(el.editNumber.value), q = Number(el.editQty.value); if (!c) return; if (!Number.isInteger(n) || n < 1 || n > 1000) return toast('Número inválido.', 'error'); if (op.commands.some(x => x.id !== c.id && x.number === n)) return toast('Essa comanda já existe.', 'warn'); if (!Number.isInteger(q) || q < 1 || q > 50) return toast('Quantidade inválida.', 'error'); const a = assemblers(op).find(p => p.personId === el.editAssembler.value); c.number = n; c.pizzas = q; c.assemblerId = a.personId; c.assemblerName = a.name; c.note = el.editNote.value.trim(); const st = el.editStatus.value, now = new Date().toISOString(); if (st !== c.status) { c.status = st; if (st === 'forno') c.statusTimes.forno ||= now; if (st === 'despacho') c.statusTimes.despacho ||= now; if (st !== 'despacho') { c.dispatch.status = 'aguardando'; c.dispatch.checkedAt = null; c.dispatch.releasedAt = null } } c.updatedAt = now; save(); el.editModal.classList.remove('show'); renderProduction(); renderDispatch(); renderDashboard(); toast('Comanda atualizada.') }); el.deleteCommandBtn.addEventListener('click', () => { const op = currentOperation(), c = getCommand(op, el.editId.value); if (c && confirm(`Excluir a comanda ${c.number}?`)) { op.commands = op.commands.filter(x => x.id !== c.id); save(); el.editModal.classList.remove('show'); renderProduction(); renderDispatch(); renderDashboard(); toast('Comanda excluída.', 'warn') } }); el.errorForm.addEventListener('submit', e => { e.preventDefault(); const c = getCommand(currentOperation(), el.errorId.value); if (!c || !el.errorType.value) return toast('Selecione o tipo de erro.', 'error'); c.error = { active: true, type: el.errorType.value, note: el.errorNote.value.trim(), createdAt: new Date().toISOString() }; save(); el.errorModal.classList.remove('show'); renderProduction(); renderDashboard(); toast('Erro registrado.', 'warn') }); el.clearErrorBtn.addEventListener('click', () => { const c = getCommand(currentOperation(), el.errorId.value); if (c) { c.error = { active: false, type: '', note: '', createdAt: null }; save(); el.errorModal.classList.remove('show'); renderProduction(); renderDashboard(); toast('Sinalização retirada.') } });
     // despacho
     [el.dispatchSearch, el.dispatchFilter].forEach(x => x.addEventListener(x.tagName === 'INPUT' ? 'input' : 'change', renderDispatch)); el.clearDispatchFilters.addEventListener('click', () => { el.dispatchSearch.value = ''; el.dispatchFilter.value = ''; renderDispatch() }); el.dispatchGrid.addEventListener('change', e => { if (e.target.dataset.dField === 'change') { const card = e.target.closest('[data-dispatch-card]'), amt = card.querySelector('[data-d-field="changeAmount"]'); amt.disabled = !e.target.checked; if (!e.target.checked) amt.value = '' } }); el.dispatchGrid.addEventListener('click', e => { const b = e.target.closest('[data-d-action]'); if (!b) return; const op = currentOperation(), c = getCommand(op, b.dataset.id), card = e.target.closest('[data-dispatch-card]'); if (!c || !card) return; collectDispatch(card, c); const now = new Date().toISOString(); if (b.dataset.dAction === 'check') { c.dispatch.status = 'conferido'; c.dispatch.checkedAt = now } if (b.dataset.dAction === 'release') { c.dispatch.status = 'liberado'; c.dispatch.checkedAt ||= now; c.dispatch.releasedAt = now } save(); renderDispatch(); renderDashboard(); toast(b.dataset.dAction === 'release' ? 'Pedido liberado.' : 'Conferência salva.') }); el.finishDayBtn.addEventListener('click', () => { const op = currentOperation(); if (!op || op.status !== 'kitchen_closed') return toast('Encerre a cozinha antes de finalizar o dia.', 'warn'); const p = pendingToFinish(op); if (p) return toast(`Ainda existem ${p} pedidos não finalizados.`, 'warn'); if (!confirm('Finalizar toda a operação do dia?')) return; op.status = 'completed'; op.completedAt = new Date().toISOString(); save(); selectedReportOperationId = op.id; renderAll(); showPage('reports'); toast('Operação do dia finalizada.') });
     // relatórios
