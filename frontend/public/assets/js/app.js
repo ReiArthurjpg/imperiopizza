@@ -2,7 +2,7 @@
     const SECTORS = ['Montagem', 'Massa', 'Cozinha', 'Forno', 'Despacho', 'Atendimento', 'Estoque', 'Liderança', 'Outros'];
     let state = { people: [], operations: [] }; let selectedReportOperationId = null;
     const $ = id => document.getElementById(id);
-    const el = { globalDate: $('globalDate'), globalStartDate: $('globalStartDate'), globalEndDate: $('globalEndDate'), phasePill: $('phasePill'), dashboardBanner: $('dashboardBanner'), dashCommands: $('dashCommands'), dashPizzas: $('dashPizzas'), dashKitchen: $('dashKitchen'), dashOven: $('dashOven'), dashDispatch: $('dashDispatch'), dashErrors: $('dashErrors'), dashboardTeam: $('dashboardTeam'), dashboardRank: $('dashboardRank'), dashboardLive: $('dashboardLive'), personForm: $('personForm'), personName: $('personName'), personRole: $('personRole'), peopleChecklist: $('peopleChecklist'), dayTeamGroups: $('dayTeamGroups'), teamOperationNotice: $('teamOperationNotice'), saveTeamBtn: $('saveTeamBtn'), startOperationBtn: $('startOperationBtn'), manageTeamBtn: $('manageTeamBtn'), manageTeamDispatchBtn: $('manageTeamDispatchBtn'), productionGate: $('productionGate'), productionContent: $('productionContent'), productionSubtotals: $('productionSubtotals'), openRegisterCommandBtn: $('openRegisterCommandBtn'), openUpdateCommandsBtn: $('openUpdateCommandsBtn'), updatePendingBadge: $('updatePendingBadge'), productionRecent: $('productionRecent'), commandHistoryPanel: $('commandHistoryPanel'), registerCommandModal: $('registerCommandModal'), closeAndUpdateBtn: $('closeAndUpdateBtn'), assemblerSearch: $('assemblerSearch'), assemblerId: $('assemblerId'), assemblerSuggestions: $('assemblerSuggestions'), assemblerPickerBtn: $('assemblerPickerBtn'), assemblerPickerValue: $('assemblerPickerValue'), assemblerPickerModal: $('assemblerPickerModal'), assemblerPickerSearch: $('assemblerPickerSearch'), assemblerPickerList: $('assemblerPickerList'), pickerManageTeamBtn: $('pickerManageTeamBtn'), commandNumber: $('commandNumber'), pizzaQty: $('pizzaQty'), commandSuggestions: $('commandSuggestions'), commandNote: $('commandNote'), initialOven: $('initialOven'), addCommandBtn: $('addCommandBtn'), prodSearch: $('prodSearch'), prodStatus: $('prodStatus'), prodAssembler: $('prodAssembler'), clearProdFilters: $('clearProdFilters'), productionBody: $('productionBody'), productionMobileList: $('productionMobileList'), productionEmpty: $('productionEmpty'), closeKitchenBtn: $('closeKitchenBtn'), reopenKitchenBtn: $('reopenKitchenBtn'), dispatchGate: $('dispatchGate'), dispatchContent: $('dispatchContent'), dispatchSubtotals: $('dispatchSubtotals'), dispatchSearch: $('dispatchSearch'), dispatchFilter: $('dispatchFilter'), clearDispatchFilters: $('clearDispatchFilters'), dispatchGrid: $('dispatchGrid'), dispatchEmpty: $('dispatchEmpty'), finishDayBtn: $('finishDayBtn'), historyList: $('historyList'), reportOverview: $('reportOverview'), reportCards: $('reportCards'), backupBtn: $('backupBtn'), restoreBtn: $('restoreBtn'), restoreFile: $('restoreFile'), editModal: $('editModal'), editForm: $('editForm'), editId: $('editId'), editNumber: $('editNumber'), editQty: $('editQty'), editAssembler: $('editAssembler'), editStatus: $('editStatus'), editNote: $('editNote'), deleteCommandBtn: $('deleteCommandBtn'), errorModal: $('errorModal'), errorForm: $('errorForm'), errorId: $('errorId'), errorType: $('errorType'), errorNote: $('errorNote'), clearErrorBtn: $('clearErrorBtn'), toast: $('toast') };
+    const el = { globalDate: $('globalDate'), globalStartDate: $('globalStartDate'), globalEndDate: $('globalEndDate'), phasePill: $('phasePill'), dashboardBanner: $('dashboardBanner'), dashCommands: $('dashCommands'), dashPizzas: $('dashPizzas'), dashKitchen: $('dashKitchen'), dashOven: $('dashOven'), dashDispatch: $('dashDispatch'), dashErrors: $('dashErrors'), dashboardTeam: $('dashboardTeam'), dashboardRank: $('dashboardRank'), dashboardLive: $('dashboardLive'), personForm: $('personForm'), personName: $('personName'), personRole: $('personRole'), editPersonModal: $('editPersonModal'), editPersonForm: $('editPersonForm'), editPersonId: $('editPersonId'), editPersonName: $('editPersonName'), editPersonRole: $('editPersonRole'), peopleChecklist: $('peopleChecklist'), dayTeamGroups: $('dayTeamGroups'), teamOperationNotice: $('teamOperationNotice'), saveTeamBtn: $('saveTeamBtn'), startOperationBtn: $('startOperationBtn'), manageTeamBtn: $('manageTeamBtn'), manageTeamDispatchBtn: $('manageTeamDispatchBtn'), productionGate: $('productionGate'), productionContent: $('productionContent'), productionSubtotals: $('productionSubtotals'), openRegisterCommandBtn: $('openRegisterCommandBtn'), openUpdateCommandsBtn: $('openUpdateCommandsBtn'), updatePendingBadge: $('updatePendingBadge'), productionRecent: $('productionRecent'), commandHistoryPanel: $('commandHistoryPanel'), registerCommandModal: $('registerCommandModal'), closeAndUpdateBtn: $('closeAndUpdateBtn'), assemblerSearch: $('assemblerSearch'), assemblerId: $('assemblerId'), assemblerSuggestions: $('assemblerSuggestions'), assemblerPickerBtn: $('assemblerPickerBtn'), assemblerPickerValue: $('assemblerPickerValue'), assemblerPickerModal: $('assemblerPickerModal'), assemblerPickerSearch: $('assemblerPickerSearch'), assemblerPickerList: $('assemblerPickerList'), pickerManageTeamBtn: $('pickerManageTeamBtn'), commandNumber: $('commandNumber'), pizzaQty: $('pizzaQty'), commandSuggestions: $('commandSuggestions'), commandNote: $('commandNote'), initialOven: $('initialOven'), addCommandBtn: $('addCommandBtn'), prodSearch: $('prodSearch'), prodStatus: $('prodStatus'), prodAssembler: $('prodAssembler'), clearProdFilters: $('clearProdFilters'), productionBody: $('productionBody'), productionMobileList: $('productionMobileList'), productionEmpty: $('productionEmpty'), closeKitchenBtn: $('closeKitchenBtn'), reopenKitchenBtn: $('reopenKitchenBtn'), dispatchGate: $('dispatchGate'), dispatchContent: $('dispatchContent'), dispatchSubtotals: $('dispatchSubtotals'), dispatchSearch: $('dispatchSearch'), dispatchFilter: $('dispatchFilter'), clearDispatchFilters: $('clearDispatchFilters'), dispatchGrid: $('dispatchGrid'), dispatchEmpty: $('dispatchEmpty'), finishDayBtn: $('finishDayBtn'), historyList: $('historyList'), reportOverview: $('reportOverview'), reportCards: $('reportCards'), backupBtn: $('backupBtn'), restoreBtn: $('restoreBtn'), restoreFile: $('restoreFile'), editModal: $('editModal'), editForm: $('editForm'), editId: $('editId'), editNumber: $('editNumber'), editQty: $('editQty'), editAssembler: $('editAssembler'), editStatus: $('editStatus'), editNote: $('editNote'), deleteCommandBtn: $('deleteCommandBtn'), errorModal: $('errorModal'), errorForm: $('errorForm'), errorId: $('errorId'), errorType: $('errorType'), errorNote: $('errorNote'), clearErrorBtn: $('clearErrorBtn'), toast: $('toast') };
 
     function save() {
       fetch('http://localhost:8001/api/sync', {
@@ -24,9 +24,9 @@
     function toast(msg, type = 'ok') { el.toast.textContent = msg; el.toast.className = `toast ${type} show`; clearTimeout(window.__t); window.__t = setTimeout(() => el.toast.classList.remove('show'), 3200) }
     function currentDate() { return el.globalStartDate ? el.globalStartDate.value : today() }
     function currentOperation() { return state.operations.find(o => o.date === currentDate()) || null }
-    function getOperation(id) { return state.operations.find(o => o.id === id) || null }
-    function getPerson(id) { return state.people.find(p => p.id === id) || null }
-    function getCommand(op, id) { return op?.commands.find(c => c.id === id) || null }
+    function getOperation(id) { return state.operations.find(o => o.id == id) || null }
+    function getPerson(id) { return state.people.find(p => p.id == id) || null }
+    function getCommand(op, id) { return op?.commands.find(c => c.id == id) || null }
     function ensureOperation() { let op = currentOperation(); if (!op) { op = { id: uid(), date: currentDate(), status: 'draft', team: [], startedAt: null, kitchenClosedAt: null, completedAt: null, commands: [] }; state.operations.push(op); save() } return op }
     function phaseLabel(op) { if (!op) return 'Sem operação'; return { draft: 'Equipe em preparação', production_open: 'Cozinha em operação', kitchen_closed: 'Cozinha encerrada · despacho ativo', completed: 'Operação finalizada' }[op.status] || op.status }
     function showPage(name) { 
@@ -63,9 +63,9 @@
     function stats(op) { const cs = op?.commands || []; return { commands: cs.length, pizzas: cs.reduce((a, c) => a + (Number(c.pizzas) || 1), 0), kitchen: cs.filter(c => c.status === 'cozinha').length, oven: cs.filter(c => c.status === 'forno').length, dispatchPending: cs.filter(c => c.status === 'despacho' && c.dispatch?.status !== 'liberado').length, released: cs.filter(c => c.status === 'despacho' && c.dispatch?.status === 'liberado').length, errors: cs.filter(c => c.error?.active).length } }
     function pendingToFinish(op) { return (op?.commands || []).filter(c => c.status !== 'despacho' || c.dispatch?.status !== 'liberado').length }
     function empty(title, text) { return `<div class="empty"><strong>${esc(title)}</strong>${esc(text)}</div>` }
-    function teamHtml(team) { 
+    function teamHtml(team, scrollClass = 'max-h-[170px] overflow-y-auto pr-2 custom-scrollbar') { 
       if (!team?.length) return empty('Equipe não definida', 'Selecione os profissionais do dia.'); 
-      return `<div class="space-y-3 max-h-[170px] overflow-y-auto pr-2 custom-scrollbar">${team.map(member => `
+      return `<div class="space-y-3 ${scrollClass}">${team.map(member => `
         <div class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 transition-colors -mx-2">
           <div class="flex items-center gap-3">
             <div class="relative">
@@ -369,9 +369,257 @@
       
       if (typeof lucide !== 'undefined') lucide.createIcons();
     }
-    function renderTeam() { renderHeader(); const op = currentOperation(), selected = new Set(op?.team.map(t => t.personId) || []), usedIds = new Set(op?.commands.map(c => c.assemblerId) || []); if (!state.people.length) el.peopleChecklist.innerHTML = empty('Nenhum profissional cadastrado', 'Use o formulário acima.'); else el.peopleChecklist.innerHTML = [...state.people].sort((a, b) => a.role.localeCompare(b.role, 'pt-BR') || a.name.localeCompare(b.name, 'pt-BR')).map(p => `<div class="check-person"><label><input type="checkbox" data-team-id="${p.id}" ${selected.has(p.id) ? 'checked' : ''} ${usedIds.has(p.id) ? 'data-used-in-production="1"' : ''}><span><strong>${esc(p.name)}</strong><br><small>${esc(p.role)}${usedIds.has(p.id) ? ' · já possui produção' : ''}</small></span></label><button class="btn btn-soft-red btn-small" data-remove-person="${p.id}">Remover</button></div>`).join(''); renderCheckedTeam(); el.saveTeamBtn.disabled = op?.status === 'completed'; el.startOperationBtn.disabled = !!op && op.status !== 'draft'; el.startOperationBtn.textContent = op?.status === 'production_open' ? 'Operação em andamento' : op?.status === 'kitchen_closed' ? 'Cozinha encerrada' : op?.status === 'completed' ? 'Dia finalizado' : 'Iniciar operação'; if (!op) el.teamOperationNotice.innerHTML = ''; else if (op.status === 'completed') el.teamOperationNotice.innerHTML = `<div class="banner"><div><h3>Operação finalizada</h3><p>A lista de presença está fechada e disponível nos relatórios.</p></div><button class="btn btn-primary" data-go="reports">Abrir relatórios</button></div>`; else if (op.status === 'draft') el.teamOperationNotice.innerHTML = `<div class="banner"><div><h3>Equipe em preparação</h3><p>Selecione os presentes e inicie a operação.</p></div></div>`; else el.teamOperationNotice.innerHTML = `<div class="banner"><div><h3>Equipe acionável durante a operação</h3><p>Você pode cadastrar e incluir novas pessoas até finalizar completamente o dia.</p></div><div class="operation-team-actions"><button class="btn btn-primary" data-go="${op.status === 'production_open' ? 'production' : 'dispatch'}">Voltar à operação</button></div></div>` }
+    // ── Helpers de cor por setor ──────────────────────────────────────────────
+    const SECTOR_COLORS = {
+      'Montagem':    { bg: 'bg-blue-50',   text: 'text-blue-700',   ring: 'ring-blue-200'   },
+      'Massa':       { bg: 'bg-amber-50',  text: 'text-amber-700',  ring: 'ring-amber-200'  },
+      'Cozinha':     { bg: 'bg-orange-50', text: 'text-orange-700', ring: 'ring-orange-200' },
+      'Forno':       { bg: 'bg-red-50',    text: 'text-red-700',    ring: 'ring-red-200'    },
+      'Despacho':    { bg: 'bg-purple-50', text: 'text-purple-700', ring: 'ring-purple-200' },
+      'Atendimento': { bg: 'bg-pink-50',   text: 'text-pink-700',   ring: 'ring-pink-200'   },
+      'Estoque':     { bg: 'bg-green-50',  text: 'text-green-700',  ring: 'ring-green-200'  },
+      'Liderança':   { bg: 'bg-indigo-50', text: 'text-indigo-700', ring: 'ring-indigo-200' },
+      'Outros':      { bg: 'bg-gray-50',   text: 'text-gray-600',   ring: 'ring-gray-200'   },
+    };
+    function sectorColors(role) { return SECTOR_COLORS[role] || SECTOR_COLORS['Outros']; }
+
+    // ── Renderiza um item da lista de profissionais (Tailwind) ────────────────
+    function personItemHtml(p, selected, usedIds) {
+      const initials = assemblerInitials(p.name);
+      const isChecked = selected.has(p.id);
+      const isUsed = usedIds.has(p.id);
+      const sc = sectorColors(p.role);
+      return `
+        <div class="flex items-center justify-between p-3 rounded-xl border
+                    ${isChecked ? 'border-[#B5120B]/30 bg-[#FDECEB]/30' : 'border-[#E7E7E7] hover:border-[#B5120B]/20 hover:bg-gray-50/60'}
+                    transition-all duration-150 group">
+          <label class="flex items-center gap-3 flex-1 cursor-pointer min-w-0">
+            <input type="checkbox"
+                   data-team-id="${p.id}"
+                   ${isChecked ? 'checked' : ''}
+                   ${isUsed ? 'data-used-in-production="1"' : ''}
+                   class="w-4 h-4 accent-[#B5120B] shrink-0 cursor-pointer">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <div class="w-8 h-8 rounded-full bg-gradient-to-br from-[#173F69] to-[#1F6FB2]
+                          flex items-center justify-center text-[11px] font-bold text-white shrink-0 ring-2 ring-white shadow-sm">
+                ${initials}
+              </div>
+              <div class="min-w-0">
+                <p class="text-sm font-semibold text-[#171717] truncate leading-tight">${esc(p.name)}</p>
+                <div class="flex items-center gap-1.5 mt-0.5">
+                  <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-semibold
+                               ${sc.bg} ${sc.text} ring-1 ${sc.ring}">
+                    ${esc(p.role)}
+                  </span>
+                  ${isUsed ? '<span class="text-[10px] text-[#737373]">· com produção</span>' : ''}
+                </div>
+              </div>
+            </div>
+          </label>
+          <div class="flex items-center gap-1 shrink-0">
+            <button class="opacity-0 group-hover:opacity-100 transition-opacity duration-150
+                           p-1.5 rounded-md text-[#D97706] hover:bg-[#FFF9E5] hover:text-[#B45309]"
+                    type="button"
+                    data-edit-person="${p.id}"
+                    title="Editar profissional">
+              <i data-lucide="pencil" class="w-3.5 h-3.5 pointer-events-none"></i>
+            </button>
+            <button class="opacity-0 group-hover:opacity-100 transition-opacity duration-150
+                           p-1.5 rounded-md text-red-400 hover:bg-red-50 hover:text-red-600"
+                    type="button"
+                    data-remove-person="${p.id}"
+                    title="Remover profissional">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5 pointer-events-none"></i>
+            </button>
+          </div>
+        </div>`;
+    }
+
+    // ── Renderiza o empty state moderno ───────────────────────────────────────
+    function emptyTeam(title, text) {
+      return `<div class="flex flex-col items-center justify-center py-8 text-center">
+        <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-3">
+          <i data-lucide="users" class="w-5 h-5 text-gray-400"></i>
+        </div>
+        <p class="text-sm font-semibold text-[#171717] mb-1">${esc(title)}</p>
+        <p class="text-xs text-[#737373]">${esc(text)}</p>
+      </div>`;
+    }
+
+    // ── Atualiza as contagens e badges da tela de equipe ──────────────────────
+    function renderTeamKpis(op, allPeople) {
+      const peopleCount = document.getElementById('teamPeopleCount');
+      if (peopleCount) peopleCount.textContent = allPeople.length;
+
+      const teamToday = op?.team || [];
+
+      // Badge dinâmico na lista de presença
+      const selBadge = document.getElementById('teamSelectedBadge');
+      if (selBadge) {
+        const count = teamToday.length;
+        selBadge.textContent = count === 0 ? '0 selecionados' : `${count} ${count === 1 ? 'selecionado' : 'selecionados'}`;
+        selBadge.className = `px-2.5 py-0.5 rounded-full text-xs font-semibold border transition-all ${
+          count > 0
+            ? 'bg-[#E7F8F0] text-[#10B981] border-[#A7F3D0]'
+            : 'bg-gray-100 text-[#737373] border-gray-200'
+        }`;
+      }
+    }
+
+
+    // ── Renderiza o banner de status (substituindo .banner legado) ─────────────
+    function renderTeamBanner(op) {
+      const notice = el.teamOperationNotice;
+      if (!notice) return;
+
+      if (!op) {
+        notice.innerHTML = '';
+        return;
+      }
+
+      const bannerBase = 'flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl border';
+
+      if (op.status === 'completed') {
+        notice.innerHTML = `
+          <div class="${bannerBase} bg-gray-50 border-gray-200">
+            <div class="flex items-center gap-3">
+              <div class="relative flex h-3 w-3 shrink-0">
+                <span class="relative inline-flex rounded-full h-3 w-3 bg-gray-400"></span>
+              </div>
+              <div>
+                <h3 class="font-semibold text-sm text-gray-700">Operação finalizada</h3>
+                <p class="text-xs text-gray-500 mt-0.5">A lista de presença está fechada e disponível nos relatórios.</p>
+              </div>
+            </div>
+            <button class="px-4 py-2 text-xs font-semibold text-white bg-[#B5120B] rounded-lg
+                           hover:bg-[#9a0f09] transition-colors shadow-sm shrink-0" data-go="reports">
+              Abrir relatórios
+            </button>
+          </div>`;
+      } else if (op.status === 'draft') {
+        notice.innerHTML = `
+          <div class="${bannerBase} bg-blue-50 border-blue-200">
+            <div class="flex items-center gap-3">
+              <div class="relative flex h-3 w-3 shrink-0">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-3 w-3 bg-[#173F69]"></span>
+              </div>
+              <div>
+                <h3 class="font-semibold text-sm text-[#173F69]">Equipe em preparação</h3>
+                <p class="text-xs text-blue-600 mt-0.5">Selecione os profissionais presentes e inicie a operação.</p>
+              </div>
+            </div>
+          </div>`;
+      } else if (op.status === 'production_open') {
+        notice.innerHTML = `
+          <div class="${bannerBase} bg-[#E7F8F0] border-[#A7F3D0]">
+            <div class="flex items-center gap-3">
+              <div class="relative flex h-3 w-3 shrink-0">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+              </div>
+              <div>
+                <h3 class="font-semibold text-sm text-emerald-900">Cozinha em operação</h3>
+                <p class="text-xs text-emerald-700 mt-0.5">Você pode cadastrar e acionar novas pessoas até finalizar o dia.</p>
+              </div>
+            </div>
+            <button class="px-4 py-2 text-xs font-semibold text-white bg-[#B5120B] rounded-lg
+                           hover:bg-[#9a0f09] transition-colors shadow-sm shrink-0" data-go="production">
+              Voltar à produção
+            </button>
+          </div>`;
+      } else if (op.status === 'kitchen_closed') {
+        notice.innerHTML = `
+          <div class="${bannerBase} bg-amber-50 border-amber-200">
+            <div class="flex items-center gap-3">
+              <div class="relative flex h-3 w-3 shrink-0">
+                <span class="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
+              </div>
+              <div>
+                <h3 class="font-semibold text-sm text-amber-900">Cozinha encerrada · despacho ativo</h3>
+                <p class="text-xs text-amber-700 mt-0.5">Você pode cadastrar e acionar novas pessoas até finalizar completamente o dia.</p>
+              </div>
+            </div>
+            <button class="px-4 py-2 text-xs font-semibold text-white bg-[#B5120B] rounded-lg
+                           hover:bg-[#9a0f09] transition-colors shadow-sm shrink-0" data-go="dispatch">
+              Voltar ao despacho
+            </button>
+          </div>`;
+      }
+    }
+
+    // ── Filtro em tempo real da lista de profissionais ─────────────────────────
+    function filteredPeople() {
+      const q = norm(document.getElementById('teamPersonSearch')?.value || '');
+      const sector = document.getElementById('teamSectorFilter')?.value || '';
+      return [...state.people]
+        .sort((a, b) => a.role.localeCompare(b.role, 'pt-BR') || a.name.localeCompare(b.name, 'pt-BR'))
+        .filter(p => {
+          const matchName   = !q || norm(p.name).includes(q);
+          const matchSector = !sector || p.role === sector;
+          return matchName && matchSector;
+        });
+    }
+
+    // ── Renderiza apenas a lista de profissionais (com filtro aplicado) ─────────
+    function renderPeopleList() {
+      const op = currentOperation();
+      const selected = new Set(op?.team.map(t => t.personId) || []);
+      const usedIds  = new Set(op?.commands.map(c => c.assemblerId) || []);
+      const people   = filteredPeople();
+
+      if (!state.people.length) {
+        el.peopleChecklist.innerHTML = emptyTeam('Nenhum profissional cadastrado', 'Use o formulário acima.');
+      } else if (!people.length) {
+        el.peopleChecklist.innerHTML = emptyTeam('Nenhum resultado', 'Tente outro nome ou setor.');
+      } else {
+        el.peopleChecklist.innerHTML = people.map(p => personItemHtml(p, selected, usedIds)).join('');
+      }
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    // ── renderTeam() — orquestrador principal ──────────────────────────────────
+    function renderTeam() {
+      renderHeader();
+      const op = currentOperation();
+
+      // Lista de profissionais
+      renderPeopleList();
+
+      // Lista de presença (coluna direita)
+      renderCheckedTeam();
+
+      // Botões de ação
+      el.saveTeamBtn.disabled = op?.status === 'completed';
+      el.startOperationBtn.disabled = !!op && op.status !== 'draft';
+
+      // Atualiza label do botão + ícone dinamicamente
+      const startLabel = op?.status === 'production_open' ? 'Operação em andamento'
+        : op?.status === 'kitchen_closed' ? 'Cozinha encerrada'
+        : op?.status === 'completed'      ? 'Dia finalizado'
+        : 'Iniciar operação';
+      const startIcon = op?.status === 'production_open' ? 'activity'
+        : op?.status === 'completed'      ? 'check-circle'
+        : 'play';
+      el.startOperationBtn.innerHTML = `<i data-lucide="${startIcon}" class="w-4 h-4"></i> ${startLabel}`;
+
+      // KPIs
+      renderTeamKpis(op, state.people);
+
+      // Banner de status
+      renderTeamBanner(op);
+
+      // Ícones Lucide
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
     function checkedTeam() { return [...document.querySelectorAll('[data-team-id]:checked')].map(i => { const p = getPerson(i.dataset.teamId); return { personId: p.id, name: p.name, role: p.role } }) }
-    function renderCheckedTeam() { el.dayTeamGroups.innerHTML = teamHtml(checkedTeam()) }
+    function renderCheckedTeam() {
+      el.dayTeamGroups.innerHTML = teamHtml(checkedTeam(), '');
+      // Atualiza badge de selecionados e KPI de presentes
+      const op = currentOperation();
+      renderTeamKpis(op, state.people);
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
     function saveTeam(show = true) {
       const op = ensureOperation();
       if (op.status === 'completed') return toast('A operação já foi finalizada. A equipe não pode mais ser alterada.', 'warn'), false;
@@ -490,8 +738,87 @@
     if (el.globalStartDate) el.globalStartDate.addEventListener('change', () => { el.assemblerId.value = ''; el.assemblerSearch.value = ''; renderAll() });
     if (el.globalEndDate) el.globalEndDate.addEventListener('change', () => { el.assemblerId.value = ''; el.assemblerSearch.value = ''; renderAll() });
     // equipe
-    el.personForm.addEventListener('submit', e => { e.preventDefault(); const name = proper(el.personName.value), role = el.personRole.value; if (name.length < 2 || !role) return toast('Preencha nome e setor.', 'error'); if (state.people.some(p => norm(p.name) === norm(name) && p.role === role)) return toast('Este profissional já está cadastrado neste setor.', 'warn'); state.people.push({ id: uid(), name, role, createdAt: new Date().toISOString() }); save(); el.personForm.reset(); renderTeam(); toast('Profissional cadastrado.') }); el.peopleChecklist.addEventListener('change', e => { const box = e.target.closest('[data-team-id]'); if (box && !box.checked && box.dataset.usedInProduction === '1') { box.checked = true; toast('Este montador já possui produção registrada e deve permanecer na equipe.', 'warn') } renderCheckedTeam() }); el.peopleChecklist.addEventListener('click', e => { const b = e.target.closest('[data-remove-person]'); if (!b) return; const p = getPerson(b.dataset.removePerson), used = state.operations.some(o => o.team.some(t => t.personId === p.id) || o.commands.some(c => c.assemblerId === p.id)); if (used) return toast('Este profissional já está vinculado a operações.', 'warn'); if (confirm(`Remover ${p.name}?`)) { state.people = state.people.filter(x => x.id !== p.id); save(); renderTeam(); toast('Profissional removido.', 'warn') } }); el.saveTeamBtn.addEventListener('click', () => saveTeam(true)); el.startOperationBtn.addEventListener('click', () => { const op = ensureOperation(); if (op.status !== 'draft') return toast('A operação já foi iniciada.', 'warn'); saveTeam(false); if (!op.team.length) return toast('Selecione a equipe do dia.', 'error'); if (!op.team.some(p => p.role === 'Montagem')) return toast('Inclua ao menos um montador.', 'error'); op.status = 'production_open'; op.startedAt = new Date().toISOString(); save(); showPage('production'); toast('Operação iniciada.') });
+    // equipe
+    el.personForm.addEventListener('submit', e => { e.preventDefault(); const name = proper(el.personName.value), role = el.personRole.value; if (name.length < 2 || !role) return toast('Preencha nome e setor.', 'error'); if (state.people.some(p => norm(p.name) === norm(name) && p.role === role)) return toast('Este profissional já está cadastrado neste setor.', 'warn'); state.people.push({ id: uid(), name, role, createdAt: new Date().toISOString() }); save(); el.personForm.reset(); const addModal = $('addPersonModal'); if (addModal) addModal.classList.remove('show'); renderTeam(); toast('Profissional cadastrado.') });
+    
+    el.editPersonForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const id = el.editPersonId.value, name = proper(el.editPersonName.value), role = el.editPersonRole.value;
+      if (name.length < 2 || !role) return toast('Preencha nome e setor.', 'error');
+      if (state.people.some(p => p.id !== id && norm(p.name) === norm(name) && p.role === role)) return toast('Este profissional já está cadastrado neste setor.', 'warn');
+      const p = getPerson(id);
+      if (!p) return;
+      p.name = name;
+      p.role = role;
+      state.operations.forEach(op => {
+        const t = op.team.find(x => x.personId === id);
+        if (t) { t.name = name; t.role = role }
+        op.commands.forEach(c => { if (c.assemblerId === id) c.assemblerName = name });
+      });
+      save();
+      el.editPersonModal.classList.remove('show');
+      renderTeam();
+      renderProduction();
+      renderDispatch();
+      renderDashboard();
+      toast('Profissional atualizado.');
+    });
+
+    el.peopleChecklist.addEventListener('change', e => { const box = e.target.closest('[data-team-id]'); if (box && !box.checked && box.dataset.usedInProduction === '1') { box.checked = true; toast('Este montador já possui produção registrada e deve permanecer na equipe.', 'warn') } renderCheckedTeam() });
+    
+    el.peopleChecklist.addEventListener('click', e => {
+      const b = e.target.closest('[data-remove-person]');
+      if (b) {
+        const p = getPerson(b.dataset.removePerson), used = state.operations.some(o => o.team.some(t => t.personId === p.id) || o.commands.some(c => c.assemblerId === p.id));
+        if (used) return toast('Este profissional já está vinculado a operações.', 'warn');
+        if (confirm(`Remover ${p.name}?`)) {
+          state.people = state.people.filter(x => x.id !== p.id);
+          save();
+          renderTeam();
+          toast('Profissional removido.', 'warn')
+        }
+      }
+    });
+
+    el.saveTeamBtn.addEventListener('click', () => saveTeam(true)); el.startOperationBtn.addEventListener('click', () => { const op = ensureOperation(); if (op.status !== 'draft') return toast('A operação já foi iniciada.', 'warn'); saveTeam(false); if (!op.team.length) return toast('Selecione a equipe do dia.', 'error'); if (!op.team.some(p => p.role === 'Montagem')) return toast('Inclua ao menos um montador.', 'error'); op.status = 'production_open'; op.startedAt = new Date().toISOString(); save(); showPage('production'); toast('Operação iniciada.') });
+    // Filtros da lista de profissionais (busca por nome + setor)
+    document.addEventListener('input', e => { if (e.target.id === 'teamPersonSearch') renderPeopleList(); });
+    document.addEventListener('change', e => { if (e.target.id === 'teamSectorFilter') renderPeopleList(); });
+    // Eventos de modais de equipe (abrir e fechar clicando fora)
+    document.addEventListener('click', e => {
+      // Abrir cadastro
+      const btn = e.target.closest('#openAddPersonModalBtn');
+      if (btn) {
+        const addModal = $('addPersonModal');
+        if (addModal) addModal.classList.add('show');
+      }
+
+      // Abrir edição
+      const editBtn = e.target.closest('[data-edit-person]');
+      if (editBtn) {
+        const p = getPerson(editBtn.dataset.editPerson);
+        if (p) {
+          el.editPersonId.value = p.id;
+          el.editPersonName.value = p.name;
+          el.editPersonRole.value = p.role;
+          el.editPersonModal.classList.add('show');
+        }
+      }
+      
+      // Fechar cadastro ao clicar fora
+      const addModal = $('addPersonModal');
+      if (addModal && e.target === addModal) {
+        addModal.classList.remove('show');
+      }
+
+      // Fechar edição ao clicar fora
+      const editModal = el.editPersonModal;
+      if (editModal && e.target === editModal) {
+        editModal.classList.remove('show');
+      }
+    });
     // central moderna de produção
+
     el.openRegisterCommandBtn.addEventListener('click', openRegisterCommand);
     el.openUpdateCommandsBtn.addEventListener('click', openCommandUpdates);
     el.closeAndUpdateBtn.addEventListener('click', openCommandUpdates);
@@ -514,7 +841,7 @@
     el.reopenKitchenBtn.addEventListener('click', () => { const op = currentOperation(); if (!op || op.status !== 'kitchen_closed') return; if (!confirm('Reabrir a cozinha para novos registros?')) return; op.status = 'production_open'; op.kitchenClosedAt = null; save(); renderAll(); toast('Cozinha reaberta.', 'warn') });
 
     // modais
-    document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => $(b.dataset.close + 'Modal').classList.remove('show')));[el.registerCommandModal, el.assemblerPickerModal, el.editModal, el.errorModal].forEach(m => m.addEventListener('click', e => { if (e.target === m) m.classList.remove('show') })); el.editForm.addEventListener('submit', e => { e.preventDefault(); const op = currentOperation(), c = getCommand(op, el.editId.value), n = Number(el.editNumber.value), q = Number(el.editQty.value); if (!c) return; if (!Number.isInteger(n) || n < 1 || n > 1000) return toast('Número inválido.', 'error'); if (op.commands.some(x => x.id !== c.id && x.number === n)) return toast('Essa comanda já existe.', 'warn'); if (!Number.isInteger(q) || q < 1 || q > 50) return toast('Quantidade inválida.', 'error'); const a = assemblers(op).find(p => p.personId === el.editAssembler.value); c.number = n; c.pizzas = q; c.assemblerId = a.personId; c.assemblerName = a.name; c.note = el.editNote.value.trim(); const st = el.editStatus.value, now = new Date().toISOString(); if (st !== c.status) { c.status = st; if (st === 'forno') c.statusTimes.forno ||= now; if (st === 'despacho') c.statusTimes.despacho ||= now; if (st !== 'despacho') { c.dispatch.status = 'aguardando'; c.dispatch.checkedAt = null; c.dispatch.releasedAt = null } } c.updatedAt = now; save(); el.editModal.classList.remove('show'); renderProduction(); renderDispatch(); renderDashboard(); toast('Comanda atualizada.') }); el.deleteCommandBtn.addEventListener('click', () => { const op = currentOperation(), c = getCommand(op, el.editId.value); if (c && confirm(`Excluir a comanda ${c.number}?`)) { op.commands = op.commands.filter(x => x.id !== c.id); save(); el.editModal.classList.remove('show'); renderProduction(); renderDispatch(); renderDashboard(); toast('Comanda excluída.', 'warn') } }); el.errorForm.addEventListener('submit', e => { e.preventDefault(); const c = getCommand(currentOperation(), el.errorId.value); if (!c || !el.errorType.value) return toast('Selecione o tipo de erro.', 'error'); c.error = { active: true, type: el.errorType.value, note: el.errorNote.value.trim(), createdAt: new Date().toISOString() }; save(); el.errorModal.classList.remove('show'); renderProduction(); renderDashboard(); toast('Erro registrado.', 'warn') }); el.clearErrorBtn.addEventListener('click', () => { const c = getCommand(currentOperation(), el.errorId.value); if (c) { c.error = { active: false, type: '', note: '', createdAt: null }; save(); el.errorModal.classList.remove('show'); renderProduction(); renderDashboard(); toast('Sinalização retirada.') } });
+    document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => $(b.dataset.close + 'Modal').classList.remove('show')));[el.registerCommandModal, el.assemblerPickerModal, el.editModal, el.errorModal, el.editPersonModal].forEach(m => m.addEventListener('click', e => { if (e.target === m) m.classList.remove('show') })); el.editForm.addEventListener('submit', e => { e.preventDefault(); const op = currentOperation(), c = getCommand(op, el.editId.value), n = Number(el.editNumber.value), q = Number(el.editQty.value); if (!c) return; if (!Number.isInteger(n) || n < 1 || n > 1000) return toast('Número inválido.', 'error'); if (op.commands.some(x => x.id !== c.id && x.number === n)) return toast('Essa comanda já existe.', 'warn'); if (!Number.isInteger(q) || q < 1 || q > 50) return toast('Quantidade inválida.', 'error'); const a = assemblers(op).find(p => p.personId === el.editAssembler.value); c.number = n; c.pizzas = q; c.assemblerId = a.personId; c.assemblerName = a.name; c.note = el.editNote.value.trim(); const st = el.editStatus.value, now = new Date().toISOString(); if (st !== c.status) { c.status = st; if (st === 'forno') c.statusTimes.forno ||= now; if (st === 'despacho') c.statusTimes.despacho ||= now; if (st !== 'despacho') { c.dispatch.status = 'aguardando'; c.dispatch.checkedAt = null; c.dispatch.releasedAt = null } } c.updatedAt = now; save(); el.editModal.classList.remove('show'); renderProduction(); renderDispatch(); renderDashboard(); toast('Comanda atualizada.') }); el.deleteCommandBtn.addEventListener('click', () => { const op = currentOperation(), c = getCommand(op, el.editId.value); if (c && confirm(`Excluir a comanda ${c.number}?`)) { op.commands = op.commands.filter(x => x.id !== c.id); save(); el.editModal.classList.remove('show'); renderProduction(); renderDispatch(); renderDashboard(); toast('Comanda excluída.', 'warn') } }); el.errorForm.addEventListener('submit', e => { e.preventDefault(); const c = getCommand(currentOperation(), el.errorId.value); if (!c || !el.errorType.value) return toast('Selecione o tipo de erro.', 'error'); c.error = { active: true, type: el.errorType.value, note: el.errorNote.value.trim(), createdAt: new Date().toISOString() }; save(); el.errorModal.classList.remove('show'); renderProduction(); renderDashboard(); toast('Erro registrado.', 'warn') }); el.clearErrorBtn.addEventListener('click', () => { const c = getCommand(currentOperation(), el.errorId.value); if (c) { c.error = { active: false, type: '', note: '', createdAt: null }; save(); el.errorModal.classList.remove('show'); renderProduction(); renderDashboard(); toast('Sinalização retirada.') } });
     // despacho
     [el.dispatchSearch, el.dispatchFilter].forEach(x => x.addEventListener(x.tagName === 'INPUT' ? 'input' : 'change', renderDispatch)); el.clearDispatchFilters.addEventListener('click', () => { el.dispatchSearch.value = ''; el.dispatchFilter.value = ''; renderDispatch() }); el.dispatchGrid.addEventListener('change', e => { if (e.target.dataset.dField === 'change') { const card = e.target.closest('[data-dispatch-card]'), amt = card.querySelector('[data-d-field="changeAmount"]'); amt.disabled = !e.target.checked; if (!e.target.checked) amt.value = '' } }); el.dispatchGrid.addEventListener('click', e => { const b = e.target.closest('[data-d-action]'); if (!b) return; const op = currentOperation(), c = getCommand(op, b.dataset.id), card = e.target.closest('[data-dispatch-card]'); if (!c || !card) return; collectDispatch(card, c); const now = new Date().toISOString(); if (b.dataset.dAction === 'check') { c.dispatch.status = 'conferido'; c.dispatch.checkedAt = now } if (b.dataset.dAction === 'release') { c.dispatch.status = 'liberado'; c.dispatch.checkedAt ||= now; c.dispatch.releasedAt = now } save(); renderDispatch(); renderDashboard(); toast(b.dataset.dAction === 'release' ? 'Pedido liberado.' : 'Conferência salva.') }); el.finishDayBtn.addEventListener('click', () => { const op = currentOperation(); if (!op || op.status !== 'kitchen_closed') return toast('Encerre a cozinha antes de finalizar o dia.', 'warn'); const p = pendingToFinish(op); if (p) return toast(`Ainda existem ${p} pedidos não finalizados.`, 'warn'); if (!confirm('Finalizar toda a operação do dia?')) return; op.status = 'completed'; op.completedAt = new Date().toISOString(); save(); selectedReportOperationId = op.id; renderAll(); showPage('reports'); toast('Operação do dia finalizada.') });
     // relatórios
