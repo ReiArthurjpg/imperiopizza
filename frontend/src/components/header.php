@@ -17,13 +17,13 @@
 
 
     <!-- Notification Bell -->
-    <button class="relative p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors">
+    <button class="relative p-2 text-gray-300 cursor-not-allowed rounded-full transition-colors" title="Não disponível" disabled>
       <i data-lucide="bell" class="w-5 h-5"></i>
       <span id="notificationBadge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-[#B5120B] rounded-full border-2 border-white hidden"></span>
     </button>
 
     <!-- User Avatar -->
-    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-gray-200 to-gray-300 border border-gray-200 flex items-center justify-center text-sm font-medium text-gray-600 shadow-sm cursor-pointer" title="Configurações do Usuário">
+    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-gray-200 to-gray-300 border border-gray-200 flex items-center justify-center text-sm font-medium text-gray-400 shadow-sm cursor-not-allowed opacity-70" title="Não disponível">
       GP
     </div>
   </div>
