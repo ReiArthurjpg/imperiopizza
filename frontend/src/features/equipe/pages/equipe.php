@@ -10,8 +10,20 @@
         Cadastre profissionais, marque a presença e inicie a operação.
       </p>
     </div>
-    <!-- Badge de status da operação (atualizado pelo JS) -->
-    <div id="teamHeaderBadge" class="flex items-center gap-2 shrink-0 mt-1"></div>
+    <!-- Badge de status da operação (atualizado pelo JS) e botão de cadastrar -->
+    <div class="flex items-center gap-3 shrink-0 mt-1">
+      <div id="teamHeaderBadge" class="flex items-center gap-2"></div>
+      <button
+        id="openAddPersonModalBtn"
+        type="button"
+        class="px-4 py-3 bg-[#1F6FB2] text-white text-xs font-semibold rounded-lg
+               hover:bg-[#1a5e98] active:scale-[0.98] transition-all duration-150 shadow-sm
+               flex items-center gap-1.5"
+      >
+        <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
+        Adicionar Colaborador
+      </button>
+    </div>
   </div>
 
 
@@ -31,75 +43,6 @@
          COLUNA ESQUERDA
     ──────────────────────────────────────────────── -->
     <div class="space-y-4">
-
-      <!-- ── Formulário de cadastro ── -->
-      <div class="bg-white rounded-xl border border-[#E7E7E7] shadow-[0_4px_12px_rgba(0,0,0,0.02)] p-5">
-        <div class="flex items-center justify-between pb-4 border-b border-[#E7E7E7] mb-5">
-          <div>
-            <h3 class="text-base font-semibold text-[#171717]">Cadastrar profissional</h3>
-            <p class="text-xs text-[#737373] mt-0.5">Disponível para os próximos dias.</p>
-          </div>
-          <div class="p-2 rounded-lg bg-[#FDECEB] text-[#B5120B] shrink-0">
-            <i data-lucide="user-plus" class="w-4 h-4"></i>
-          </div>
-        </div>
-
-        <form id="personForm" class="space-y-3">
-          <!-- Nome -->
-          <div>
-            <label for="personName" class="block text-xs font-semibold text-[#173F69] mb-1.5">
-              Nome
-            </label>
-            <input
-              id="personName"
-              type="text"
-              maxlength="80"
-              placeholder="Nome do colaborador"
-              required
-              class="w-full border border-[#E7E7E7] rounded-lg px-3 py-2.5 text-sm
-                     text-[#171717] placeholder-gray-400
-                     focus:outline-none focus:border-[#B5120B] focus:ring-2 focus:ring-[#FDECEB]
-                     transition-all duration-150"
-            >
-          </div>
-
-          <!-- Setor -->
-          <div>
-            <label for="personRole" class="block text-xs font-semibold text-[#173F69] mb-1.5">
-              Setor
-            </label>
-            <select
-              id="personRole"
-              required
-              class="w-full border border-[#E7E7E7] rounded-lg px-3 py-2.5 text-sm
-                     text-[#171717] bg-white
-                     focus:outline-none focus:border-[#B5120B] focus:ring-2 focus:ring-[#FDECEB]
-                     transition-all duration-150"
-            >
-              <option value="">Selecione</option>
-              <option>Montagem</option>
-              <option>Massa</option>
-              <option>Cozinha</option>
-              <option>Forno</option>
-              <option>Despacho</option>
-              <option>Atendimento</option>
-              <option>Estoque</option>
-              <option>Liderança</option>
-              <option>Outros</option>
-            </select>
-          </div>
-
-          <button
-            type="submit"
-            class="w-full py-2.5 bg-[#B5120B] text-white text-sm font-semibold rounded-lg
-                   hover:bg-[#9a0f09] active:scale-[0.98] transition-all duration-150 shadow-sm
-                   flex items-center justify-center gap-2"
-          >
-            <i data-lucide="plus" class="w-4 h-4"></i>
-            Cadastrar
-          </button>
-        </form>
-      </div>
 
       <!-- ── Lista de profissionais cadastrados ── -->
       <div class="bg-white rounded-xl border border-[#E7E7E7] shadow-[0_4px_12px_rgba(0,0,0,0.02)] p-5">
@@ -207,5 +150,101 @@
     </div><!-- /coluna direita -->
 
   </div><!-- /grid principal -->
+  <!-- ═══════════════════════════════════════════════════
+       MODAL: ADICIONAR COLABORADOR (Design System Moderno)
+  ════════════════════════════════════════════════════ -->
+  <div id="addPersonModal" class="modal-bg">
+    <!-- Caixa do modal (dialog) -->
+    <div class="bg-white rounded-2xl border border-[#E7E7E7] shadow-[0_8px_32px_rgba(0,0,0,0.08)] w-[95%] max-w-[500px] overflow-hidden transform transition-all duration-200">
+      
+      <!-- Cabeçalho -->
+      <div class="flex items-center justify-between p-5 border-b border-[#E7E7E7] bg-gray-50/50">
+        <div>
+          <h3 class="text-lg font-bold text-[#171717]">Adicionar Colaborador</h3>
+          <p class="text-xs text-[#737373] mt-0.5">Cadastre um profissional na base do sistema.</p>
+        </div>
+        <button 
+          class="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+          type="button" 
+          data-close="addPersonModal"
+        >
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Corpo -->
+      <div class="p-5">
+        <form id="personForm" class="space-y-4">
+          <!-- Nome -->
+          <div>
+            <label for="personName" class="block text-xs font-semibold text-[#173F69] mb-1.5">
+              Nome Completo
+            </label>
+            <input
+              id="personName"
+              type="text"
+              maxlength="80"
+              placeholder="Ex: João Silva"
+              required
+              class="w-full border border-[#E7E7E7] rounded-lg px-3 py-2.5 text-sm
+                     text-[#171717] placeholder-gray-400
+                     focus:outline-none focus:border-[#1F6FB2] focus:ring-2 focus:ring-[#eaf5ff]
+                     transition-all duration-150"
+            >
+          </div>
+
+          <!-- Setor -->
+          <div>
+            <label for="personRole" class="block text-xs font-semibold text-[#173F69] mb-1.5">
+              Setor de Atuação
+            </label>
+            <select
+              id="personRole"
+              required
+              class="w-full border border-[#E7E7E7] rounded-lg px-3 py-2.5 text-sm
+                     text-[#171717] bg-white
+                     focus:outline-none focus:border-[#1F6FB2] focus:ring-2 focus:ring-[#eaf5ff]
+                     transition-all duration-150"
+            >
+              <option value="">Selecione o setor...</option>
+              <option>Montagem</option>
+              <option>Massa</option>
+              <option>Cozinha</option>
+              <option>Forno</option>
+              <option>Despacho</option>
+              <option>Atendimento</option>
+              <option>Estoque</option>
+              <option>Liderança</option>
+              <option>Outros</option>
+            </select>
+          </div>
+
+          <!-- Ações (Rodapé) -->
+          <div class="flex items-center justify-end gap-3 pt-4 border-t border-[#E7E7E7] mt-6">
+            <button 
+              type="button" 
+              class="px-4 py-2.5 text-sm font-semibold text-gray-700 bg-gray-100 border border-transparent rounded-lg
+                     hover:bg-gray-200 active:scale-[0.98] transition-all duration-150
+                     flex items-center gap-1.5" 
+              data-close="addPersonModal"
+            >
+              <i data-lucide="x-circle" class="w-4 h-4"></i>
+              Cancelar
+            </button>
+            <button 
+              type="submit" 
+              class="px-6 py-2.5 text-sm font-semibold text-white bg-[#2f9e64] rounded-lg
+                     hover:bg-[#257f4f] active:scale-[0.98] transition-all duration-150 shadow-sm
+                     flex items-center gap-1.5"
+            >
+              <i data-lucide="save" class="w-4 h-4"></i>
+              Salvar
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
 
 </section>
