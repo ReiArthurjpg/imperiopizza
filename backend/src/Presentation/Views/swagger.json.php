@@ -58,6 +58,16 @@ $swagger = [
                 ]
             ]
         ],
+        "/api/dashboard/top-montadores-mensal" => [
+            "get" => [
+                "summary" => "Obter Top 5 Montadores do Mês corrente",
+                "responses" => [
+                    "200" => [
+                        "description" => "Ranking obtido com sucesso"
+                    ]
+                ]
+            ]
+        ],
         "/api/sync" => [
             "post" => [
                 "summary" => "Sincronizar estado (Comandas, lotes, etc)",

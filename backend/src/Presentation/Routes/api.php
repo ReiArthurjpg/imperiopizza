@@ -19,6 +19,13 @@ if ($uri === '/api/dashboard/kpis' && $method === 'GET') {
     exit;
 }
 
+if ($uri === '/api/dashboard/top-montadores-mensal' && $method === 'GET') {
+    require_once __DIR__ . '/../Controllers/ApiController.php';
+    $controller = new \App\Back\Presentation\Controllers\ApiController();
+    $controller->getTopAssemblersMensal();
+    exit;
+}
+
 if ($uri === '/api/sync' && $method === 'POST') {
     require_once __DIR__ . '/../Controllers/ApiController.php';
     $controller = new \App\Back\Presentation\Controllers\ApiController();

@@ -10,6 +10,11 @@
   </div>
 
   <div class="flex items-center gap-3 sm:gap-4">
+    <!-- Seletor de Mês/Ano no Header -->
+    <div class="flex items-center bg-gray-50 border border-gray-200 rounded-lg px-2.5 py-1.5 text-sm font-medium text-gray-600">
+      <i data-lucide="calendar" class="w-4 h-4 mr-2 text-gray-400"></i>
+      <input type="month" id="headerMonthPicker" class="bg-transparent border-none outline-none text-gray-700 font-semibold text-xs cursor-pointer p-0" style="color-scheme: light;" />
+    </div>
 
 
     <!-- Notification Bell -->

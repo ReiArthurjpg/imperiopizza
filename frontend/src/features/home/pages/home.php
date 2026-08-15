@@ -15,22 +15,7 @@
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#E7E7E7] mb-5">
       <div>
         <h3 class="text-base font-semibold text-[#173F69]">Período de Análise</h3>
-        <p class="text-xs text-gray-400 mt-0.5">Filtre e consolide as comandas e pizzas finalizadas no intervalo selecionado.</p>
-      </div>
-      <div class="flex items-center gap-2.5 self-start sm:self-auto">
-        <!-- Data Inicial -->
-        <div class="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 text-sm">
-          <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">De</span>
-          <input id="globalStartDate" type="date" class="bg-transparent border-none outline-none text-gray-700 font-semibold text-sm p-0 cursor-pointer w-[125px]" style="color-scheme: light;" />
-        </div>
-        
-        <i data-lucide="arrow-right" class="w-4 h-4 text-gray-400"></i>
-        
-        <!-- Data Final -->
-        <div class="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 text-sm">
-          <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Até</span>
-          <input id="globalEndDate" type="date" class="bg-transparent border-none outline-none text-gray-700 font-semibold text-sm p-0 cursor-pointer w-[125px]" style="color-scheme: light;" />
-        </div>
+        <p class="text-xs text-gray-400 mt-0.5">Visão consolidada do mês selecionado no cabeçalho.</p>
       </div>
     </div>
 
@@ -120,10 +105,10 @@
           <h2 class="text-base font-semibold text-[#171717] flex items-center gap-2">
             Top Montadores
           </h2>
-          <span class="text-xs text-gray-400 font-medium">Hoje</span>
+          <span class="text-xs text-gray-400 font-medium">Este Mês</span>
         </div>
-        <div id="dashboardRank">
-          <!-- Populado pelo JS (Ranking) -->
+        <div id="dashboardRankMensal">
+          <!-- Populado pelo JS (Ranking Mensal Automático) -->
         </div>
       </div>
 

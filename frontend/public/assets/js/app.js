@@ -22,7 +22,7 @@
     function formatDate(v) { if (!v) return '—'; const [y, m, d] = v.split('-'); return `${d}/${m}/${y}` }
     function formatTime(v) { return v ? new Date(v).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '—' }
     function toast(msg, type = 'ok') { el.toast.textContent = msg; el.toast.className = `toast ${type} show`; clearTimeout(window.__t); window.__t = setTimeout(() => el.toast.classList.remove('show'), 3200) }
-    function currentDate() { return el.globalStartDate.value }
+    function currentDate() { return el.globalStartDate ? el.globalStartDate.value : today() }
     function currentOperation() { return state.operations.find(o => o.date === currentDate()) || null }
     function getOperation(id) { return state.operations.find(o => o.id === id) || null }
     function getPerson(id) { return state.people.find(p => p.id === id) || null }
@@ -52,7 +52,7 @@
           }
         }
       });
-      if (name === 'dashboard') renderDashboard(); 
+      if (name === 'dashboard') { renderDashboard(); fetchTopMontadoresMensal(); }
       if (name === 'team') renderTeam(); 
       if (name === 'production') renderProduction(); 
       if (name === 'dispatch') renderDispatch(); 
@@ -173,11 +173,91 @@
       `).join('');
     }
 
+
+    // ── Top Montadores do Mês (Controlado pelo picker de Mês/Ano do header) ──
+    let isMonthPickerInitialized = false;
+
+    function initHeaderMonthPicker() {
+      const picker = document.getElementById('headerMonthPicker');
+      if (!picker || isMonthPickerInitialized) return;
+      isMonthPickerInitialized = true;
+
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      
+      // Define o valor inicial como Mês/Ano atual
+      picker.value = `${y}-${m}`;
+
+      // Adiciona listener para recarregar o ranking e KPIs ao mudar o mês
+      picker.addEventListener('change', () => {
+        fetchTopMontadoresMensal();
+        renderDashboard();
+      });
+    }
+
+    function fetchTopMontadoresMensal() {
+      initHeaderMonthPicker();
+      const picker = document.getElementById('headerMonthPicker');
+      let url = 'http://localhost:8001/api/dashboard/top-montadores-mensal';
+      
+      if (picker && picker.value) {
+        const [ano, mes] = picker.value.split('-');
+        url += `?ano=${ano}&mes=${mes}`;
+      }
+
+      fetch(url)
+        .then(res => res.json())
+        .then(list => {
+          const container = document.getElementById('dashboardRankMensal');
+          if (!container) return;
+          if (!list || !list.length) {
+            container.innerHTML = empty('Top 5 ainda vazio', 'Nenhum montador fez pizzas neste período.');
+            return;
+          }
+          container.innerHTML = `<div class="space-y-4">${list.map((x, i) => `
+            <div class="flex items-center justify-between group">
+              <div class="flex items-center gap-3">
+                <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${i === 0 ? 'bg-[#FFF9E5] text-[#D97706] ring-1 ring-[#FDE68A]' : 'bg-gray-100 text-gray-500'}">
+                  ${i + 1}
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-[#171717] group-hover:text-[#B5120B] transition-colors">${esc(x.name)}</p>
+                  <p class="text-[11px] text-gray-500">Montador</p>
+                </div>
+              </div>
+              <div class="text-sm font-semibold text-[#171717]">
+                ${x.pizzas} <span class="text-xs text-gray-400 font-normal">pizzas</span>
+              </div>
+            </div>`).join('')}</div>`;
+        })
+        .catch(err => {
+          console.error('Erro ranking mensal:', err);
+          const container = document.getElementById('dashboardRankMensal');
+          if (container) container.innerHTML = empty('Top 5 ainda vazio', 'Erro ao obter dados.');
+        });
+    }
+    // Atualiza o ranking a cada 5 minutos automaticamente
+    setInterval(fetchTopMontadoresMensal, 5 * 60 * 1000);
+
     function renderDashboard() {
       renderHeader();
       const op = currentOperation(), s = stats(op);
       
-      fetch(`http://localhost:8001/api/dashboard/kpis?start_date=${el.globalStartDate.value}&end_date=${el.globalEndDate.value}`)
+      const picker = document.getElementById('headerMonthPicker');
+      let startDate = '', endDate = '';
+      if (picker && picker.value) {
+        const [ano, mes] = picker.value.split('-');
+        startDate = `${ano}-${mes}-01`;
+        endDate = new Date(ano, mes, 0).toISOString().split('T')[0];
+      } else {
+        const now = new Date();
+        const y = now.getFullYear(), m = String(now.getMonth() + 1).padStart(2, '0');
+        startDate = `${y}-${m}-01`;
+        endDate = new Date(y, now.getMonth() + 1, 0).toISOString().split('T')[0];
+      }
+
+      fetch(`http://localhost:8001/api/dashboard/kpis?start_date=${startDate}&end_date=${endDate}`)
         .then(res => res.json())
         .then(kpis => {
           animateMetric(el.dashCommands, kpis.comandas);
@@ -195,6 +275,8 @@
           animateMetric(el.dashErrors, s.errors);
         });
       
+
+
       // Update team badge
       const onlineBadge = document.getElementById('dashboardTeamOnlineBadge');
       if (onlineBadge) {
@@ -220,7 +302,8 @@
           </div>
         </div>`;
         el.dashboardTeam.innerHTML = empty('Equipe não cadastrada', 'Abra a página Equipe.');
-        el.dashboardRank.innerHTML = empty('Top 5 ainda vazio', 'O ranking será calculado pela quantidade de pizzas.');
+        const rankMensalEl = document.getElementById('dashboardRankMensal');
+        if (rankMensalEl) rankMensalEl.innerHTML = empty('Top 5 ainda vazio', 'O ranking será calculado pela quantidade de pizzas.');
         el.dashboardLive.innerHTML = `<div class="dashboard-live-empty">${empty('Sem movimento', 'Inicie a produção para acompanhar as comandas.')}</div>`;
         if (typeof lucide !== 'undefined') lucide.createIcons();
         return;
@@ -252,7 +335,6 @@
         ` : ''}
       </div>`;
       el.dashboardTeam.innerHTML = teamHtml(op.team);
-      el.dashboardRank.innerHTML = dashboardTop5Html(op);
       el.dashboardLive.innerHTML = dashboardLiveHtml(op);
       
       // Simula Alertas
@@ -390,8 +472,8 @@
         overlay.classList.add('hidden'); 
       }
     }); 
-    el.globalStartDate.addEventListener('change', () => { el.assemblerId.value = ''; el.assemblerSearch.value = ''; renderAll() });
-    el.globalEndDate.addEventListener('change', () => { el.assemblerId.value = ''; el.assemblerSearch.value = ''; renderAll() });
+    if (el.globalStartDate) el.globalStartDate.addEventListener('change', () => { el.assemblerId.value = ''; el.assemblerSearch.value = ''; renderAll() });
+    if (el.globalEndDate) el.globalEndDate.addEventListener('change', () => { el.assemblerId.value = ''; el.assemblerSearch.value = ''; renderAll() });
     // equipe
     el.personForm.addEventListener('submit', e => { e.preventDefault(); const name = proper(el.personName.value), role = el.personRole.value; if (name.length < 2 || !role) return toast('Preencha nome e setor.', 'error'); if (state.people.some(p => norm(p.name) === norm(name) && p.role === role)) return toast('Este profissional já está cadastrado neste setor.', 'warn'); state.people.push({ id: uid(), name, role, createdAt: new Date().toISOString() }); save(); el.personForm.reset(); renderTeam(); toast('Profissional cadastrado.') }); el.peopleChecklist.addEventListener('change', e => { const box = e.target.closest('[data-team-id]'); if (box && !box.checked && box.dataset.usedInProduction === '1') { box.checked = true; toast('Este montador já possui produção registrada e deve permanecer na equipe.', 'warn') } renderCheckedTeam() }); el.peopleChecklist.addEventListener('click', e => { const b = e.target.closest('[data-remove-person]'); if (!b) return; const p = getPerson(b.dataset.removePerson), used = state.operations.some(o => o.team.some(t => t.personId === p.id) || o.commands.some(c => c.assemblerId === p.id)); if (used) return toast('Este profissional já está vinculado a operações.', 'warn'); if (confirm(`Remover ${p.name}?`)) { state.people = state.people.filter(x => x.id !== p.id); save(); renderTeam(); toast('Profissional removido.', 'warn') } }); el.saveTeamBtn.addEventListener('click', () => saveTeam(true)); el.startOperationBtn.addEventListener('click', () => { const op = ensureOperation(); if (op.status !== 'draft') return toast('A operação já foi iniciada.', 'warn'); saveTeam(false); if (!op.team.length) return toast('Selecione a equipe do dia.', 'error'); if (!op.team.some(p => p.role === 'Montagem')) return toast('Inclua ao menos um montador.', 'error'); op.status = 'production_open'; op.startedAt = new Date().toISOString(); save(); showPage('production'); toast('Operação iniciada.') });
     // central moderna de produção
@@ -424,9 +506,9 @@
     el.historyList.addEventListener('click', e => { const x = e.target.closest('[data-report-op]'); if (x) { selectedReportOperationId = x.dataset.reportOp; renderReports() } }); el.reportCards.addEventListener('click', e => { const b = e.target.closest('[data-report-action]'); if (!b) return; const op = getOperation(selectedReportOperationId); if (!op) return; const a = b.dataset.reportAction; if (a === 'download-attendance') downloadHtml(`lista_presenca_${op.date}.html`, attendanceReport(op)); if (a === 'print-attendance') printHtml(attendanceReport(op)); if (a === 'download-production') downloadHtml(`resultado_montagem_${op.date}.html`, productionReport(op)); if (a === 'print-production') printHtml(productionReport(op)) }); el.backupBtn.addEventListener('click', () => { const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' }), url = URL.createObjectURL(blob), a = document.createElement('a'); a.href = url; a.download = `backup_imperial_${today()}.json`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); toast('Backup baixado.') }); el.restoreBtn.addEventListener('click', () => el.restoreFile.click()); el.restoreFile.addEventListener('change', async e => { const f = e.target.files[0]; if (!f) return; try { const d = JSON.parse(await f.text()); if (!Array.isArray(d.people) || !Array.isArray(d.operations)) throw new Error(); if (!confirm('Restaurar este backup e substituir os dados atuais?')) return; state.people = d.people; state.operations = d.operations; save(); selectedReportOperationId = null; renderAll(); toast('Backup restaurado.') } catch (err) { toast('Backup inválido.', 'error') } finally { e.target.value = '' } });
 
     function renderAll() { renderHeader(); const page = document.querySelector('.page.active')?.id.replace('page-', '') || 'dashboard'; showPage(page) }
-    el.globalDate.value = today();
-    el.globalStartDate.value = today();
-    el.globalEndDate.value = today();
+    if (el.globalDate) el.globalDate.value = today();
+    if (el.globalStartDate) el.globalStartDate.value = today();
+    if (el.globalEndDate) el.globalEndDate.value = today();
     renderAll();
 
     /* =========================================================
@@ -1094,6 +1176,7 @@
           if (!state.operations) state.operations = [];
           upgradeV4();
           renderAll();
+          fetchTopMontadoresMensal(); // Carrega ranking mensal imediatamente ao iniciar
         })
         .catch(err => {
           console.error("Erro API", err);

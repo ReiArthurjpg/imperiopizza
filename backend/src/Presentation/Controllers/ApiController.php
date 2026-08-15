@@ -127,5 +127,17 @@ class ApiController
         } catch (\Exception $e) {
             $this->jsonResponse(['error' => $e->getMessage()], 500);
         }
+     }
+
+    public function getTopAssemblersMensal()
+    {
+        try {
+            $year = isset($_GET['ano']) ? $_GET['ano'] : null;
+            $month = isset($_GET['mes']) ? $_GET['mes'] : null;
+            $ranking = Comanda::getTopAssemblersMensal($year, $month);
+            $this->jsonResponse($ranking);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['error' => $e->getMessage()], 500);
+        }
     }
 }

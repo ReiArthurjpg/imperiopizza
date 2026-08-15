@@ -213,4 +213,27 @@ class Comanda
         $stmt->execute([$startDate, $endDate]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    public static function getTopAssemblersMensal($year = null, $month = null)
+    {
+        $db = Database::getInstance()->getConnection();
+        
+        $y = $year ? intval($year) : intval(date('Y'));
+        $m = $month ? intval($month) : intval(date('m'));
+
+        $stmt = $db->prepare("SELECT 
+            e.nome as name,
+            COUNT(c.id) as comandas,
+            COALESCE(SUM(c.pizzas), 0) as pizzas
+            FROM comandas c
+            JOIN comandas_lotes l ON c.operacao_id = l.operacao_id AND c.number >= l.comanda_inicio AND c.number <= l.comanda_fim
+            JOIN equipe e ON l.assembler_id = e.id
+            WHERE YEAR(c.created_at) = ?
+              AND MONTH(c.created_at) = ?
+            GROUP BY e.id, e.nome
+            ORDER BY pizzas DESC, comandas DESC, name ASC
+            LIMIT 5");
+        $stmt->execute([$y, $m]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
