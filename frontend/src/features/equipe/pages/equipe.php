@@ -166,7 +166,7 @@
         <button 
           class="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
           type="button" 
-          data-close="addPersonModal"
+          data-close="addPerson"
         >
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
@@ -226,7 +226,7 @@
               class="px-4 py-2.5 text-sm font-semibold text-gray-700 bg-gray-100 border border-transparent rounded-lg
                      hover:bg-gray-200 active:scale-[0.98] transition-all duration-150
                      flex items-center gap-1.5" 
-              data-close="addPersonModal"
+              data-close="addPerson"
             >
               <i data-lucide="x-circle" class="w-4 h-4"></i>
               Cancelar
