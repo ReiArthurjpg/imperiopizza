@@ -436,18 +436,12 @@
       </div>`;
     }
 
-    // ── Atualiza os KPI cards da tela de equipe ────────────────────────────────
+    // ── Atualiza as contagens e badges da tela de equipe ──────────────────────
     function renderTeamKpis(op, allPeople) {
-      const kpiTotal = document.getElementById('kpiTotalPeople');
-      const kpiPresent = document.getElementById('kpiPresentPeople');
-      const kpiSectors = document.getElementById('kpiSectorBadges');
       const peopleCount = document.getElementById('teamPeopleCount');
-
-      if (kpiTotal) kpiTotal.textContent = allPeople.length;
       if (peopleCount) peopleCount.textContent = allPeople.length;
 
       const teamToday = op?.team || [];
-      if (kpiPresent) kpiPresent.textContent = teamToday.length;
 
       // Badge dinâmico na lista de presença
       const selBadge = document.getElementById('teamSelectedBadge');
@@ -460,85 +454,8 @@
             : 'bg-gray-100 text-[#737373] border-gray-200'
         }`;
       }
-
-      // Mini-badges por setor
-      if (kpiSectors) {
-        const sectorCount = {};
-        teamToday.forEach(m => { sectorCount[m.role] = (sectorCount[m.role] || 0) + 1; });
-        const entries = Object.entries(sectorCount);
-        if (!entries.length) {
-          kpiSectors.innerHTML = '<span class="text-xs text-[#737373]">—</span>';
-        } else {
-          kpiSectors.innerHTML = entries.map(([sector, count]) => {
-            const sc = sectorColors(sector);
-            return `<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-semibold
-                               ${sc.bg} ${sc.text} ring-1 ${sc.ring}">
-              ${esc(sector)} <span class="font-bold">${count}</span>
-            </span>`;
-          }).join('');
-        }
-      }
     }
 
-    // ── Renderiza o stepper do Fluxo do Dia ───────────────────────────────────
-    function renderTeamStepper(op) {
-      const container = document.getElementById('teamDayStepper');
-      if (!container) return;
-
-      const steps = [
-        { label: 'Iniciar operação',   statuses: [] },
-        { label: 'Registrar produção', statuses: ['production_open', 'kitchen_closed', 'completed'] },
-        { label: 'Encerrar cozinha',   statuses: ['production_open', 'kitchen_closed', 'completed'] },
-        { label: 'Continuar despacho', statuses: ['kitchen_closed', 'completed'] },
-        { label: 'Zerar pendências',   statuses: ['kitchen_closed', 'completed'] },
-        { label: 'Finalizar o dia',    statuses: ['completed'] },
-      ];
-
-      // Determina qual step é o "ativo" atual
-      const activeMap = {
-        'draft':           0,
-        'production_open': 1,
-        'kitchen_closed':  3,
-        'completed':       99, // todos concluídos
-      };
-      const activeIdx = op ? (activeMap[op.status] ?? -1) : -1;
-
-      container.innerHTML = steps.map((step, i) => {
-        const isDone   = op && i < activeIdx;
-        const isActive = op && i === activeIdx;
-        // Se completed, todos ficam "done"
-        const allDone  = op?.status === 'completed';
-
-        if (allDone || isDone) {
-          return `<div class="flex items-center gap-1.5 px-3 py-2 rounded-full border border-[#A7F3D0]
-                              bg-[#E7F8F0] text-xs font-medium text-[#10B981]">
-            <span class="w-5 h-5 rounded-full bg-[#10B981] text-white
-                         flex items-center justify-center font-bold">
-              <i data-lucide="check" class="w-3 h-3"></i>
-            </span>
-            ${esc(step.label)}
-          </div>`;
-        }
-        if (isActive) {
-          return `<div class="flex items-center gap-1.5 px-3 py-2 rounded-full border border-[#FCA5A5]
-                              bg-[#FDECEB] text-xs font-semibold text-[#B5120B]
-                              shadow-sm animate-pulse">
-            <span class="w-5 h-5 rounded-full bg-[#B5120B] text-white text-[10px]
-                         flex items-center justify-center font-bold">${i + 1}</span>
-            ${esc(step.label)}
-          </div>`;
-        }
-        // Pendente
-        return `<div class="flex items-center gap-1.5 px-3 py-2 rounded-full border border-[#E7E7E7]
-                            bg-gray-50 text-xs font-medium text-[#737373]">
-          <span class="w-5 h-5 rounded-full bg-gray-200 text-gray-500 text-[10px]
-                       flex items-center justify-center font-bold">${i + 1}</span>
-          ${esc(step.label)}
-        </div>`;
-      }).join('');
-
-      if (typeof lucide !== 'undefined') lucide.createIcons();
-    }
 
     // ── Renderiza o banner de status (substituindo .banner legado) ─────────────
     function renderTeamBanner(op) {
@@ -681,9 +598,6 @@
 
       // Banner de status
       renderTeamBanner(op);
-
-      // Stepper
-      renderTeamStepper(op);
 
       // Ícones Lucide
       if (typeof lucide !== 'undefined') lucide.createIcons();

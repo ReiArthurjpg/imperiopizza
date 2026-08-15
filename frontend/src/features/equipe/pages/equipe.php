@@ -14,56 +14,6 @@
     <div id="teamHeaderBadge" class="flex items-center gap-2 shrink-0 mt-1"></div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════
-       KPI SUMMARY CARDS
-  ════════════════════════════════════════════════════ -->
-  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-
-    <!-- KPI: Total cadastrado -->
-    <div class="relative overflow-hidden bg-gray-50/50 p-4 rounded-xl border border-[#E7E7E7]
-                transition-all duration-200 hover:shadow-[0_2px_8px_rgb(0,0,0,0.04)]
-                border-l-4 border-l-[#173F69]">
-      <div class="flex justify-between items-start mb-3">
-        <h3 class="text-xs font-semibold text-[#173F69] uppercase tracking-wide">Total cadastrado</h3>
-        <div class="p-1.5 rounded-lg bg-blue-50 text-[#173F69]">
-          <i data-lucide="users" class="w-4 h-4"></i>
-        </div>
-      </div>
-      <span id="kpiTotalPeople" class="text-3xl font-bold tracking-tight text-[#171717]">0</span>
-      <p class="mt-1 text-xs font-medium text-[#737373]">Profissionais registrados</p>
-    </div>
-
-    <!-- KPI: Presentes hoje -->
-    <div class="relative overflow-hidden bg-gray-50/50 p-4 rounded-xl border border-[#E7E7E7]
-                transition-all duration-200 hover:shadow-[0_2px_8px_rgb(0,0,0,0.04)]
-                border-l-4 border-l-emerald-500">
-      <div class="flex justify-between items-start mb-3">
-        <h3 class="text-xs font-semibold text-emerald-700 uppercase tracking-wide">Presentes hoje</h3>
-        <div class="p-1.5 rounded-lg bg-emerald-50 text-emerald-600">
-          <i data-lucide="user-check" class="w-4 h-4"></i>
-        </div>
-      </div>
-      <span id="kpiPresentPeople" class="text-3xl font-bold tracking-tight text-[#171717]">0</span>
-      <p class="mt-1 text-xs font-medium text-[#737373]">Selecionados para a operação</p>
-    </div>
-
-    <!-- KPI: Por setor -->
-    <div class="relative overflow-hidden bg-gray-50/50 p-4 rounded-xl border border-[#E7E7E7]
-                transition-all duration-200 hover:shadow-[0_2px_8px_rgb(0,0,0,0.04)]
-                border-l-4 border-l-[#B5120B]">
-      <div class="flex justify-between items-start mb-3">
-        <h3 class="text-xs font-semibold text-[#B5120B] uppercase tracking-wide">Setores ativos</h3>
-        <div class="p-1.5 rounded-lg bg-[#FDECEB] text-[#B5120B]">
-          <i data-lucide="layers" class="w-4 h-4"></i>
-        </div>
-      </div>
-      <!-- Mini-badges de setor populados pelo JS -->
-      <div id="kpiSectorBadges" class="flex flex-wrap gap-1 min-h-[28px]">
-        <span class="text-xs text-[#737373]">—</span>
-      </div>
-    </div>
-
-  </div>
 
   <!-- ═══════════════════════════════════════════════════
        BANNER DE STATUS DA OPERAÇÃO (populado pelo JS)
@@ -253,21 +203,6 @@
         </div>
       </div>
 
-      <!-- ── Fluxo do dia ── -->
-      <div class="bg-white rounded-xl border border-[#E7E7E7] shadow-[0_4px_12px_rgba(0,0,0,0.02)] p-5">
-        <div class="flex items-center justify-between pb-4 border-b border-[#E7E7E7] mb-5">
-          <div>
-            <h3 class="text-base font-semibold text-[#171717]">Fluxo do Dia</h3>
-            <p class="text-xs text-[#737373] mt-0.5">A operação possui duas finalizações independentes.</p>
-          </div>
-          <div class="p-2 rounded-lg bg-gray-50 text-[#737373]">
-            <i data-lucide="milestone" class="w-4 h-4"></i>
-          </div>
-        </div>
-
-        <!-- Stepper — populado pelo JS via renderTeamStepper() -->
-        <div id="teamDayStepper" class="flex flex-wrap gap-2"></div>
-      </div>
 
     </div><!-- /coluna direita -->
 
