@@ -201,4 +201,45 @@ class ApiController
             $this->jsonResponse(['error' => $e->getMessage()], 500);
         }
     }
+
+    public function getEquipeOperacao()
+    {
+        try {
+            $op = Operacao::getCurrent();
+
+            if (!$op || $op['status'] === 'draft') {
+                $this->jsonResponse([
+                    'operacao_ativa' => false,
+                    'status'         => 'inativa',
+                    'mensagem'       => 'Nenhuma operação ativa no momento.',
+                    'equipe'         => [],
+                ]);
+            }
+
+            // Busca a equipe da operação atual no state.json
+            $file = __DIR__ . '/../../../../storage/state.json';
+            $team = [];
+            if (file_exists($file)) {
+                $jsonData = json_decode(file_get_contents($file), true);
+                if (isset($jsonData['operations']) && is_array($jsonData['operations'])) {
+                    foreach ($jsonData['operations'] as $stateOp) {
+                        if (isset($stateOp['id']) && $stateOp['id'] === $op['id']) {
+                            $team = $stateOp['team'] ?? [];
+                            break;
+                        }
+                    }
+                }
+            }
+
+            $this->jsonResponse([
+                'operacao_ativa'  => true,
+                'operacao_id'     => $op['id'],
+                'operacao_status' => $op['status'],
+                'data'            => $op['date'],
+                'equipe'          => $team,
+            ]);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['error' => $e->getMessage()], 500);
+        }
+    }
 }

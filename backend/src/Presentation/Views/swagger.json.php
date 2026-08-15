@@ -12,6 +12,7 @@ $swagger = [
     "paths" => [
         "/api/init" => [
             "get" => [
+                "tags" => ["Geral"],
                 "summary" => "Obter dados iniciais (Operação, Equipe, Configurações)",
                 "responses" => [
                     "200" => ["description" => "Sucesso"]
@@ -20,6 +21,7 @@ $swagger = [
         ],
         "/api/dashboard/kpis" => [
             "get" => [
+                "tags" => ["Dashboard"],
                 "summary" => "Obter KPIs do Dashboard (Comandas e Pizzas Feitas)",
                 "parameters" => [
                     [
@@ -60,6 +62,7 @@ $swagger = [
         ],
         "/api/dashboard/top-montadores-mensal" => [
             "get" => [
+                "tags" => ["Dashboard"],
                 "summary" => "Obter Top Montadores por Mês e Ano",
                 "parameters" => [
                     [
@@ -88,6 +91,7 @@ $swagger = [
         ],
         "/api/dashboard/kpis-dia" => [
             "get" => [
+                "tags" => ["Dashboard"],
                 "summary" => "KPIs da Operação Ativa do Dia",
                 "description" => "Retorna KPIs detalhados da operação que está em andamento agora. Só funciona quando uma operação foi iniciada (status != draft e != completed). Quando inativa, retorna operacao_ativa: false.",
                 "responses" => [
@@ -135,8 +139,49 @@ $swagger = [
                 ]
             ]
         ],
+        "/api/dashboard/equipe-operacao" => [
+            "get" => [
+                "tags" => ["Dashboard"],
+                "summary" => "Equipe da Operação Ativa",
+                "description" => "Retorna a equipe que está escalada na operação em andamento (pega os dados atuais do state.json). Só funciona com operação ativa (status != draft e != completed).",
+                "responses" => [
+                    "200" => [
+                        "description" => "Equipe retornada com sucesso",
+                        "content" => [
+                            "application/json" => [
+                                "examples" => [
+                                    "ativa" => [
+                                        "summary" => "Com operação ativa",
+                                        "value" => [
+                                            "operacao_ativa"  => true,
+                                            "operacao_id"     => "abc-123",
+                                            "operacao_status" => "production_open",
+                                            "data"            => "2026-08-14",
+                                            "equipe"          => [
+                                                ["personId" => "uuid-1", "name" => "João", "role" => "Massa"],
+                                                ["personId" => "uuid-2", "name" => "Maria", "role" => "Montagem"]
+                                            ]
+                                        ]
+                                    ],
+                                    "inativa" => [
+                                        "summary" => "Sem operação ativa",
+                                        "value" => [
+                                            "operacao_ativa" => false,
+                                            "status"         => "inativa",
+                                            "mensagem"       => "Nenhuma operação ativa no momento.",
+                                            "equipe"         => []
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ],
         "/api/dashboard/movimentacoes-recentes" => [
             "get" => [
+                "tags" => ["Dashboard"],
                 "summary" => "Movimentações Recentes da Operação Ativa",
                 "description" => "Retorna as últimas comandas atualizadas da operação em andamento. Só funciona com operação ativa (status != draft e != completed). Aceita parâmetro opcional 'limit' (padrão 10, máximo 50).",
                 "parameters" => [
@@ -203,6 +248,7 @@ $swagger = [
         ],
         "/api/sync" => [
             "post" => [
+                "tags" => ["Sincronização"],
                 "summary" => "Sincronizar estado (Comandas, lotes, etc)",
                 "responses" => [
                     "200" => ["description" => "Sucesso"]
@@ -211,6 +257,7 @@ $swagger = [
         ],
         "/api/comandas" => [
             "post" => [
+                "tags" => ["Comandas"],
                 "summary" => "Criar uma nova comanda",
                 "requestBody" => [
                     "required" => true,
@@ -234,6 +281,7 @@ $swagger = [
         ],
         "/api/comandas/status" => [
             "put" => [
+                "tags" => ["Comandas"],
                 "summary" => "Atualizar status de uma comanda",
                 "responses" => [
                     "200" => ["description" => "Status atualizado"]
@@ -242,6 +290,7 @@ $swagger = [
         ],
         "/api/equipe" => [
             "post" => [
+                "tags" => ["Equipe"],
                 "summary" => "Sincronizar equipe",
                 "responses" => [
                     "200" => ["description" => "Equipe sincronizada"]

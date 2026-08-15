@@ -40,6 +40,13 @@ if ($uri === '/api/dashboard/movimentacoes-recentes' && $method === 'GET') {
     exit;
 }
 
+if ($uri === '/api/dashboard/equipe-operacao' && $method === 'GET') {
+    require_once __DIR__ . '/../Controllers/ApiController.php';
+    $controller = new \App\Back\Presentation\Controllers\ApiController();
+    $controller->getEquipeOperacao();
+    exit;
+}
+
 if ($uri === '/api/sync' && $method === 'POST') {
     require_once __DIR__ . '/../Controllers/ApiController.php';
     $controller = new \App\Back\Presentation\Controllers\ApiController();
