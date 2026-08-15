@@ -110,6 +110,21 @@ class ApiController
         }
     }
 
+    public function startOperacao()
+    {
+        $data = $this->getJsonInput();
+        if (!isset($data['operacao_id'])) {
+            $this->jsonResponse(['error' => 'Missing operacao_id'], 400);
+        }
+
+        try {
+            \App\Models\Operacao::start($data['operacao_id'], $data['startedAt'] ?? null);
+            $this->jsonResponse(['success' => true]);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['error' => $e->getMessage()], 500);
+        }
+    }
+
     public function createProfissional()
     {
         $data = $this->getJsonInput();

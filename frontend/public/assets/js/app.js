@@ -791,7 +791,7 @@
       }
     });
 
-    el.saveTeamBtn.addEventListener('click', () => saveTeam(true)); el.startOperationBtn.addEventListener('click', () => { const op = ensureOperation(); if (op.status !== 'draft') return toast('A operação já foi iniciada.', 'warn'); saveTeam(false); if (!op.team.length) return toast('Selecione a equipe do dia.', 'error'); if (!op.team.some(p => p.role === 'Montagem')) return toast('Inclua ao menos um montador.', 'error'); op.status = 'production_open'; op.startedAt = new Date().toISOString(); save(); showPage('production'); toast('Operação iniciada.') });
+    el.saveTeamBtn.addEventListener('click', () => saveTeam(true)); el.startOperationBtn.addEventListener('click', () => { const op = ensureOperation(); if (op.status !== 'draft') return toast('A operação já foi iniciada.', 'warn'); saveTeam(false); if (!op.team.length) return toast('Selecione a equipe do dia.', 'error'); if (!op.team.some(p => p.role === 'Montagem')) return toast('Inclua ao menos um montador.', 'error'); op.status = 'production_open'; op.startedAt = new Date().toISOString(); save(); fetch('/api/operacao/iniciar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ operacao_id: op.id, startedAt: op.startedAt }) }); showPage('production'); toast('Operação iniciada.') });
     // Filtros da lista de profissionais (busca por nome + setor)
     document.addEventListener('input', e => { if (e.target.id === 'teamPersonSearch') renderPeopleList(); });
     document.addEventListener('change', e => { if (e.target.id === 'teamSectorFilter') renderPeopleList(); });

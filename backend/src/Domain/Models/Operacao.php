@@ -80,4 +80,14 @@ class Operacao
             }
         }
     }
+
+    public static function start($operacaoId, $startedAt = null)
+    {
+        $db = Database::getInstance()->getConnection();
+        
+        $startedAt = $startedAt ? date('Y-m-d H:i:s', strtotime($startedAt)) : date('Y-m-d H:i:s');
+
+        $stmt = $db->prepare("UPDATE operacoes SET status = 'production_open', started_at = ? WHERE id = ?");
+        $stmt->execute([$startedAt, $operacaoId]);
+    }
 }

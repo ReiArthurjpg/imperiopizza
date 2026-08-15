@@ -322,6 +322,30 @@ $swagger = [
                 ]
             ]
         ],
+        "/api/operacao/iniciar" => [
+            "post" => [
+                "tags" => ["Operação"],
+                "summary" => "Iniciar a operação do dia",
+                "requestBody" => [
+                    "required" => true,
+                    "content" => [
+                        "application/json" => [
+                            "schema" => [
+                                "type" => "object",
+                                "properties" => [
+                                    "operacao_id" => ["type" => "string"],
+                                    "startedAt" => ["type" => "string", "format" => "date-time"]
+                                ],
+                                "required" => ["operacao_id"]
+                            ]
+                        ]
+                    ]
+                ],
+                "responses" => [
+                    "200" => ["description" => "Operação iniciada com sucesso"]
+                ]
+            ]
+        ],
         "/api/profissionais" => [
             "get" => [
                 "tags" => ["Equipe"],
