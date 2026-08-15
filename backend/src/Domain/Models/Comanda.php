@@ -214,6 +214,63 @@ class Comanda
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * KPIs da operação ativa do dia.
+     * Retorna null se não houver nenhuma operação em andamento.
+     */
+    public static function getKpisDia($operacao_id)
+    {
+        $db = Database::getInstance()->getConnection();
+
+        // Totais gerais da operação
+        $stmt = $db->prepare("
+            SELECT
+                COUNT(*) AS total_comandas,
+                COALESCE(SUM(pizzas), 0) AS total_pizzas,
+                COALESCE(SUM(esfiha), 0) AS total_esfihas,
+                COALESCE(SUM(volcano), 0) AS total_vulcoes,
+                COALESCE(SUM(sweet), 0) AS total_doces,
+                SUM(CASE WHEN status = 'cozinha' THEN 1 ELSE 0 END) AS em_cozinha,
+                SUM(CASE WHEN status = 'forno' THEN 1 ELSE 0 END) AS em_forno,
+                SUM(CASE WHEN status = 'despacho' THEN 1 ELSE 0 END) AS despachadas
+            FROM comandas
+            WHERE operacao_id = ?
+        ");
+        $stmt->execute([$operacao_id]);
+        $totais = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // Top montadores da operação atual
+        $stmtTop = $db->prepare("
+            SELECT
+                e.nome AS name,
+                COUNT(c.id) AS comandas,
+                COALESCE(SUM(c.pizzas), 0) AS pizzas
+            FROM comandas c
+            JOIN comandas_lotes l ON c.operacao_id = l.operacao_id
+                AND c.number >= l.comanda_inicio
+                AND c.number <= l.comanda_fim
+            JOIN equipe e ON l.assembler_id = e.id
+            WHERE c.operacao_id = ?
+            GROUP BY e.id, e.nome
+            ORDER BY pizzas DESC, comandas DESC
+            LIMIT 5
+        ");
+        $stmtTop->execute([$operacao_id]);
+        $topMontadores = $stmtTop->fetchAll(PDO::FETCH_ASSOC);
+
+        return [
+            'comandas'       => (int)$totais['total_comandas'],
+            'pizzas'         => (int)$totais['total_pizzas'],
+            'esfihas'        => (int)$totais['total_esfihas'],
+            'vulcoes'        => (int)$totais['total_vulcoes'],
+            'doces'          => (int)$totais['total_doces'],
+            'em_cozinha'     => (int)$totais['em_cozinha'],
+            'em_forno'       => (int)$totais['em_forno'],
+            'despachadas'    => (int)$totais['despachadas'],
+            'top_montadores' => $topMontadores,
+        ];
+    }
+
     public static function getTopAssemblersMensal($year = null, $month = null)
     {
         $db = Database::getInstance()->getConnection();

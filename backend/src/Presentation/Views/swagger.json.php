@@ -86,6 +86,55 @@ $swagger = [
                 ]
             ]
         ],
+        "/api/dashboard/kpis-dia" => [
+            "get" => [
+                "summary" => "KPIs da Operação Ativa do Dia",
+                "description" => "Retorna KPIs detalhados da operação que está em andamento agora. Só funciona quando uma operação foi iniciada (status != draft e != completed). Quando inativa, retorna operacao_ativa: false.",
+                "responses" => [
+                    "200" => [
+                        "description" => "KPIs retornados com sucesso",
+                        "content" => [
+                            "application/json" => [
+                                "examples" => [
+                                    "operacao_ativa" => [
+                                        "summary" => "Com operação ativa",
+                                        "value" => [
+                                            "operacao_ativa"  => true,
+                                            "operacao_id"     => "abc-123",
+                                            "operacao_status" => "production_open",
+                                            "data"            => "2026-08-14",
+                                            "iniciada_em"     => "2026-08-14 18:00:00",
+                                            "finalizada_em"   => null,
+                                            "kpis" => [
+                                                "comandas"    => 12,
+                                                "pizzas"      => 36,
+                                                "esfihas"     => 5,
+                                                "vulcoes"     => 2,
+                                                "doces"       => 1,
+                                                "em_cozinha"  => 3,
+                                                "em_forno"    => 2,
+                                                "despachadas" => 7,
+                                                "top_montadores" => [
+                                                    ["name" => "João", "comandas" => 6, "pizzas" => 18]
+                                                ]
+                                            ]
+                                        ]
+                                    ],
+                                    "operacao_inativa" => [
+                                        "summary" => "Sem operação ativa",
+                                        "value" => [
+                                            "operacao_ativa" => false,
+                                            "status"         => "inativa",
+                                            "mensagem"       => "Nenhuma operação ativa no momento."
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ],
         "/api/sync" => [
             "post" => [
                 "summary" => "Sincronizar estado (Comandas, lotes, etc)",

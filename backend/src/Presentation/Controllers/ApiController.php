@@ -140,4 +140,34 @@ class ApiController
             $this->jsonResponse(['error' => $e->getMessage()], 500);
         }
     }
+
+    public function getKpisDia()
+    {
+        try {
+            $op = Operacao::getCurrent();
+
+            // Sem operação ativa ou operação ainda em rascunho (não iniciada)
+            if (!$op || $op['status'] === 'draft') {
+                $this->jsonResponse([
+                    'operacao_ativa' => false,
+                    'status'         => 'inativa',
+                    'mensagem'       => 'Nenhuma operação ativa no momento.',
+                ]);
+            }
+
+            $kpis = Comanda::getKpisDia($op['id']);
+
+            $this->jsonResponse([
+                'operacao_ativa'  => true,
+                'operacao_id'     => $op['id'],
+                'operacao_status' => $op['status'],   // production_open | kitchen_closed
+                'data'            => $op['date'],
+                'iniciada_em'     => $op['started_at'],
+                'finalizada_em'   => $op['completed_at'],
+                'kpis'            => $kpis,
+            ]);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['error' => $e->getMessage()], 500);
+        }
+    }
 }
