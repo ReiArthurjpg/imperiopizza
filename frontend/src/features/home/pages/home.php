@@ -73,7 +73,7 @@
       <div class="bg-white rounded-xl border border-[#E7E7E7] shadow-[0_2px_10px_rgb(0,0,0,0.02)] p-5">
         <div class="flex items-center justify-between mb-6">
           <h2 class="text-base font-semibold text-[#171717]">Movimento Recente</h2>
-          <button class="text-xs font-medium text-[#B5120B] hover:underline" onclick="showPage('production')">Ver tudo</button>
+          <button class="text-xs font-medium text-[#B5120B] px-3 py-1.5 rounded-lg transition-colors hover:bg-[#FDECEB]" onclick="showPage('production')">Ver tudo</button>
         </div>
         <div id="dashboardLive" class="relative pl-2">
           <!-- Populado pelo JS (Timeline) -->

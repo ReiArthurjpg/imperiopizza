@@ -175,7 +175,7 @@
       ];
       
       container.innerHTML = pipelineSteps.map((step, idx) => `
-        <div class="flex-1 min-w-[120px] bg-gray-50 rounded-lg p-4 border border-gray-100 flex flex-col items-center justify-center text-center relative group hover:bg-white hover:border-gray-200 hover:shadow-sm transition-all">
+        <div class="flex-1 min-w-[120px] bg-gray-50 rounded-lg p-4 border border-gray-100 flex flex-col items-center justify-center text-center relative group hover:bg-white hover:border-gray-200 hover:shadow-sm transition-all cursor-pointer">
           <div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 rounded-r-md bg-gray-300 ${step.color} border-l-4 group-hover:h-12 transition-all"></div>
           <span class="text-2xl font-bold text-[#171717] mb-1">${step.count}</span>
           <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">${step.stage}</span>
