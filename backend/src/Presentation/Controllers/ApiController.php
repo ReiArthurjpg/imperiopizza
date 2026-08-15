@@ -100,4 +100,146 @@ class ApiController
         // TODO: Sync team to database
         $this->jsonResponse(['success' => true]);
     }
+
+    public function getDashboardKpis()
+    {
+        try {
+            $startDate = $_GET['start_date'] ?? null;
+            $endDate = $_GET['end_date'] ?? null;
+
+            if ($startDate && $endDate) {
+                $kpis = Comanda::getKpisByPeriod($startDate, $endDate);
+            } else {
+                $op = Operacao::getCurrent();
+                if (!$op) {
+                    $this->jsonResponse([
+                        'comandas' => 0,
+                        'pizzas'   => 0,
+                    ]);
+                }
+                $kpis = Comanda::getKpisByOperacao($op['id']);
+            }
+            
+            $this->jsonResponse([
+                'comandas' => (int)($kpis['comandas'] ?? 0),
+                'pizzas'   => (int)($kpis['pizzas'] ?? 0),
+            ]);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['error' => $e->getMessage()], 500);
+        }
+     }
+
+    public function getTopAssemblersMensal()
+    {
+        try {
+            $year = isset($_GET['ano']) ? $_GET['ano'] : null;
+            $month = isset($_GET['mes']) ? $_GET['mes'] : null;
+            $ranking = Comanda::getTopAssemblersMensal($year, $month);
+            $this->jsonResponse($ranking);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getKpisDia()
+    {
+        try {
+            $op = Operacao::getCurrent();
+
+            // Sem operação ativa ou operação ainda em rascunho (não iniciada)
+            if (!$op || $op['status'] === 'draft') {
+                $this->jsonResponse([
+                    'operacao_ativa' => false,
+                    'status'         => 'inativa',
+                    'mensagem'       => 'Nenhuma operação ativa no momento.',
+                ]);
+            }
+
+            $kpis = Comanda::getKpisDia($op['id']);
+
+            $this->jsonResponse([
+                'operacao_ativa'  => true,
+                'operacao_id'     => $op['id'],
+                'operacao_status' => $op['status'],   // production_open | kitchen_closed
+                'data'            => $op['date'],
+                'iniciada_em'     => $op['started_at'],
+                'finalizada_em'   => $op['completed_at'],
+                'kpis'            => $kpis,
+            ]);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getMovimentacoesRecentes()
+    {
+        try {
+            $op = Operacao::getCurrent();
+
+            // Só funciona com operação ativa (não draft, não completed)
+            if (!$op || $op['status'] === 'draft') {
+                $this->jsonResponse([
+                    'operacao_ativa' => false,
+                    'status'         => 'inativa',
+                    'mensagem'       => 'Nenhuma operação ativa no momento.',
+                    'movimentacoes'  => [],
+                ]);
+            }
+
+            $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
+            $movimentacoes = Comanda::getMovimentacoesRecentes($op['id'], $limit);
+
+            $this->jsonResponse([
+                'operacao_ativa'  => true,
+                'operacao_id'     => $op['id'],
+                'operacao_status' => $op['status'],
+                'data'            => $op['date'],
+                'total'           => count($movimentacoes),
+                'movimentacoes'   => $movimentacoes,
+            ]);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getEquipeOperacao()
+    {
+        try {
+            $op = Operacao::getCurrent();
+
+            if (!$op || $op['status'] === 'draft') {
+                $this->jsonResponse([
+                    'operacao_ativa' => false,
+                    'status'         => 'inativa',
+                    'mensagem'       => 'Nenhuma operação ativa no momento.',
+                    'equipe'         => [],
+                ]);
+            }
+
+            // Busca a equipe da operação atual no state.json
+            $file = __DIR__ . '/../../../../storage/state.json';
+            $team = [];
+            if (file_exists($file)) {
+                $jsonData = json_decode(file_get_contents($file), true);
+                if (isset($jsonData['operations']) && is_array($jsonData['operations'])) {
+                    foreach ($jsonData['operations'] as $stateOp) {
+                        if (isset($stateOp['id']) && $stateOp['id'] === $op['id']) {
+                            $team = $stateOp['team'] ?? [];
+                            break;
+                        }
+                    }
+                }
+            }
+
+            $this->jsonResponse([
+                'operacao_ativa'  => true,
+                'operacao_id'     => $op['id'],
+                'operacao_status' => $op['status'],
+                'data'            => $op['date'],
+                'equipe'          => $team,
+            ]);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['error' => $e->getMessage()], 500);
+        }
+    }
 }

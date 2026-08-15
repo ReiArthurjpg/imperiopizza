@@ -61,7 +61,7 @@
   <div id="mobileSidebarOverlay" class="fixed inset-0 bg-black/20 z-40 hidden backdrop-blur-sm transition-opacity"></div>
 
   <!-- Scripts -->
-  <script src="/assets/js/app.js"></script>
+  <script src="/assets/js/app.js?v=<?= filemtime(__DIR__ . '/../../public/assets/js/app.js') ?>"></script>
   <script>
     // Initialize Lucide icons on page load
     document.addEventListener('DOMContentLoaded', function() {

@@ -2,7 +2,7 @@
     const SECTORS = ['Montagem', 'Massa', 'Cozinha', 'Forno', 'Despacho', 'Atendimento', 'Estoque', 'Liderança', 'Outros'];
     let state = { people: [], operations: [] }; let selectedReportOperationId = null;
     const $ = id => document.getElementById(id);
-    const el = { globalDate: $('globalDate'), phasePill: $('phasePill'), dashboardBanner: $('dashboardBanner'), dashCommands: $('dashCommands'), dashPizzas: $('dashPizzas'), dashKitchen: $('dashKitchen'), dashOven: $('dashOven'), dashDispatch: $('dashDispatch'), dashErrors: $('dashErrors'), dashboardTeam: $('dashboardTeam'), dashboardRank: $('dashboardRank'), dashboardLive: $('dashboardLive'), personForm: $('personForm'), personName: $('personName'), personRole: $('personRole'), peopleChecklist: $('peopleChecklist'), dayTeamGroups: $('dayTeamGroups'), teamOperationNotice: $('teamOperationNotice'), saveTeamBtn: $('saveTeamBtn'), startOperationBtn: $('startOperationBtn'), manageTeamBtn: $('manageTeamBtn'), manageTeamDispatchBtn: $('manageTeamDispatchBtn'), productionGate: $('productionGate'), productionContent: $('productionContent'), productionSubtotals: $('productionSubtotals'), openRegisterCommandBtn: $('openRegisterCommandBtn'), openUpdateCommandsBtn: $('openUpdateCommandsBtn'), updatePendingBadge: $('updatePendingBadge'), productionRecent: $('productionRecent'), commandHistoryPanel: $('commandHistoryPanel'), registerCommandModal: $('registerCommandModal'), closeAndUpdateBtn: $('closeAndUpdateBtn'), assemblerSearch: $('assemblerSearch'), assemblerId: $('assemblerId'), assemblerSuggestions: $('assemblerSuggestions'), assemblerPickerBtn: $('assemblerPickerBtn'), assemblerPickerValue: $('assemblerPickerValue'), assemblerPickerModal: $('assemblerPickerModal'), assemblerPickerSearch: $('assemblerPickerSearch'), assemblerPickerList: $('assemblerPickerList'), pickerManageTeamBtn: $('pickerManageTeamBtn'), commandNumber: $('commandNumber'), pizzaQty: $('pizzaQty'), commandSuggestions: $('commandSuggestions'), commandNote: $('commandNote'), initialOven: $('initialOven'), addCommandBtn: $('addCommandBtn'), prodSearch: $('prodSearch'), prodStatus: $('prodStatus'), prodAssembler: $('prodAssembler'), clearProdFilters: $('clearProdFilters'), productionBody: $('productionBody'), productionMobileList: $('productionMobileList'), productionEmpty: $('productionEmpty'), closeKitchenBtn: $('closeKitchenBtn'), reopenKitchenBtn: $('reopenKitchenBtn'), dispatchGate: $('dispatchGate'), dispatchContent: $('dispatchContent'), dispatchSubtotals: $('dispatchSubtotals'), dispatchSearch: $('dispatchSearch'), dispatchFilter: $('dispatchFilter'), clearDispatchFilters: $('clearDispatchFilters'), dispatchGrid: $('dispatchGrid'), dispatchEmpty: $('dispatchEmpty'), finishDayBtn: $('finishDayBtn'), historyList: $('historyList'), reportOverview: $('reportOverview'), reportCards: $('reportCards'), backupBtn: $('backupBtn'), restoreBtn: $('restoreBtn'), restoreFile: $('restoreFile'), editModal: $('editModal'), editForm: $('editForm'), editId: $('editId'), editNumber: $('editNumber'), editQty: $('editQty'), editAssembler: $('editAssembler'), editStatus: $('editStatus'), editNote: $('editNote'), deleteCommandBtn: $('deleteCommandBtn'), errorModal: $('errorModal'), errorForm: $('errorForm'), errorId: $('errorId'), errorType: $('errorType'), errorNote: $('errorNote'), clearErrorBtn: $('clearErrorBtn'), toast: $('toast') };
+    const el = { globalDate: $('globalDate'), globalStartDate: $('globalStartDate'), globalEndDate: $('globalEndDate'), phasePill: $('phasePill'), dashboardBanner: $('dashboardBanner'), dashCommands: $('dashCommands'), dashPizzas: $('dashPizzas'), dashKitchen: $('dashKitchen'), dashOven: $('dashOven'), dashDispatch: $('dashDispatch'), dashErrors: $('dashErrors'), dashboardTeam: $('dashboardTeam'), dashboardRank: $('dashboardRank'), dashboardLive: $('dashboardLive'), personForm: $('personForm'), personName: $('personName'), personRole: $('personRole'), peopleChecklist: $('peopleChecklist'), dayTeamGroups: $('dayTeamGroups'), teamOperationNotice: $('teamOperationNotice'), saveTeamBtn: $('saveTeamBtn'), startOperationBtn: $('startOperationBtn'), manageTeamBtn: $('manageTeamBtn'), manageTeamDispatchBtn: $('manageTeamDispatchBtn'), productionGate: $('productionGate'), productionContent: $('productionContent'), productionSubtotals: $('productionSubtotals'), openRegisterCommandBtn: $('openRegisterCommandBtn'), openUpdateCommandsBtn: $('openUpdateCommandsBtn'), updatePendingBadge: $('updatePendingBadge'), productionRecent: $('productionRecent'), commandHistoryPanel: $('commandHistoryPanel'), registerCommandModal: $('registerCommandModal'), closeAndUpdateBtn: $('closeAndUpdateBtn'), assemblerSearch: $('assemblerSearch'), assemblerId: $('assemblerId'), assemblerSuggestions: $('assemblerSuggestions'), assemblerPickerBtn: $('assemblerPickerBtn'), assemblerPickerValue: $('assemblerPickerValue'), assemblerPickerModal: $('assemblerPickerModal'), assemblerPickerSearch: $('assemblerPickerSearch'), assemblerPickerList: $('assemblerPickerList'), pickerManageTeamBtn: $('pickerManageTeamBtn'), commandNumber: $('commandNumber'), pizzaQty: $('pizzaQty'), commandSuggestions: $('commandSuggestions'), commandNote: $('commandNote'), initialOven: $('initialOven'), addCommandBtn: $('addCommandBtn'), prodSearch: $('prodSearch'), prodStatus: $('prodStatus'), prodAssembler: $('prodAssembler'), clearProdFilters: $('clearProdFilters'), productionBody: $('productionBody'), productionMobileList: $('productionMobileList'), productionEmpty: $('productionEmpty'), closeKitchenBtn: $('closeKitchenBtn'), reopenKitchenBtn: $('reopenKitchenBtn'), dispatchGate: $('dispatchGate'), dispatchContent: $('dispatchContent'), dispatchSubtotals: $('dispatchSubtotals'), dispatchSearch: $('dispatchSearch'), dispatchFilter: $('dispatchFilter'), clearDispatchFilters: $('clearDispatchFilters'), dispatchGrid: $('dispatchGrid'), dispatchEmpty: $('dispatchEmpty'), finishDayBtn: $('finishDayBtn'), historyList: $('historyList'), reportOverview: $('reportOverview'), reportCards: $('reportCards'), backupBtn: $('backupBtn'), restoreBtn: $('restoreBtn'), restoreFile: $('restoreFile'), editModal: $('editModal'), editForm: $('editForm'), editId: $('editId'), editNumber: $('editNumber'), editQty: $('editQty'), editAssembler: $('editAssembler'), editStatus: $('editStatus'), editNote: $('editNote'), deleteCommandBtn: $('deleteCommandBtn'), errorModal: $('errorModal'), errorForm: $('errorForm'), errorId: $('errorId'), errorType: $('errorType'), errorNote: $('errorNote'), clearErrorBtn: $('clearErrorBtn'), toast: $('toast') };
 
     function save() {
       fetch('http://localhost:8001/api/sync', {
@@ -22,7 +22,7 @@
     function formatDate(v) { if (!v) return '—'; const [y, m, d] = v.split('-'); return `${d}/${m}/${y}` }
     function formatTime(v) { return v ? new Date(v).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '—' }
     function toast(msg, type = 'ok') { el.toast.textContent = msg; el.toast.className = `toast ${type} show`; clearTimeout(window.__t); window.__t = setTimeout(() => el.toast.classList.remove('show'), 3200) }
-    function currentDate() { return el.globalDate.value }
+    function currentDate() { return el.globalStartDate ? el.globalStartDate.value : today() }
     function currentOperation() { return state.operations.find(o => o.date === currentDate()) || null }
     function getOperation(id) { return state.operations.find(o => o.id === id) || null }
     function getPerson(id) { return state.people.find(p => p.id === id) || null }
@@ -52,20 +52,20 @@
           }
         }
       });
-      if (name === 'dashboard') renderDashboard(); 
+      if (name === 'dashboard') { renderDashboard(); fetchTopMontadoresMensal(); }
       if (name === 'team') renderTeam(); 
       if (name === 'production') renderProduction(); 
       if (name === 'dispatch') renderDispatch(); 
       if (name === 'reports') renderReports(); 
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    function renderHeader() { const op = currentOperation(); el.phasePill.textContent = phaseLabel(op); el.phasePill.className = 'phase-pill'; if (op?.status === 'production_open') el.phasePill.classList.add('open'); if (op?.status === 'kitchen_closed') el.phasePill.classList.add('kitchen-closed'); if (op?.status === 'completed') el.phasePill.classList.add('done') }
+    function renderHeader() { const op = currentOperation(); if (el.phasePill) { el.phasePill.textContent = phaseLabel(op); el.phasePill.className = 'phase-pill'; if (op?.status === 'production_open') el.phasePill.classList.add('open'); if (op?.status === 'kitchen_closed') el.phasePill.classList.add('kitchen-closed'); if (op?.status === 'completed') el.phasePill.classList.add('done') } }
     function stats(op) { const cs = op?.commands || []; return { commands: cs.length, pizzas: cs.reduce((a, c) => a + (Number(c.pizzas) || 1), 0), kitchen: cs.filter(c => c.status === 'cozinha').length, oven: cs.filter(c => c.status === 'forno').length, dispatchPending: cs.filter(c => c.status === 'despacho' && c.dispatch?.status !== 'liberado').length, released: cs.filter(c => c.status === 'despacho' && c.dispatch?.status === 'liberado').length, errors: cs.filter(c => c.error?.active).length } }
     function pendingToFinish(op) { return (op?.commands || []).filter(c => c.status !== 'despacho' || c.dispatch?.status !== 'liberado').length }
     function empty(title, text) { return `<div class="empty"><strong>${esc(title)}</strong>${esc(text)}</div>` }
     function teamHtml(team) { 
       if (!team?.length) return empty('Equipe não definida', 'Selecione os profissionais do dia.'); 
-      return `<div class="space-y-3">${team.map(member => `
+      return `<div class="space-y-3 max-h-[170px] overflow-y-auto pr-2 custom-scrollbar">${team.map(member => `
         <div class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 transition-colors -mx-2">
           <div class="flex items-center gap-3">
             <div class="relative">
@@ -104,23 +104,38 @@
         </div>`).join('')}</div>`;
     }
     function dashboardLiveHtml(op) {
-      const recent = [...(op?.commands || [])].sort((a, b) => (b.updatedAt || b.createdAt).localeCompare(a.updatedAt || a.createdAt)).slice(0, 5);
+      const recent = [...(op?.commands || [])].sort((a, b) => (b.updatedAt || b.createdAt).localeCompare(a.updatedAt || a.createdAt));
       if (!recent.length) return `<div class="dashboard-live-empty">${empty('Sem movimento ainda', 'As últimas comandas aparecerão aqui em tempo real.')}</div>`;
-      return `
-        <div class="absolute left-[11px] top-2 bottom-2 w-px bg-gray-200"></div>
-        <div class="space-y-6">${recent.map(c => {
-          let colorClass = 'bg-emerald-500';
-          if (c.status === 'cozinha') colorClass = 'bg-blue-500';
-          if (c.status === 'forno') colorClass = 'bg-orange-500';
-          if (c.error?.active) colorClass = 'bg-red-500';
-          return `
-          <div class="relative flex items-start gap-4">
-            <div class="relative z-10 w-2.5 h-2.5 rounded-full mt-1.5 ring-4 ring-white ${colorClass}"></div>
-            <div>
-              <p class="text-sm text-[#171717]">Comanda #${String(c.number).padStart(3, '0')} · ${esc(c.assemblerName)}</p>
-              <p class="text-xs text-gray-400 mt-0.5">${statusText(c)} · atualizado ${formatTime(c.updatedAt || c.createdAt)}</p>
+
+      const statusConfig = {
+        cozinha:  { label: 'Na cozinha',  bg: 'bg-blue-50',   text: 'text-blue-700',   dot: 'bg-blue-500',    ring: 'ring-blue-100'   },
+        forno:    { label: 'No forno',    bg: 'bg-orange-50', text: 'text-orange-700', dot: 'bg-orange-500',  ring: 'ring-orange-100' },
+        despacho: { label: 'Despachada',  bg: 'bg-emerald-50',text: 'text-emerald-700',dot: 'bg-emerald-500', ring: 'ring-emerald-100' },
+      };
+
+      return `<div class="space-y-2 max-h-[170px] overflow-y-auto pr-2 custom-scrollbar">${recent.map(c => {
+        const cfg = statusConfig[c.status] || statusConfig.cozinha;
+        const equiv = (c.pizzas || 0) + (c.special?.volcano || 0) + (c.special?.esfiha || 0);
+        const time = formatTime(c.updatedAt || c.createdAt);
+        const num = String(c.number).padStart(3, '0');
+        const name = esc(c.assemblerName || 'Montador');
+        return `
+        <div class="flex items-center justify-between px-3 py-2.5 rounded-lg border border-gray-100 bg-gray-50/60 hover:bg-white hover:border-gray-200 hover:shadow-sm transition-all duration-150 group">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="relative shrink-0">
+              <div class="w-2 h-2 rounded-full ${cfg.dot} ring-4 ${cfg.ring}"></div>
             </div>
-          </div>`}).join('')}</div>`;
+            <div class="min-w-0">
+              <p class="text-sm font-semibold text-[#171717] group-hover:text-[#B5120B] transition-colors leading-tight">Comanda #${num}</p>
+              <p class="text-[11px] text-gray-500 mt-0.5 truncate">${name} · ${time}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <span class="text-xs font-semibold text-[#171717]">${equiv} <span class="font-normal text-gray-400">equiv.</span></span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold ${cfg.bg} ${cfg.text}">${cfg.label}</span>
+          </div>
+        </div>`;
+      }).join('')}</div>`;
     }
     function animateMetric(node, target) {
       if (!node) return;
@@ -160,7 +175,7 @@
       ];
       
       container.innerHTML = pipelineSteps.map((step, idx) => `
-        <div class="flex-1 min-w-[120px] bg-gray-50 rounded-lg p-4 border border-gray-100 flex flex-col items-center justify-center text-center relative group hover:bg-white hover:border-gray-200 hover:shadow-sm transition-all">
+        <div class="flex-1 min-w-[120px] bg-gray-50 rounded-lg p-4 border border-gray-100 flex flex-col items-center justify-center text-center relative group hover:bg-white hover:border-gray-200 hover:shadow-sm transition-all cursor-pointer">
           <div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 rounded-r-md bg-gray-300 ${step.color} border-l-4 group-hover:h-12 transition-all"></div>
           <span class="text-2xl font-bold text-[#171717] mb-1">${step.count}</span>
           <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">${step.stage}</span>
@@ -173,16 +188,110 @@
       `).join('');
     }
 
+
+    // ── Top Montadores do Mês (Controlado pelo picker de Mês/Ano do header) ──
+    let isMonthPickerInitialized = false;
+
+    function initHeaderMonthPicker() {
+      const picker = document.getElementById('headerMonthPicker');
+      if (!picker || isMonthPickerInitialized) return;
+      isMonthPickerInitialized = true;
+
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      
+      // Define o valor inicial como Mês/Ano atual
+      picker.value = `${y}-${m}`;
+
+      // Adiciona listener para recarregar o ranking e KPIs ao mudar o mês
+      picker.addEventListener('change', () => {
+        fetchTopMontadoresMensal();
+        renderDashboard();
+      });
+    }
+
+    function fetchTopMontadoresMensal() {
+      initHeaderMonthPicker();
+      const picker = document.getElementById('headerMonthPicker');
+      let url = 'http://localhost:8001/api/dashboard/top-montadores-mensal';
+      
+      if (picker && picker.value) {
+        const [ano, mes] = picker.value.split('-');
+        url += `?ano=${ano}&mes=${mes}`;
+      }
+
+      fetch(url)
+        .then(res => res.json())
+        .then(list => {
+          const container = document.getElementById('dashboardRankMensal');
+          if (!container) return;
+          if (!list || !list.length) {
+            container.innerHTML = empty('Top 5 ainda vazio', 'Nenhum montador fez pizzas neste período.');
+            return;
+          }
+          container.innerHTML = `<div class="space-y-4">${list.slice(0, 5).map((x, i) => `
+            <div class="flex items-center justify-between group">
+              <div class="flex items-center gap-3">
+                <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${i === 0 ? 'bg-[#FFF9E5] text-[#D97706] ring-1 ring-[#FDE68A]' : 'bg-gray-100 text-gray-500'}">
+                  ${i + 1}
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-[#171717] group-hover:text-[#B5120B] transition-colors">${esc(x.name)}</p>
+                  <p class="text-[11px] text-gray-500">Montador</p>
+                </div>
+              </div>
+              <div class="text-sm font-semibold text-[#171717]">
+                ${x.pizzas} <span class="text-xs text-gray-400 font-normal">pizzas</span>
+              </div>
+            </div>`).join('')}</div>`;
+        })
+        .catch(err => {
+          console.error('Erro ranking mensal:', err);
+          const container = document.getElementById('dashboardRankMensal');
+          if (container) container.innerHTML = empty('Top 5 ainda vazio', 'Erro ao obter dados.');
+        });
+    }
+    // Atualiza o ranking a cada 5 minutos automaticamente
+    setInterval(fetchTopMontadoresMensal, 5 * 60 * 1000);
+
     function renderDashboard() {
       renderHeader();
       const op = currentOperation(), s = stats(op);
-      animateMetric(el.dashCommands, s.commands);
-      animateMetric(el.dashPizzas, s.pizzas);
-      animateMetric(el.dashKitchen, s.kitchen);
-      animateMetric(el.dashOven, s.oven);
-      animateMetric(el.dashDispatch, s.dispatchPending);
-      animateMetric(el.dashErrors, s.errors);
       
+      const picker = document.getElementById('headerMonthPicker');
+      let startDate = '', endDate = '';
+      if (picker && picker.value) {
+        const [ano, mes] = picker.value.split('-');
+        startDate = `${ano}-${mes}-01`;
+        endDate = new Date(ano, mes, 0).toISOString().split('T')[0];
+      } else {
+        const now = new Date();
+        const y = now.getFullYear(), m = String(now.getMonth() + 1).padStart(2, '0');
+        startDate = `${y}-${m}-01`;
+        endDate = new Date(y, now.getMonth() + 1, 0).toISOString().split('T')[0];
+      }
+
+      fetch(`http://localhost:8001/api/dashboard/kpis?start_date=${startDate}&end_date=${endDate}`)
+        .then(res => res.json())
+        .then(kpis => {
+          animateMetric(el.dashCommands, kpis.comandas);
+          animateMetric(el.dashKitchen, kpis.cozinha);
+          animateMetric(el.dashPizzas, kpis.pizzas);
+          animateMetric(el.dashDispatch, kpis.pendentes);
+          animateMetric(el.dashErrors, kpis.erros);
+        })
+        .catch(err => {
+          // Fallback to local memory calculations if API is unavailable
+          animateMetric(el.dashCommands, s.commands);
+          animateMetric(el.dashKitchen, s.kitchen);
+          animateMetric(el.dashPizzas, s.pizzas);
+          animateMetric(el.dashDispatch, s.dispatchPending);
+          animateMetric(el.dashErrors, s.errors);
+        });
+      
+
+
       // Update team badge
       const onlineBadge = document.getElementById('dashboardTeamOnlineBadge');
       if (onlineBadge) {
@@ -208,7 +317,8 @@
           </div>
         </div>`;
         el.dashboardTeam.innerHTML = empty('Equipe não cadastrada', 'Abra a página Equipe.');
-        el.dashboardRank.innerHTML = empty('Top 5 ainda vazio', 'O ranking será calculado pela quantidade de pizzas.');
+        const rankMensalEl = document.getElementById('dashboardRankMensal');
+        if (rankMensalEl) rankMensalEl.innerHTML = empty('Top 5 ainda vazio', 'O ranking será calculado pela quantidade de pizzas.');
         el.dashboardLive.innerHTML = `<div class="dashboard-live-empty">${empty('Sem movimento', 'Inicie a produção para acompanhar as comandas.')}</div>`;
         if (typeof lucide !== 'undefined') lucide.createIcons();
         return;
@@ -240,7 +350,6 @@
         ` : ''}
       </div>`;
       el.dashboardTeam.innerHTML = teamHtml(op.team);
-      el.dashboardRank.innerHTML = dashboardTop5Html(op);
       el.dashboardLive.innerHTML = dashboardLiveHtml(op);
       
       // Simula Alertas
@@ -378,7 +487,8 @@
         overlay.classList.add('hidden'); 
       }
     }); 
-    el.globalDate.addEventListener('change', () => { el.assemblerId.value = ''; el.assemblerSearch.value = ''; renderAll() });
+    if (el.globalStartDate) el.globalStartDate.addEventListener('change', () => { el.assemblerId.value = ''; el.assemblerSearch.value = ''; renderAll() });
+    if (el.globalEndDate) el.globalEndDate.addEventListener('change', () => { el.assemblerId.value = ''; el.assemblerSearch.value = ''; renderAll() });
     // equipe
     el.personForm.addEventListener('submit', e => { e.preventDefault(); const name = proper(el.personName.value), role = el.personRole.value; if (name.length < 2 || !role) return toast('Preencha nome e setor.', 'error'); if (state.people.some(p => norm(p.name) === norm(name) && p.role === role)) return toast('Este profissional já está cadastrado neste setor.', 'warn'); state.people.push({ id: uid(), name, role, createdAt: new Date().toISOString() }); save(); el.personForm.reset(); renderTeam(); toast('Profissional cadastrado.') }); el.peopleChecklist.addEventListener('change', e => { const box = e.target.closest('[data-team-id]'); if (box && !box.checked && box.dataset.usedInProduction === '1') { box.checked = true; toast('Este montador já possui produção registrada e deve permanecer na equipe.', 'warn') } renderCheckedTeam() }); el.peopleChecklist.addEventListener('click', e => { const b = e.target.closest('[data-remove-person]'); if (!b) return; const p = getPerson(b.dataset.removePerson), used = state.operations.some(o => o.team.some(t => t.personId === p.id) || o.commands.some(c => c.assemblerId === p.id)); if (used) return toast('Este profissional já está vinculado a operações.', 'warn'); if (confirm(`Remover ${p.name}?`)) { state.people = state.people.filter(x => x.id !== p.id); save(); renderTeam(); toast('Profissional removido.', 'warn') } }); el.saveTeamBtn.addEventListener('click', () => saveTeam(true)); el.startOperationBtn.addEventListener('click', () => { const op = ensureOperation(); if (op.status !== 'draft') return toast('A operação já foi iniciada.', 'warn'); saveTeam(false); if (!op.team.length) return toast('Selecione a equipe do dia.', 'error'); if (!op.team.some(p => p.role === 'Montagem')) return toast('Inclua ao menos um montador.', 'error'); op.status = 'production_open'; op.startedAt = new Date().toISOString(); save(); showPage('production'); toast('Operação iniciada.') });
     // central moderna de produção
@@ -411,7 +521,10 @@
     el.historyList.addEventListener('click', e => { const x = e.target.closest('[data-report-op]'); if (x) { selectedReportOperationId = x.dataset.reportOp; renderReports() } }); el.reportCards.addEventListener('click', e => { const b = e.target.closest('[data-report-action]'); if (!b) return; const op = getOperation(selectedReportOperationId); if (!op) return; const a = b.dataset.reportAction; if (a === 'download-attendance') downloadHtml(`lista_presenca_${op.date}.html`, attendanceReport(op)); if (a === 'print-attendance') printHtml(attendanceReport(op)); if (a === 'download-production') downloadHtml(`resultado_montagem_${op.date}.html`, productionReport(op)); if (a === 'print-production') printHtml(productionReport(op)) }); el.backupBtn.addEventListener('click', () => { const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' }), url = URL.createObjectURL(blob), a = document.createElement('a'); a.href = url; a.download = `backup_imperial_${today()}.json`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); toast('Backup baixado.') }); el.restoreBtn.addEventListener('click', () => el.restoreFile.click()); el.restoreFile.addEventListener('change', async e => { const f = e.target.files[0]; if (!f) return; try { const d = JSON.parse(await f.text()); if (!Array.isArray(d.people) || !Array.isArray(d.operations)) throw new Error(); if (!confirm('Restaurar este backup e substituir os dados atuais?')) return; state.people = d.people; state.operations = d.operations; save(); selectedReportOperationId = null; renderAll(); toast('Backup restaurado.') } catch (err) { toast('Backup inválido.', 'error') } finally { e.target.value = '' } });
 
     function renderAll() { renderHeader(); const page = document.querySelector('.page.active')?.id.replace('page-', '') || 'dashboard'; showPage(page) }
-    el.globalDate.value = today(); renderAll();
+    if (el.globalDate) el.globalDate.value = today();
+    if (el.globalStartDate) el.globalStartDate.value = today();
+    if (el.globalEndDate) el.globalEndDate.value = today();
+    renderAll();
 
     /* =========================================================
        V4.0 — CAMADA DE INTEGRAÇÃO
@@ -1078,6 +1191,7 @@
           if (!state.operations) state.operations = [];
           upgradeV4();
           renderAll();
+          fetchTopMontadoresMensal(); // Carrega ranking mensal imediatamente ao iniciar
         })
         .catch(err => {
           console.error("Erro API", err);

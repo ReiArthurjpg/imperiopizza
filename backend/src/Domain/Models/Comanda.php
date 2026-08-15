@@ -191,4 +191,173 @@ class Comanda
         $stmt = $db->prepare("UPDATE comandas SET status = :status $timeField WHERE id = :id");
         $stmt->execute(['status' => $status, 'id' => $id]);
     }
+
+    public static function getKpisByOperacao($operacao_id)
+    {
+        $db = Database::getInstance()->getConnection();
+        $stmt = $db->prepare("SELECT 
+            COUNT(*) as comandas,
+            COALESCE(SUM(pizzas), 0) as pizzas
+            FROM comandas WHERE operacao_id = ?");
+        $stmt->execute([$operacao_id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public static function getKpisByPeriod($startDate, $endDate)
+    {
+        $db = Database::getInstance()->getConnection();
+        $stmt = $db->prepare("SELECT 
+            COUNT(*) as comandas,
+            COALESCE(SUM(pizzas), 0) as pizzas
+            FROM comandas WHERE DATE(created_at) BETWEEN ? AND ?");
+        $stmt->execute([$startDate, $endDate]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * KPIs da operação ativa do dia.
+     * Retorna null se não houver nenhuma operação em andamento.
+     */
+    public static function getKpisDia($operacao_id)
+    {
+        $db = Database::getInstance()->getConnection();
+
+        // Totais gerais da operação
+        $stmt = $db->prepare("
+            SELECT
+                COUNT(*) AS total_comandas,
+                COALESCE(SUM(pizzas), 0) AS total_pizzas,
+                COALESCE(SUM(esfiha), 0) AS total_esfihas,
+                COALESCE(SUM(volcano), 0) AS total_vulcoes,
+                COALESCE(SUM(sweet), 0) AS total_doces,
+                SUM(CASE WHEN status = 'cozinha' THEN 1 ELSE 0 END) AS em_cozinha,
+                SUM(CASE WHEN status = 'forno' THEN 1 ELSE 0 END) AS em_forno,
+                SUM(CASE WHEN status = 'despacho' THEN 1 ELSE 0 END) AS despachadas
+            FROM comandas
+            WHERE operacao_id = ?
+        ");
+        $stmt->execute([$operacao_id]);
+        $totais = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // Top montadores da operação atual
+        $stmtTop = $db->prepare("
+            SELECT
+                e.nome AS name,
+                COUNT(c.id) AS comandas,
+                COALESCE(SUM(c.pizzas), 0) AS pizzas
+            FROM comandas c
+            JOIN comandas_lotes l ON c.operacao_id = l.operacao_id
+                AND c.number >= l.comanda_inicio
+                AND c.number <= l.comanda_fim
+            JOIN equipe e ON l.assembler_id = e.id
+            WHERE c.operacao_id = ?
+            GROUP BY e.id, e.nome
+            ORDER BY pizzas DESC, comandas DESC
+            LIMIT 5
+        ");
+        $stmtTop->execute([$operacao_id]);
+        $topMontadores = $stmtTop->fetchAll(PDO::FETCH_ASSOC);
+
+        return [
+            'comandas'       => (int)$totais['total_comandas'],
+            'pizzas'         => (int)$totais['total_pizzas'],
+            'esfihas'        => (int)$totais['total_esfihas'],
+            'vulcoes'        => (int)$totais['total_vulcoes'],
+            'doces'          => (int)$totais['total_doces'],
+            'em_cozinha'     => (int)$totais['em_cozinha'],
+            'em_forno'       => (int)$totais['em_forno'],
+            'despachadas'    => (int)$totais['despachadas'],
+            'top_montadores' => $topMontadores,
+        ];
+    }
+
+    public static function getTopAssemblersMensal($year = null, $month = null)
+    {
+        $db = Database::getInstance()->getConnection();
+        
+        $y = $year ? intval($year) : intval(date('Y'));
+        $m = $month ? intval($month) : intval(date('m'));
+
+        $stmt = $db->prepare("SELECT 
+            e.nome as name,
+            COUNT(c.id) as comandas,
+            COALESCE(SUM(c.pizzas), 0) as pizzas
+            FROM comandas c
+            JOIN comandas_lotes l ON c.operacao_id = l.operacao_id AND c.number >= l.comanda_inicio AND c.number <= l.comanda_fim
+            JOIN equipe e ON l.assembler_id = e.id
+            WHERE YEAR(c.created_at) = ?
+              AND MONTH(c.created_at) = ?
+            GROUP BY e.id, e.nome
+            ORDER BY pizzas DESC, comandas DESC, name ASC
+            LIMIT 5");
+        $stmt->execute([$y, $m]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Movimentações recentes da operação ativa.
+     * Retorna as últimas $limit comandas atualizadas, com nome do montador e status.
+     */
+    public static function getMovimentacoesRecentes($operacao_id, $limit = 10)
+    {
+        $db = Database::getInstance()->getConnection();
+        $limit = max(1, min(50, (int)$limit)); // entre 1 e 50
+
+        $stmt = $db->prepare("
+            SELECT
+                c.id,
+                c.number,
+                c.pizzas,
+                c.esfiha,
+                c.volcano,
+                c.sweet,
+                c.status,
+                c.dispatch_status,
+                c.note,
+                c.created_at,
+                c.updated_at,
+                c.cozinha_time,
+                c.forno_time,
+                c.despacho_time,
+                COALESCE(e.nome, 'N/A') AS montador
+            FROM comandas c
+            LEFT JOIN comandas_lotes l
+                ON c.operacao_id = l.operacao_id
+                AND c.number >= l.comanda_inicio
+                AND c.number <= l.comanda_fim
+            LEFT JOIN equipe e ON l.assembler_id = e.id
+            WHERE c.operacao_id = ?
+            ORDER BY c.updated_at DESC, c.created_at DESC
+            LIMIT ?
+        ");
+        $stmt->execute([$operacao_id, $limit]);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Formata os dados para o frontend
+        $result = [];
+        foreach ($rows as $r) {
+            // Calcula "equivalentes" (pizzas físicas + equivalentes de volcano/esfiha)
+            $equiv = (int)$r['pizzas'] + (int)$r['volcano'] + (int)$r['esfiha'];
+
+            $result[] = [
+                'id'             => $r['id'],
+                'numero'         => (int)$r['number'],
+                'montador'       => $r['montador'],
+                'status'         => $r['status'],
+                'dispatch_status'=> $r['dispatch_status'],
+                'pizzas'         => (int)$r['pizzas'],
+                'esfihas'        => (int)$r['esfiha'],
+                'vulcoes'        => (int)$r['volcano'],
+                'doces'          => (int)$r['sweet'],
+                'equivalentes'   => $equiv,
+                'nota'           => $r['note'] ?? '',
+                'criada_em'      => $r['created_at'],
+                'atualizada_em'  => $r['updated_at'],
+                'tempo_cozinha'  => $r['cozinha_time'],
+                'tempo_forno'    => $r['forno_time'],
+                'tempo_despacho' => $r['despacho_time'],
+            ];
+        }
+        return $result;
+    }
 }
