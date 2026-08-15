@@ -33,6 +33,13 @@ if ($uri === '/api/dashboard/kpis-dia' && $method === 'GET') {
     exit;
 }
 
+if ($uri === '/api/dashboard/movimentacoes-recentes' && $method === 'GET') {
+    require_once __DIR__ . '/../Controllers/ApiController.php';
+    $controller = new \App\Back\Presentation\Controllers\ApiController();
+    $controller->getMovimentacoesRecentes();
+    exit;
+}
+
 if ($uri === '/api/sync' && $method === 'POST') {
     require_once __DIR__ . '/../Controllers/ApiController.php';
     $controller = new \App\Back\Presentation\Controllers\ApiController();

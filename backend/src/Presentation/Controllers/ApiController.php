@@ -170,4 +170,35 @@ class ApiController
             $this->jsonResponse(['error' => $e->getMessage()], 500);
         }
     }
+
+    public function getMovimentacoesRecentes()
+    {
+        try {
+            $op = Operacao::getCurrent();
+
+            // Só funciona com operação ativa (não draft, não completed)
+            if (!$op || $op['status'] === 'draft') {
+                $this->jsonResponse([
+                    'operacao_ativa' => false,
+                    'status'         => 'inativa',
+                    'mensagem'       => 'Nenhuma operação ativa no momento.',
+                    'movimentacoes'  => [],
+                ]);
+            }
+
+            $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
+            $movimentacoes = Comanda::getMovimentacoesRecentes($op['id'], $limit);
+
+            $this->jsonResponse([
+                'operacao_ativa'  => true,
+                'operacao_id'     => $op['id'],
+                'operacao_status' => $op['status'],
+                'data'            => $op['date'],
+                'total'           => count($movimentacoes),
+                'movimentacoes'   => $movimentacoes,
+            ]);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['error' => $e->getMessage()], 500);
+        }
+    }
 }

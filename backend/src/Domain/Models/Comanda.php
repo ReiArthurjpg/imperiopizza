@@ -293,4 +293,71 @@ class Comanda
         $stmt->execute([$y, $m]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Movimentações recentes da operação ativa.
+     * Retorna as últimas $limit comandas atualizadas, com nome do montador e status.
+     */
+    public static function getMovimentacoesRecentes($operacao_id, $limit = 10)
+    {
+        $db = Database::getInstance()->getConnection();
+        $limit = max(1, min(50, (int)$limit)); // entre 1 e 50
+
+        $stmt = $db->prepare("
+            SELECT
+                c.id,
+                c.number,
+                c.pizzas,
+                c.esfiha,
+                c.volcano,
+                c.sweet,
+                c.status,
+                c.dispatch_status,
+                c.note,
+                c.created_at,
+                c.updated_at,
+                c.cozinha_time,
+                c.forno_time,
+                c.despacho_time,
+                COALESCE(e.nome, 'N/A') AS montador
+            FROM comandas c
+            LEFT JOIN comandas_lotes l
+                ON c.operacao_id = l.operacao_id
+                AND c.number >= l.comanda_inicio
+                AND c.number <= l.comanda_fim
+            LEFT JOIN equipe e ON l.assembler_id = e.id
+            WHERE c.operacao_id = ?
+            ORDER BY c.updated_at DESC, c.created_at DESC
+            LIMIT ?
+        ");
+        $stmt->execute([$operacao_id, $limit]);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Formata os dados para o frontend
+        $result = [];
+        foreach ($rows as $r) {
+            // Calcula "equivalentes" (pizzas físicas + equivalentes de volcano/esfiha)
+            $equiv = (int)$r['pizzas'] + (int)$r['volcano'] + (int)$r['esfiha'];
+
+            $result[] = [
+                'id'             => $r['id'],
+                'numero'         => (int)$r['number'],
+                'montador'       => $r['montador'],
+                'status'         => $r['status'],
+                'dispatch_status'=> $r['dispatch_status'],
+                'pizzas'         => (int)$r['pizzas'],
+                'esfihas'        => (int)$r['esfiha'],
+                'vulcoes'        => (int)$r['volcano'],
+                'doces'          => (int)$r['sweet'],
+                'equivalentes'   => $equiv,
+                'nota'           => $r['note'] ?? '',
+                'criada_em'      => $r['created_at'],
+                'atualizada_em'  => $r['updated_at'],
+                'tempo_cozinha'  => $r['cozinha_time'],
+                'tempo_forno'    => $r['forno_time'],
+                'tempo_despacho' => $r['despacho_time'],
+            ];
+        }
+        return $result;
+    }
 }

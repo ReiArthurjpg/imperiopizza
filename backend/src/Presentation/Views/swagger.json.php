@@ -135,6 +135,72 @@ $swagger = [
                 ]
             ]
         ],
+        "/api/dashboard/movimentacoes-recentes" => [
+            "get" => [
+                "summary" => "Movimentações Recentes da Operação Ativa",
+                "description" => "Retorna as últimas comandas atualizadas da operação em andamento. Só funciona com operação ativa (status != draft e != completed). Aceita parâmetro opcional 'limit' (padrão 10, máximo 50).",
+                "parameters" => [
+                    [
+                        "name" => "limit",
+                        "in" => "query",
+                        "required" => false,
+                        "schema" => ["type" => "integer", "minimum" => 1, "maximum" => 50],
+                        "example" => 10,
+                        "description" => "Quantidade de movimentações a retornar (1-50). Padrão: 10."
+                    ]
+                ],
+                "responses" => [
+                    "200" => [
+                        "description" => "Movimentações retornadas com sucesso",
+                        "content" => [
+                            "application/json" => [
+                                "examples" => [
+                                    "ativa" => [
+                                        "summary" => "Com operação ativa",
+                                        "value" => [
+                                            "operacao_ativa"  => true,
+                                            "operacao_id"     => "abc-123",
+                                            "operacao_status" => "production_open",
+                                            "data"            => "2026-08-14",
+                                            "total"           => 2,
+                                            "movimentacoes"   => [
+                                                [
+                                                    "id"             => "uuid-1",
+                                                    "numero"         => 3,
+                                                    "montador"       => "João",
+                                                    "status"         => "cozinha",
+                                                    "dispatch_status"=> "aguardando",
+                                                    "pizzas"         => 2,
+                                                    "esfihas"        => 0,
+                                                    "vulcoes"        => 1,
+                                                    "doces"          => 0,
+                                                    "equivalentes"   => 3,
+                                                    "nota"           => "",
+                                                    "criada_em"      => "2026-08-14 21:34:00",
+                                                    "atualizada_em"  => "2026-08-14 21:34:00",
+                                                    "tempo_cozinha"  => "2026-08-14 21:34:00",
+                                                    "tempo_forno"    => null,
+                                                    "tempo_despacho" => null
+                                                ]
+                                            ]
+                                        ]
+                                    ],
+                                    "inativa" => [
+                                        "summary" => "Sem operação ativa",
+                                        "value" => [
+                                            "operacao_ativa" => false,
+                                            "status"         => "inativa",
+                                            "mensagem"       => "Nenhuma operação ativa no momento.",
+                                            "movimentacoes"  => []
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ],
         "/api/sync" => [
             "post" => [
                 "summary" => "Sincronizar estado (Comandas, lotes, etc)",
