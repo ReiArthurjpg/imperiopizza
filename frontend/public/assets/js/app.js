@@ -369,9 +369,333 @@
       
       if (typeof lucide !== 'undefined') lucide.createIcons();
     }
-    function renderTeam() { renderHeader(); const op = currentOperation(), selected = new Set(op?.team.map(t => t.personId) || []), usedIds = new Set(op?.commands.map(c => c.assemblerId) || []); if (!state.people.length) el.peopleChecklist.innerHTML = empty('Nenhum profissional cadastrado', 'Use o formulário acima.'); else el.peopleChecklist.innerHTML = [...state.people].sort((a, b) => a.role.localeCompare(b.role, 'pt-BR') || a.name.localeCompare(b.name, 'pt-BR')).map(p => `<div class="check-person"><label><input type="checkbox" data-team-id="${p.id}" ${selected.has(p.id) ? 'checked' : ''} ${usedIds.has(p.id) ? 'data-used-in-production="1"' : ''}><span><strong>${esc(p.name)}</strong><br><small>${esc(p.role)}${usedIds.has(p.id) ? ' · já possui produção' : ''}</small></span></label><button class="btn btn-soft-red btn-small" data-remove-person="${p.id}">Remover</button></div>`).join(''); renderCheckedTeam(); el.saveTeamBtn.disabled = op?.status === 'completed'; el.startOperationBtn.disabled = !!op && op.status !== 'draft'; el.startOperationBtn.textContent = op?.status === 'production_open' ? 'Operação em andamento' : op?.status === 'kitchen_closed' ? 'Cozinha encerrada' : op?.status === 'completed' ? 'Dia finalizado' : 'Iniciar operação'; if (!op) el.teamOperationNotice.innerHTML = ''; else if (op.status === 'completed') el.teamOperationNotice.innerHTML = `<div class="banner"><div><h3>Operação finalizada</h3><p>A lista de presença está fechada e disponível nos relatórios.</p></div><button class="btn btn-primary" data-go="reports">Abrir relatórios</button></div>`; else if (op.status === 'draft') el.teamOperationNotice.innerHTML = `<div class="banner"><div><h3>Equipe em preparação</h3><p>Selecione os presentes e inicie a operação.</p></div></div>`; else el.teamOperationNotice.innerHTML = `<div class="banner"><div><h3>Equipe acionável durante a operação</h3><p>Você pode cadastrar e incluir novas pessoas até finalizar completamente o dia.</p></div><div class="operation-team-actions"><button class="btn btn-primary" data-go="${op.status === 'production_open' ? 'production' : 'dispatch'}">Voltar à operação</button></div></div>` }
+    // ── Helpers de cor por setor ──────────────────────────────────────────────
+    const SECTOR_COLORS = {
+      'Montagem':    { bg: 'bg-blue-50',   text: 'text-blue-700',   ring: 'ring-blue-200'   },
+      'Massa':       { bg: 'bg-amber-50',  text: 'text-amber-700',  ring: 'ring-amber-200'  },
+      'Cozinha':     { bg: 'bg-orange-50', text: 'text-orange-700', ring: 'ring-orange-200' },
+      'Forno':       { bg: 'bg-red-50',    text: 'text-red-700',    ring: 'ring-red-200'    },
+      'Despacho':    { bg: 'bg-purple-50', text: 'text-purple-700', ring: 'ring-purple-200' },
+      'Atendimento': { bg: 'bg-pink-50',   text: 'text-pink-700',   ring: 'ring-pink-200'   },
+      'Estoque':     { bg: 'bg-green-50',  text: 'text-green-700',  ring: 'ring-green-200'  },
+      'Liderança':   { bg: 'bg-indigo-50', text: 'text-indigo-700', ring: 'ring-indigo-200' },
+      'Outros':      { bg: 'bg-gray-50',   text: 'text-gray-600',   ring: 'ring-gray-200'   },
+    };
+    function sectorColors(role) { return SECTOR_COLORS[role] || SECTOR_COLORS['Outros']; }
+
+    // ── Renderiza um item da lista de profissionais (Tailwind) ────────────────
+    function personItemHtml(p, selected, usedIds) {
+      const initials = assemblerInitials(p.name);
+      const isChecked = selected.has(p.id);
+      const isUsed = usedIds.has(p.id);
+      const sc = sectorColors(p.role);
+      return `
+        <div class="flex items-center justify-between p-3 rounded-xl border
+                    ${isChecked ? 'border-[#B5120B]/30 bg-[#FDECEB]/30' : 'border-[#E7E7E7] hover:border-[#B5120B]/20 hover:bg-gray-50/60'}
+                    transition-all duration-150 group">
+          <label class="flex items-center gap-3 flex-1 cursor-pointer min-w-0">
+            <input type="checkbox"
+                   data-team-id="${p.id}"
+                   ${isChecked ? 'checked' : ''}
+                   ${isUsed ? 'data-used-in-production="1"' : ''}
+                   class="w-4 h-4 accent-[#B5120B] shrink-0 cursor-pointer">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <div class="w-8 h-8 rounded-full bg-gradient-to-br from-[#173F69] to-[#1F6FB2]
+                          flex items-center justify-center text-[11px] font-bold text-white shrink-0 ring-2 ring-white shadow-sm">
+                ${initials}
+              </div>
+              <div class="min-w-0">
+                <p class="text-sm font-semibold text-[#171717] truncate leading-tight">${esc(p.name)}</p>
+                <div class="flex items-center gap-1.5 mt-0.5">
+                  <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-semibold
+                               ${sc.bg} ${sc.text} ring-1 ${sc.ring}">
+                    ${esc(p.role)}
+                  </span>
+                  ${isUsed ? '<span class="text-[10px] text-[#737373]">· com produção</span>' : ''}
+                </div>
+              </div>
+            </div>
+          </label>
+          <button class="opacity-0 group-hover:opacity-100 transition-opacity duration-150 shrink-0
+                         p-1.5 rounded-md text-red-400 hover:bg-red-50 hover:text-red-600"
+                  data-remove-person="${p.id}"
+                  title="Remover profissional">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5 pointer-events-none"></i>
+          </button>
+        </div>`;
+    }
+
+    // ── Renderiza o empty state moderno ───────────────────────────────────────
+    function emptyTeam(title, text) {
+      return `<div class="flex flex-col items-center justify-center py-8 text-center">
+        <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-3">
+          <i data-lucide="users" class="w-5 h-5 text-gray-400"></i>
+        </div>
+        <p class="text-sm font-semibold text-[#171717] mb-1">${esc(title)}</p>
+        <p class="text-xs text-[#737373]">${esc(text)}</p>
+      </div>`;
+    }
+
+    // ── Atualiza os KPI cards da tela de equipe ────────────────────────────────
+    function renderTeamKpis(op, allPeople) {
+      const kpiTotal = document.getElementById('kpiTotalPeople');
+      const kpiPresent = document.getElementById('kpiPresentPeople');
+      const kpiSectors = document.getElementById('kpiSectorBadges');
+      const peopleCount = document.getElementById('teamPeopleCount');
+
+      if (kpiTotal) kpiTotal.textContent = allPeople.length;
+      if (peopleCount) peopleCount.textContent = allPeople.length;
+
+      const teamToday = op?.team || [];
+      if (kpiPresent) kpiPresent.textContent = teamToday.length;
+
+      // Badge dinâmico na lista de presença
+      const selBadge = document.getElementById('teamSelectedBadge');
+      if (selBadge) {
+        const count = teamToday.length;
+        selBadge.textContent = count === 0 ? '0 selecionados' : `${count} ${count === 1 ? 'selecionado' : 'selecionados'}`;
+        selBadge.className = `px-2.5 py-0.5 rounded-full text-xs font-semibold border transition-all ${
+          count > 0
+            ? 'bg-[#E7F8F0] text-[#10B981] border-[#A7F3D0]'
+            : 'bg-gray-100 text-[#737373] border-gray-200'
+        }`;
+      }
+
+      // Mini-badges por setor
+      if (kpiSectors) {
+        const sectorCount = {};
+        teamToday.forEach(m => { sectorCount[m.role] = (sectorCount[m.role] || 0) + 1; });
+        const entries = Object.entries(sectorCount);
+        if (!entries.length) {
+          kpiSectors.innerHTML = '<span class="text-xs text-[#737373]">—</span>';
+        } else {
+          kpiSectors.innerHTML = entries.map(([sector, count]) => {
+            const sc = sectorColors(sector);
+            return `<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-semibold
+                               ${sc.bg} ${sc.text} ring-1 ${sc.ring}">
+              ${esc(sector)} <span class="font-bold">${count}</span>
+            </span>`;
+          }).join('');
+        }
+      }
+    }
+
+    // ── Renderiza o stepper do Fluxo do Dia ───────────────────────────────────
+    function renderTeamStepper(op) {
+      const container = document.getElementById('teamDayStepper');
+      if (!container) return;
+
+      const steps = [
+        { label: 'Iniciar operação',   statuses: [] },
+        { label: 'Registrar produção', statuses: ['production_open', 'kitchen_closed', 'completed'] },
+        { label: 'Encerrar cozinha',   statuses: ['production_open', 'kitchen_closed', 'completed'] },
+        { label: 'Continuar despacho', statuses: ['kitchen_closed', 'completed'] },
+        { label: 'Zerar pendências',   statuses: ['kitchen_closed', 'completed'] },
+        { label: 'Finalizar o dia',    statuses: ['completed'] },
+      ];
+
+      // Determina qual step é o "ativo" atual
+      const activeMap = {
+        'draft':           0,
+        'production_open': 1,
+        'kitchen_closed':  3,
+        'completed':       99, // todos concluídos
+      };
+      const activeIdx = op ? (activeMap[op.status] ?? -1) : -1;
+
+      container.innerHTML = steps.map((step, i) => {
+        const isDone   = op && i < activeIdx;
+        const isActive = op && i === activeIdx;
+        // Se completed, todos ficam "done"
+        const allDone  = op?.status === 'completed';
+
+        if (allDone || isDone) {
+          return `<div class="flex items-center gap-1.5 px-3 py-2 rounded-full border border-[#A7F3D0]
+                              bg-[#E7F8F0] text-xs font-medium text-[#10B981]">
+            <span class="w-5 h-5 rounded-full bg-[#10B981] text-white
+                         flex items-center justify-center font-bold">
+              <i data-lucide="check" class="w-3 h-3"></i>
+            </span>
+            ${esc(step.label)}
+          </div>`;
+        }
+        if (isActive) {
+          return `<div class="flex items-center gap-1.5 px-3 py-2 rounded-full border border-[#FCA5A5]
+                              bg-[#FDECEB] text-xs font-semibold text-[#B5120B]
+                              shadow-sm animate-pulse">
+            <span class="w-5 h-5 rounded-full bg-[#B5120B] text-white text-[10px]
+                         flex items-center justify-center font-bold">${i + 1}</span>
+            ${esc(step.label)}
+          </div>`;
+        }
+        // Pendente
+        return `<div class="flex items-center gap-1.5 px-3 py-2 rounded-full border border-[#E7E7E7]
+                            bg-gray-50 text-xs font-medium text-[#737373]">
+          <span class="w-5 h-5 rounded-full bg-gray-200 text-gray-500 text-[10px]
+                       flex items-center justify-center font-bold">${i + 1}</span>
+          ${esc(step.label)}
+        </div>`;
+      }).join('');
+
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    // ── Renderiza o banner de status (substituindo .banner legado) ─────────────
+    function renderTeamBanner(op) {
+      const notice = el.teamOperationNotice;
+      if (!notice) return;
+
+      if (!op) {
+        notice.innerHTML = '';
+        return;
+      }
+
+      const bannerBase = 'flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl border';
+
+      if (op.status === 'completed') {
+        notice.innerHTML = `
+          <div class="${bannerBase} bg-gray-50 border-gray-200">
+            <div class="flex items-center gap-3">
+              <div class="relative flex h-3 w-3 shrink-0">
+                <span class="relative inline-flex rounded-full h-3 w-3 bg-gray-400"></span>
+              </div>
+              <div>
+                <h3 class="font-semibold text-sm text-gray-700">Operação finalizada</h3>
+                <p class="text-xs text-gray-500 mt-0.5">A lista de presença está fechada e disponível nos relatórios.</p>
+              </div>
+            </div>
+            <button class="px-4 py-2 text-xs font-semibold text-white bg-[#B5120B] rounded-lg
+                           hover:bg-[#9a0f09] transition-colors shadow-sm shrink-0" data-go="reports">
+              Abrir relatórios
+            </button>
+          </div>`;
+      } else if (op.status === 'draft') {
+        notice.innerHTML = `
+          <div class="${bannerBase} bg-blue-50 border-blue-200">
+            <div class="flex items-center gap-3">
+              <div class="relative flex h-3 w-3 shrink-0">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-3 w-3 bg-[#173F69]"></span>
+              </div>
+              <div>
+                <h3 class="font-semibold text-sm text-[#173F69]">Equipe em preparação</h3>
+                <p class="text-xs text-blue-600 mt-0.5">Selecione os profissionais presentes e inicie a operação.</p>
+              </div>
+            </div>
+          </div>`;
+      } else if (op.status === 'production_open') {
+        notice.innerHTML = `
+          <div class="${bannerBase} bg-[#E7F8F0] border-[#A7F3D0]">
+            <div class="flex items-center gap-3">
+              <div class="relative flex h-3 w-3 shrink-0">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+              </div>
+              <div>
+                <h3 class="font-semibold text-sm text-emerald-900">Cozinha em operação</h3>
+                <p class="text-xs text-emerald-700 mt-0.5">Você pode cadastrar e acionar novas pessoas até finalizar o dia.</p>
+              </div>
+            </div>
+            <button class="px-4 py-2 text-xs font-semibold text-white bg-[#B5120B] rounded-lg
+                           hover:bg-[#9a0f09] transition-colors shadow-sm shrink-0" data-go="production">
+              Voltar à produção
+            </button>
+          </div>`;
+      } else if (op.status === 'kitchen_closed') {
+        notice.innerHTML = `
+          <div class="${bannerBase} bg-amber-50 border-amber-200">
+            <div class="flex items-center gap-3">
+              <div class="relative flex h-3 w-3 shrink-0">
+                <span class="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
+              </div>
+              <div>
+                <h3 class="font-semibold text-sm text-amber-900">Cozinha encerrada · despacho ativo</h3>
+                <p class="text-xs text-amber-700 mt-0.5">Você pode cadastrar e acionar novas pessoas até finalizar completamente o dia.</p>
+              </div>
+            </div>
+            <button class="px-4 py-2 text-xs font-semibold text-white bg-[#B5120B] rounded-lg
+                           hover:bg-[#9a0f09] transition-colors shadow-sm shrink-0" data-go="dispatch">
+              Voltar ao despacho
+            </button>
+          </div>`;
+      }
+    }
+
+    // ── Filtro em tempo real da lista de profissionais ─────────────────────────
+    function filteredPeople() {
+      const q = norm(document.getElementById('teamPersonSearch')?.value || '');
+      const sector = document.getElementById('teamSectorFilter')?.value || '';
+      return [...state.people]
+        .sort((a, b) => a.role.localeCompare(b.role, 'pt-BR') || a.name.localeCompare(b.name, 'pt-BR'))
+        .filter(p => {
+          const matchName   = !q || norm(p.name).includes(q);
+          const matchSector = !sector || p.role === sector;
+          return matchName && matchSector;
+        });
+    }
+
+    // ── Renderiza apenas a lista de profissionais (com filtro aplicado) ─────────
+    function renderPeopleList() {
+      const op = currentOperation();
+      const selected = new Set(op?.team.map(t => t.personId) || []);
+      const usedIds  = new Set(op?.commands.map(c => c.assemblerId) || []);
+      const people   = filteredPeople();
+
+      if (!state.people.length) {
+        el.peopleChecklist.innerHTML = emptyTeam('Nenhum profissional cadastrado', 'Use o formulário acima.');
+      } else if (!people.length) {
+        el.peopleChecklist.innerHTML = emptyTeam('Nenhum resultado', 'Tente outro nome ou setor.');
+      } else {
+        el.peopleChecklist.innerHTML = people.map(p => personItemHtml(p, selected, usedIds)).join('');
+      }
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    // ── renderTeam() — orquestrador principal ──────────────────────────────────
+    function renderTeam() {
+      renderHeader();
+      const op = currentOperation();
+
+      // Lista de profissionais
+      renderPeopleList();
+
+      // Lista de presença (coluna direita)
+      renderCheckedTeam();
+
+      // Botões de ação
+      el.saveTeamBtn.disabled = op?.status === 'completed';
+      el.startOperationBtn.disabled = !!op && op.status !== 'draft';
+
+      // Atualiza label do botão + ícone dinamicamente
+      const startLabel = op?.status === 'production_open' ? 'Operação em andamento'
+        : op?.status === 'kitchen_closed' ? 'Cozinha encerrada'
+        : op?.status === 'completed'      ? 'Dia finalizado'
+        : 'Iniciar operação';
+      const startIcon = op?.status === 'production_open' ? 'activity'
+        : op?.status === 'completed'      ? 'check-circle'
+        : 'play';
+      el.startOperationBtn.innerHTML = `<i data-lucide="${startIcon}" class="w-4 h-4"></i> ${startLabel}`;
+
+      // KPIs
+      renderTeamKpis(op, state.people);
+
+      // Banner de status
+      renderTeamBanner(op);
+
+      // Stepper
+      renderTeamStepper(op);
+
+      // Ícones Lucide
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
     function checkedTeam() { return [...document.querySelectorAll('[data-team-id]:checked')].map(i => { const p = getPerson(i.dataset.teamId); return { personId: p.id, name: p.name, role: p.role } }) }
-    function renderCheckedTeam() { el.dayTeamGroups.innerHTML = teamHtml(checkedTeam()) }
+    function renderCheckedTeam() {
+      el.dayTeamGroups.innerHTML = teamHtml(checkedTeam());
+      // Atualiza badge de selecionados e KPI de presentes
+      const op = currentOperation();
+      renderTeamKpis(op, state.people);
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
     function saveTeam(show = true) {
       const op = ensureOperation();
       if (op.status === 'completed') return toast('A operação já foi finalizada. A equipe não pode mais ser alterada.', 'warn'), false;
@@ -491,7 +815,11 @@
     if (el.globalEndDate) el.globalEndDate.addEventListener('change', () => { el.assemblerId.value = ''; el.assemblerSearch.value = ''; renderAll() });
     // equipe
     el.personForm.addEventListener('submit', e => { e.preventDefault(); const name = proper(el.personName.value), role = el.personRole.value; if (name.length < 2 || !role) return toast('Preencha nome e setor.', 'error'); if (state.people.some(p => norm(p.name) === norm(name) && p.role === role)) return toast('Este profissional já está cadastrado neste setor.', 'warn'); state.people.push({ id: uid(), name, role, createdAt: new Date().toISOString() }); save(); el.personForm.reset(); renderTeam(); toast('Profissional cadastrado.') }); el.peopleChecklist.addEventListener('change', e => { const box = e.target.closest('[data-team-id]'); if (box && !box.checked && box.dataset.usedInProduction === '1') { box.checked = true; toast('Este montador já possui produção registrada e deve permanecer na equipe.', 'warn') } renderCheckedTeam() }); el.peopleChecklist.addEventListener('click', e => { const b = e.target.closest('[data-remove-person]'); if (!b) return; const p = getPerson(b.dataset.removePerson), used = state.operations.some(o => o.team.some(t => t.personId === p.id) || o.commands.some(c => c.assemblerId === p.id)); if (used) return toast('Este profissional já está vinculado a operações.', 'warn'); if (confirm(`Remover ${p.name}?`)) { state.people = state.people.filter(x => x.id !== p.id); save(); renderTeam(); toast('Profissional removido.', 'warn') } }); el.saveTeamBtn.addEventListener('click', () => saveTeam(true)); el.startOperationBtn.addEventListener('click', () => { const op = ensureOperation(); if (op.status !== 'draft') return toast('A operação já foi iniciada.', 'warn'); saveTeam(false); if (!op.team.length) return toast('Selecione a equipe do dia.', 'error'); if (!op.team.some(p => p.role === 'Montagem')) return toast('Inclua ao menos um montador.', 'error'); op.status = 'production_open'; op.startedAt = new Date().toISOString(); save(); showPage('production'); toast('Operação iniciada.') });
+    // Filtros da lista de profissionais (busca por nome + setor)
+    document.addEventListener('input', e => { if (e.target.id === 'teamPersonSearch') renderPeopleList(); });
+    document.addEventListener('change', e => { if (e.target.id === 'teamSectorFilter') renderPeopleList(); });
     // central moderna de produção
+
     el.openRegisterCommandBtn.addEventListener('click', openRegisterCommand);
     el.openUpdateCommandsBtn.addEventListener('click', openCommandUpdates);
     el.closeAndUpdateBtn.addEventListener('click', openCommandUpdates);
