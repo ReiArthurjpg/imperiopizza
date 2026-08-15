@@ -215,7 +215,7 @@
             container.innerHTML = empty('Top 5 ainda vazio', 'Nenhum montador fez pizzas neste período.');
             return;
           }
-          container.innerHTML = `<div class="space-y-4">${list.map((x, i) => `
+          container.innerHTML = `<div class="space-y-4">${list.slice(0, 5).map((x, i) => `
             <div class="flex items-center justify-between group">
               <div class="flex items-center gap-3">
                 <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${i === 0 ? 'bg-[#FFF9E5] text-[#D97706] ring-1 ring-[#FDE68A]' : 'bg-gray-100 text-gray-500'}">

@@ -60,7 +60,25 @@ $swagger = [
         ],
         "/api/dashboard/top-montadores-mensal" => [
             "get" => [
-                "summary" => "Obter Top 5 Montadores do Mês corrente",
+                "summary" => "Obter Top Montadores por Mês e Ano",
+                "parameters" => [
+                    [
+                        "name" => "ano",
+                        "in" => "query",
+                        "required" => false,
+                        "schema" => ["type" => "integer"],
+                        "example" => 2026,
+                        "description" => "Ano do ranking. Se omitido, usa o ano atual."
+                    ],
+                    [
+                        "name" => "mes",
+                        "in" => "query",
+                        "required" => false,
+                        "schema" => ["type" => "integer"],
+                        "example" => 8,
+                        "description" => "Mês do ranking (1 a 12). Se omitido, usa o mês atual."
+                    ]
+                ],
                 "responses" => [
                     "200" => [
                         "description" => "Ranking obtido com sucesso"
