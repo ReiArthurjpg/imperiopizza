@@ -6,7 +6,6 @@
     </button>
     <h1 class="text-lg font-semibold text-[#171717] hidden sm:block">Visão Geral da Operação</h1>
     <!-- Operation status badge inside header -->
-    <span id="phasePill" class="phase-pill">Sem operação</span>
   </div>
 
   <div class="flex items-center gap-3 sm:gap-4">
