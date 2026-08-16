@@ -762,39 +762,80 @@
     }); 
     if (el.globalStartDate) el.globalStartDate.addEventListener('change', () => { el.assemblerId.value = ''; el.assemblerSearch.value = ''; renderAll() });
     if (el.globalEndDate) el.globalEndDate.addEventListener('change', () => { el.assemblerId.value = ''; el.assemblerSearch.value = ''; renderAll() });
-    // equipe
-    // equipe
-    el.personForm.addEventListener('submit', async e => { e.preventDefault(); const name = proper(el.personName.value), role = el.personRole.value; if (name.length < 2 || !role) return toast('Preencha nome e setor.', 'error'); if (state.people.some(p => norm(p.name) === norm(name) && p.role === role)) return toast('Este profissional já está cadastrado neste setor.', 'warn'); const newPerson = { id: uid(), name, role, createdAt: new Date().toISOString() }; try { const res = await fetch('/api/profissionais', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(newPerson) }); if (!res.ok) throw new Error('Erro ao salvar profissional no servidor'); state.people.push(newPerson); save(); el.personForm.reset(); const addModal = $('addPersonModal'); if (addModal) addModal.classList.remove('show'); renderTeam(); toast('Profissional cadastrado.'); } catch (err) { toast(err.message, 'error'); } });
+    // ── Equipe: Helpers para abrir/fechar modais de forma consistente ──
+    function openModal(modalEl) {
+      if (!modalEl) return;
+      modalEl.classList.add('show');
+    }
+    function closeModal(modalEl) {
+      if (!modalEl) return;
+      modalEl.classList.remove('show');
+    }
+
+    // ── Equipe: Cadastro de profissional (POST) ──
+    el.personForm.addEventListener('submit', async e => { e.preventDefault(); const name = proper(el.personName.value), role = el.personRole.value; if (name.length < 2 || !role) return toast('Preencha nome e setor.', 'error'); if (state.people.some(p => norm(p.name) === norm(name) && p.role === role)) return toast('Este profissional já está cadastrado neste setor.', 'warn'); const newPerson = { id: uid(), name, role, createdAt: new Date().toISOString() }; try { const res = await fetch('/api/profissionais', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(newPerson) }); if (!res.ok) throw new Error('Erro ao salvar profissional no servidor'); state.people.push(newPerson); save(); el.personForm.reset(); closeModal($('addPersonModal')); renderTeam(); toast('Profissional cadastrado.'); } catch (err) { toast(err.message, 'error'); } });
     
-    el.editPersonForm.addEventListener('submit', e => {
+    // ── Equipe: Edição de profissional (PUT) — handler ÚNICO ──
+    el.editPersonForm.addEventListener('submit', async e => {
       e.preventDefault();
-      const id = el.editPersonId.value, name = proper(el.editPersonName.value), role = el.editPersonRole.value;
+      e.stopImmediatePropagation();
+
+      const id = el.editPersonId.value;
+      const name = proper(el.editPersonName.value);
+      const role = el.editPersonRole.value;
+
       if (name.length < 2 || !role) return toast('Preencha nome e setor.', 'error');
-      if (state.people.some(p => p.id !== id && norm(p.name) === norm(name) && p.role === role)) return toast('Este profissional já está cadastrado neste setor.', 'warn');
-      const p = getPerson(id);
-      if (!p) return;
-      p.name = name;
-      p.role = role;
-      state.operations.forEach(op => {
-        const t = op.team.find(x => x.personId === id);
-        if (t) { t.name = name; t.role = role }
-        op.commands.forEach(c => { if (c.assemblerId === id) c.assemblerName = name });
-      });
-      save();
-      el.editPersonModal.classList.remove('show');
-      renderTeam();
-      renderProduction();
-      renderDispatch();
-      renderDashboard();
-      toast('Profissional atualizado.');
+      if (state.people.some(p => p.id !== id && norm(p.name) === norm(name) && p.role === role)) {
+        return toast('Este profissional já está cadastrado neste setor.', 'warn');
+      }
+
+      try {
+        const res = await fetch(`/api/profissionais/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, role })
+        });
+        const result = await res.json();
+
+        if (result.success) {
+          // Atualiza estado local
+          const person = state.people.find(x => x.id === id);
+          if (person) { person.name = name; person.role = role; }
+
+          // Atualiza equipes e comandas em todas as operações
+          state.operations.forEach(op => {
+            const t = op.team.find(x => x.personId === id);
+            if (t) { t.name = name; t.role = role; }
+            op.commands.forEach(c => { if (c.assemblerId === id) c.assemblerName = name; });
+          });
+
+          save();
+          closeModal(el.editPersonModal);
+          renderTeam();
+          renderProduction();
+          renderDispatch();
+          renderDashboard();
+          toast('Profissional atualizado com sucesso!');
+        } else {
+          toast(result.error || 'Erro ao atualizar.', 'error');
+        }
+      } catch (err) {
+        console.error(err);
+        toast('Erro ao atualizar profissional: ' + err.message, 'error');
+      }
     });
 
+    // ── Equipe: Checkbox de presença ──
     el.peopleChecklist.addEventListener('change', e => { const box = e.target.closest('[data-team-id]'); if (box && !box.checked && box.dataset.usedInProduction === '1') { box.checked = true; toast('Este montador já possui produção registrada e deve permanecer na equipe.', 'warn') } renderCheckedTeam() });
     
+    // ── Equipe: Clique nos botões de editar/excluir da lista de profissionais ──
     el.peopleChecklist.addEventListener('click', e => {
-      const b = e.target.closest('[data-remove-person]');
-      if (b) {
-        const p = getPerson(b.dataset.removePerson);
+      // Botão EXCLUIR — abre modal de confirmação
+      const removeBtn = e.target.closest('[data-remove-person]');
+      if (removeBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        const p = getPerson(removeBtn.dataset.removePerson);
         if (p) {
           const deleteModal = $('confirmDeleteModal');
           if (deleteModal) {
@@ -803,14 +844,13 @@
             if (confirmBtn) {
               confirmBtn.dataset.personId = p.id;
             }
-            deleteModal.classList.add('show');
-            deleteModal.style.display = 'flex';
-            deleteModal.style.zIndex = '999999';
+            openModal(deleteModal);
           }
         }
+        return;
       }
 
-      // Abertura do modal de edição (REESCRITA DO ZERO)
+      // Botão EDITAR — abre modal de edição
       const editBtn = e.target.closest('[data-edit-person]');
       if (editBtn) {
         e.preventDefault();
@@ -819,163 +859,97 @@
         const personId = editBtn.dataset.editPerson;
         const p = getPerson(personId);
         if (!p) {
-          alert('Erro: Profissional não encontrado na lista local.');
+          toast('Profissional não encontrado.', 'error');
           return;
         }
 
-        const modal = document.getElementById('editPersonModal');
-        const idField = document.getElementById('editPersonId');
-        const nameField = document.getElementById('editPersonName');
-        const roleField = document.getElementById('editPersonRole');
-
-        if (!modal || !idField || !nameField || !roleField) {
-          alert('Erro: Elementos do modal de edição não encontrados no DOM.');
-          return;
-        }
-
-        // Popula os dados
-        idField.value = p.id;
-        nameField.value = p.name;
-        roleField.value = p.role;
+        // Popula os campos do formulário de edição
+        el.editPersonId.value = p.id;
+        el.editPersonName.value = p.name;
+        el.editPersonRole.value = p.role;
 
         // Exibe o modal
-        modal.classList.add('show');
-        modal.style.display = 'flex';
-        modal.style.zIndex = '999999';
+        openModal(el.editPersonModal);
       }
     });
 
-    // Submissão do form de edição
-    const editPersonForm = document.getElementById('editPersonForm');
-    if (editPersonForm) {
-      editPersonForm.addEventListener('submit', async e => {
-        e.preventDefault();
-        
-        const idField = document.getElementById('editPersonId');
-        const nameField = document.getElementById('editPersonName');
-        const roleField = document.getElementById('editPersonRole');
-        
-        const id = idField.value;
-        const name = nameField.value.trim();
-        const role = roleField.value;
+    // ── Equipe: Confirmação de EXCLUSÃO (DELETE) ──
+    $('confirmDeletePersonBtn').addEventListener('click', async e => {
+      const personId = e.currentTarget.dataset.personId;
+      if (!personId) return;
 
-        if (!id || !name || !role) return toast('Preencha todos os campos.', 'warn');
+      try {
+        const res = await fetch(`/api/profissionais/${personId}`, {
+          method: 'DELETE'
+        });
+        const result = await res.json();
 
-        try {
-          const res = await fetch(`/api/profissionais/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, role })
+        if (result.success) {
+          // Remove do estado local
+          state.people = state.people.filter(p => p.id !== personId);
+
+          // Remove de todas as equipes e comandas de operações
+          state.operations.forEach(op => {
+            op.team = op.team.filter(t => t.personId !== personId);
+            op.commands = op.commands.filter(c => c.assemblerId !== personId);
           });
-          
-          const result = await res.json();
-          if (result.success) {
-            const person = state.people.find(x => x.id === id);
-            if (person) {
-              person.name = name;
-              person.role = role;
-            }
-            
-            const op = currentOperation();
-            if (op) {
-              const teamMember = op.team.find(t => t.personId === id);
-              if (teamMember) {
-                teamMember.name = name;
-                teamMember.role = role;
-              }
-              const cmds = op.commands.filter(c => c.assemblerId === id);
-              cmds.forEach(c => c.assemblerName = name);
-            }
-            
-            save();
-            renderTeam();
-            if (typeof renderProduction === 'function') renderProduction();
-            if (typeof renderDispatch === 'function') renderDispatch();
-            
-            document.getElementById('editPersonModal').classList.remove('show');
-            document.getElementById('editPersonModal').style.display = 'none';
-            toast('Profissional atualizado com sucesso!', 'success');
-          } else {
-            toast(result.error || 'Erro ao atualizar.', 'error');
-          }
-        } catch (err) {
-          toast('Erro de rede: ' + err.message, 'error');
+
+          save();
+          closeModal($('confirmDeleteModal'));
+          renderTeam();
+          renderProduction();
+          renderDispatch();
+          renderDashboard();
+          toast('Profissional excluído com sucesso!');
+        } else {
+          toast(result.error || 'Erro ao excluir.', 'error');
         }
-      });
-    }
+      } catch (err) {
+        console.error(err);
+        toast('Erro ao excluir profissional: ' + err.message, 'error');
+      }
+    });
+
+    // ── Equipe: Botões data-close para fechar modais ──
+    document.addEventListener('click', e => {
+      const closeBtn = e.target.closest('[data-close]');
+      if (closeBtn) {
+        const closeTarget = closeBtn.dataset.close;
+        if (closeTarget === 'addPerson') closeModal($('addPersonModal'));
+        if (closeTarget === 'editPerson') closeModal(el.editPersonModal);
+        if (closeTarget === 'confirmDelete') closeModal($('confirmDeleteModal'));
+        return;
+      }
+    });
 
     el.saveTeamBtn.addEventListener('click', () => saveTeam(true)); el.startOperationBtn.addEventListener('click', () => { const op = ensureOperation(); if (op.status !== 'draft') return toast('A operação já foi iniciada.', 'warn'); saveTeam(false); if (!op.team.length) return toast('Selecione a equipe do dia.', 'error'); if (!op.team.some(p => p.role === 'Montagem')) return toast('Inclua ao menos um montador.', 'error'); op.status = 'production_open'; op.startedAt = new Date().toISOString(); save(); fetch('/api/operacao/iniciar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ operacao_id: op.id, startedAt: op.startedAt }) }); showPage('production'); toast('Operação iniciada.') });
     // Filtros da lista de profissionais (busca por nome + setor)
     document.addEventListener('input', e => { if (e.target.id === 'teamPersonSearch') renderPeopleList(); });
     document.addEventListener('change', e => { if (e.target.id === 'teamSectorFilter') renderPeopleList(); });
-    // Eventos de modais de equipe (abrir e fechar clicando fora)
+    // Eventos de modais de equipe (abrir e fechar clicando fora / backdrop)
     document.addEventListener('click', e => {
       // Abrir cadastro
       const btn = e.target.closest('#openAddPersonModalBtn');
       if (btn) {
-        const addModal = $('addPersonModal');
-        if (addModal) addModal.classList.add('show');
+        openModal($('addPersonModal'));
       }
 
-      // Fechar cadastro ao clicar fora
+      // Fechar modais ao clicar no backdrop (fora da caixa do modal)
       const addModal = $('addPersonModal');
       if (addModal && e.target === addModal) {
-        addModal.classList.remove('show');
+        closeModal(addModal);
       }
 
-      // Fechar edição ao clicar fora
       const editModal = el.editPersonModal;
       if (editModal && e.target === editModal) {
-        editModal.classList.remove('show');
+        closeModal(editModal);
+      }
+
+      const deleteModal = $('confirmDeleteModal');
+      if (deleteModal && e.target === deleteModal) {
+        closeModal(deleteModal);
       }
     });
-
-    if (el.editPersonForm) {
-      el.editPersonForm.addEventListener('submit', e => {
-        e.preventDefault();
-        const id = el.editPersonId.value;
-        const name = el.editPersonName.value.trim();
-        const role = el.editPersonRole.value;
-
-        if (!id || !name || !role) return toast('Preencha todos os campos.', 'warn');
-
-        fetch(`/api/profissionais/${id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, role })
-        })
-        .then(res => res.json())
-        .then(result => {
-          if (result.success) {
-            const person = state.people.find(p => p.id === id);
-            if (person) {
-              person.name = name;
-              person.role = role;
-            }
-            
-            const op = currentOperation();
-            if (op) {
-              const teamMember = op.team.find(t => t.personId === id);
-              if (teamMember) {
-                teamMember.name = name;
-                teamMember.role = role;
-                save();
-              }
-            }
-            
-            el.editPersonModal.classList.remove('show');
-            renderTeam();
-            toast('Profissional atualizado.');
-          } else {
-            toast(result.error || 'Erro ao atualizar.', 'error');
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          toast('Erro ao atualizar profissional.', 'error');
-        });
-      });
-    }
 
     // central moderna de produção
 
