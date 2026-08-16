@@ -33,8 +33,8 @@
 
 
 
-    <!-- HISTORY / TABLE -->
-    <article id="commandHistoryPanel" class="bg-white rounded-xl border border-[#E7E7E7] shadow-[0_4px_12px_rgba(0,0,0,0.02)]">
+    <!-- CONTROLS & FILTERS -->
+    <div class="bg-white rounded-xl border border-[#E7E7E7] shadow-[0_4px_12px_rgba(0,0,0,0.02)] mb-4">
       <div class="flex items-center justify-between p-5 border-b border-[#E7E7E7] flex-wrap gap-4">
         <div>
           <h3 class="text-base font-semibold text-[#171717]">Comandas da operação</h3>
@@ -48,8 +48,8 @@
       </div>
 
       <!-- Filters -->
-      <div class="p-4 border-b border-[#E7E7E7] bg-gray-50/50">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_auto] gap-3">
+      <div class="p-4 bg-gray-50/50 rounded-b-xl">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           <div class="relative">
             <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></i>
             <input id="prodSearch" type="text" placeholder="Buscar comanda, montador..." class="w-full pl-9 pr-3 py-2 text-sm border border-[#E7E7E7] rounded-lg text-[#171717] placeholder-gray-400 focus:outline-none focus:border-[#B5120B] focus:ring-2 focus:ring-[#FDECEB] transition-all duration-150">
@@ -63,28 +63,18 @@
           <select id="prodAssembler" class="w-full px-3 py-2 text-sm border border-[#E7E7E7] rounded-lg text-[#737373] bg-white focus:outline-none focus:border-[#B5120B] focus:ring-2 focus:ring-[#FDECEB] transition-all duration-150">
             <option value="">Todos os montadores</option>
           </select>
-          <button id="clearProdFilters" class="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-100 border border-transparent rounded-lg hover:bg-gray-200 active:scale-[0.98] transition-all duration-150 flex items-center justify-center gap-1.5">
-            <i data-lucide="x" class="w-4 h-4"></i>
-            Limpar
-          </button>
         </div>
       </div>
+    </div>
 
-      <div class="overflow-x-auto w-full custom-scrollbar">
-        <table class="w-full text-left border-collapse min-w-[600px]">
-          <thead>
-            <tr class="bg-gray-50/50 border-b border-[#E7E7E7]">
-              <th class="px-4 py-3 text-xs font-semibold text-[#173F69] uppercase tracking-wider">#</th>
-              <th class="px-4 py-3 text-xs font-semibold text-[#173F69] uppercase tracking-wider">Montador</th>
-              <th class="px-4 py-3 text-xs font-semibold text-[#173F69] uppercase tracking-wider">Pizzas</th>
-              <th class="px-4 py-3 text-xs font-semibold text-[#173F69] uppercase tracking-wider">Status</th>
-              <th class="px-4 py-3 text-xs font-semibold text-[#173F69] uppercase tracking-wider">Ações</th>
-            </tr>
-          </thead>
-          <tbody id="productionBody" class="divide-y divide-[#E7E7E7]"></tbody>
+    <!-- HISTORY / TABLE -->
+    <div id="commandHistoryPanel">
+      <div class="overflow-x-auto w-full custom-scrollbar pb-4">
+        <table class="w-full text-left min-w-[600px] table-spaced">
+          <tbody id="productionBody"></tbody>
         </table>
       </div>
-
+      
       <div id="productionMobileList" class="mobile-command-list p-4"></div>
 
       <div id="productionEmpty" class="hidden p-10 text-center flex flex-col items-center justify-center">
@@ -94,6 +84,6 @@
         <strong class="text-base text-[#171717] mb-1">Nenhuma comanda encontrada</strong>
         <p class="text-sm text-[#737373]">Registre a primeira comanda ou ajuste os filtros.</p>
       </div>
-    </article>
+    </div>
   </div>
 </section>
