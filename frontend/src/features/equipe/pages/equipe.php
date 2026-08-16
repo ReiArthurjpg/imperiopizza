@@ -118,6 +118,7 @@
           </span>
         </div>
 
+        
         <!-- Conteúdo da lista de presença (renderizado pelo JS) -->
         <div id="dayTeamGroups" class="flex-1 max-h-[310px] min-h-[80px] overflow-y-auto pr-2 custom-scrollbar"></div>
 
