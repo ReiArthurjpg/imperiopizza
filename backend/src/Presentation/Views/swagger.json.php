@@ -442,6 +442,40 @@ $swagger = [
                     "400" => ["description" => "Dados inválidos"]
                 ]
             ]
+        ],
+        "/api/profissionais/{id}" => [
+            "put" => [
+                "tags" => ["Equipe"],
+                "summary" => "Editar um profissional existente",
+                "parameters" => [
+                    [
+                        "name" => "id",
+                        "in" => "path",
+                        "required" => true,
+                        "schema" => ["type" => "string"],
+                        "description" => "ID do profissional"
+                    ]
+                ],
+                "requestBody" => [
+                    "required" => true,
+                    "content" => [
+                        "application/json" => [
+                            "schema" => [
+                                "type" => "object",
+                                "properties" => [
+                                    "name" => ["type" => "string", "example" => "João Silva"],
+                                    "role" => ["type" => "string", "example" => "Forno"]
+                                ],
+                                "required" => ["name", "role"]
+                            ]
+                        ]
+                    ]
+                ],
+                "responses" => [
+                    "200" => ["description" => "Profissional atualizado com sucesso"],
+                    "400" => ["description" => "Dados inválidos"]
+                ]
+            ]
         ]
     ]
 ];

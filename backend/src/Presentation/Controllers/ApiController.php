@@ -207,6 +207,36 @@ class ApiController
         $this->jsonResponse(['success' => true, 'profissional' => $data]);
     }
 
+    public function updateProfissional($id)
+    {
+        $data = $this->getJsonInput();
+        
+        if (!isset($data['name'], $data['role'])) {
+            $this->jsonResponse(['error' => 'Invalid data'], 400);
+        }
+
+        // Insert into database, using ON DUPLICATE KEY UPDATE in create()
+        Equipe::create($id, $data['name'], $data['role']);
+
+        // Update state.json to keep it in sync since frontend still uses it
+        $file = __DIR__ . '/../../../../storage/state.json';
+        if (file_exists($file)) {
+            $jsonData = json_decode(file_get_contents($file), true);
+            if (is_array($jsonData) && isset($jsonData['people'])) {
+                foreach ($jsonData['people'] as &$p) {
+                    if ($p['id'] == $id) {
+                        $p['name'] = $data['name'];
+                        $p['role'] = $data['role'];
+                        break;
+                    }
+                }
+                file_put_contents($file, json_encode($jsonData));
+            }
+        }
+
+        $this->jsonResponse(['success' => true, 'profissional' => ['id' => $id, 'name' => $data['name'], 'role' => $data['role']]]);
+    }
+
     public function getProfissionais()
     {
         try {

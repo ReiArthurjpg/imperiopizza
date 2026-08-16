@@ -96,6 +96,13 @@ if ($uri === '/api/profissionais' && $method === 'POST') {
     exit;
 }
 
+if (preg_match('/^\/api\/profissionais\/([a-zA-Z0-9_-]+)$/', $uri, $matches) && $method === 'PUT') {
+    require_once __DIR__ . '/../Controllers/ApiController.php';
+    $controller = new \App\Back\Presentation\Controllers\ApiController();
+    $controller->updateProfissional($matches[1]);
+    exit;
+}
+
 if ($uri === '/api/profissionais' && $method === 'GET') {
     require_once __DIR__ . '/../Controllers/ApiController.php';
     $controller = new \App\Back\Presentation\Controllers\ApiController();

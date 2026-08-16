@@ -420,7 +420,7 @@
             <button class="opacity-0 group-hover:opacity-100 transition-opacity duration-150
                            p-1.5 rounded-md text-[#D97706] hover:bg-[#FFF9E5] hover:text-[#B45309]"
                     type="button"
-                    data-edit-person="${p.id}"
+                    onclick="window.openEditPerson('${p.id}')"
                     title="Editar profissional">
               <i data-lucide="pencil" class="w-3.5 h-3.5 pointer-events-none"></i>
             </button>
@@ -452,24 +452,30 @@
       if (peopleCount) peopleCount.textContent = allPeople.length;
 
       const selBadge = document.getElementById('teamSelectedBadge');
-      if (selBadge && op && op.id) {
-        fetch(`/api/operacao/equipe?operacao_id=${op.id}`)
-          .then(res => res.json())
-          .then(data => {
-            if (data.success) {
-              const count = data.count || 0;
-              selBadge.textContent = count === 0 ? '0 selecionados' : `${count} ${count === 1 ? 'selecionado' : 'selecionados'}`;
-              selBadge.className = `px-2.5 py-0.5 rounded-full text-xs font-semibold border transition-all ${
-                count > 0
-                  ? 'bg-[#E7F8F0] text-[#10B981] border-[#A7F3D0]'
-                  : 'bg-gray-100 text-[#737373] border-gray-200'
-              }`;
-            }
-          })
-          .catch(err => console.error('Erro ao buscar quantidade de equipe', err));
-      } else if (selBadge) {
-        selBadge.textContent = '0 selecionados';
-        selBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-semibold border transition-all bg-gray-100 text-[#737373] border-gray-200';
+      if (selBadge && op) {
+        const updateBadge = (count) => {
+          selBadge.textContent = count === 0 ? '0 selecionados' : `${count} ${count === 1 ? 'selecionado' : 'selecionados'}`;
+          selBadge.className = `px-2.5 py-0.5 rounded-full text-xs font-semibold border transition-all ${
+            count > 0
+              ? 'bg-[#E7F8F0] text-[#10B981] border-[#A7F3D0]'
+              : 'bg-gray-100 text-[#737373] border-gray-200'
+          }`;
+        };
+        
+        if (op.status === 'draft') {
+          updateBadge(op.team ? op.team.length : 0);
+        } else if (op.id) {
+          fetch(`/api/operacao/equipe?operacao_id=${op.id}`)
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) {
+                updateBadge(data.count || 0);
+              }
+            })
+            .catch(err => console.error('Erro ao buscar quantidade de equipe', err));
+        } else {
+          updateBadge(0);
+        }
       }
     }
 
@@ -651,7 +657,12 @@
       }
       op.team = selected;
       save();
-      fetch('/api/equipe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ operacao_id: op.id, team: selected }) });
+      fetch('/api/equipe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ operacao_id: op.id, team: selected }) })
+        .then(res => {
+          if (res.ok) {
+            renderCheckedTeam();
+          }
+        });
       renderHeader(); renderCheckedTeam(); renderProduction(); renderDispatch(); renderDashboard();
       if (show && !kept.length) toast(op.status === 'draft' ? 'Equipe salva.' : 'Equipe atualizada durante a operação.');
       return true;
@@ -796,7 +807,33 @@
           toast('Profissional removido.', 'warn')
         }
       }
+
+      const editBtn = e.target.closest('[data-edit-person]');
+      if (editBtn) {
+        // Fallback for old cached HTML
+        e.preventDefault(); e.stopPropagation();
+        if (window.openEditPerson) window.openEditPerson(editBtn.dataset.editPerson);
+      }
     });
+
+    // Expose explicit function to bypass delegation issues
+    window.openEditPerson = function(personId) {
+      const p = getPerson(personId);
+      if (p) {
+        if (!el.editPersonModal) {
+          alert("Erro: modal editPersonModal não encontrado no DOM!");
+          return;
+        }
+        el.editPersonId.value = p.id;
+        el.editPersonName.value = p.name;
+        el.editPersonRole.value = p.role;
+        el.editPersonModal.classList.add('show');
+        el.editPersonModal.style.display = 'flex';
+        el.editPersonModal.style.zIndex = '9999';
+      } else {
+        alert("Erro: Profissional não encontrado!");
+      }
+    };
 
     el.saveTeamBtn.addEventListener('click', () => saveTeam(true)); el.startOperationBtn.addEventListener('click', () => { const op = ensureOperation(); if (op.status !== 'draft') return toast('A operação já foi iniciada.', 'warn'); saveTeam(false); if (!op.team.length) return toast('Selecione a equipe do dia.', 'error'); if (!op.team.some(p => p.role === 'Montagem')) return toast('Inclua ao menos um montador.', 'error'); op.status = 'production_open'; op.startedAt = new Date().toISOString(); save(); fetch('/api/operacao/iniciar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ operacao_id: op.id, startedAt: op.startedAt }) }); showPage('production'); toast('Operação iniciada.') });
     // Filtros da lista de profissionais (busca por nome + setor)
@@ -811,18 +848,6 @@
         if (addModal) addModal.classList.add('show');
       }
 
-      // Abrir edição
-      const editBtn = e.target.closest('[data-edit-person]');
-      if (editBtn) {
-        const p = getPerson(editBtn.dataset.editPerson);
-        if (p) {
-          el.editPersonId.value = p.id;
-          el.editPersonName.value = p.name;
-          el.editPersonRole.value = p.role;
-          el.editPersonModal.classList.add('show');
-        }
-      }
-      
       // Fechar cadastro ao clicar fora
       const addModal = $('addPersonModal');
       if (addModal && e.target === addModal) {
@@ -835,6 +860,54 @@
         editModal.classList.remove('show');
       }
     });
+
+    if (el.editPersonForm) {
+      el.editPersonForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const id = el.editPersonId.value;
+        const name = el.editPersonName.value.trim();
+        const role = el.editPersonRole.value;
+
+        if (!id || !name || !role) return toast('Preencha todos os campos.', 'warn');
+
+        fetch(`/api/profissionais/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, role })
+        })
+        .then(res => res.json())
+        .then(result => {
+          if (result.success) {
+            const person = state.people.find(p => p.id === id);
+            if (person) {
+              person.name = name;
+              person.role = role;
+            }
+            
+            const op = currentOperation();
+            if (op) {
+              const teamMember = op.team.find(t => t.personId === id);
+              if (teamMember) {
+                teamMember.name = name;
+                teamMember.role = role;
+                save();
+              }
+            }
+            
+            el.editPersonModal.classList.remove('show');
+            renderTeam();
+            toast('Profissional atualizado.');
+          } else {
+            toast(result.error || 'Erro ao atualizar.', 'error');
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          toast('Erro ao atualizar profissional.', 'error');
+        });
+      });
+    }
+
     // central moderna de produção
 
     el.openRegisterCommandBtn.addEventListener('click', openRegisterCommand);
