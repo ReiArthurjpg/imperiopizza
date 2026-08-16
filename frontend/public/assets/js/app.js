@@ -1394,7 +1394,7 @@
       const s = stats(op);
       const items = [
         ['Comandas', s.commands],
-        ['Equivalentes', fmt(s.pizzas)],
+        ['Pizzas', fmt(s.pizzas)],
         ['No forno', s.oven],
         ['Vulcão', fmt(s.volcano)],
         ['Esfirras', fmt(s.esfihas, 0)],
