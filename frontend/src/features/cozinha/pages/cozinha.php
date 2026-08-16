@@ -30,18 +30,8 @@
     <!-- SUBTOTAIS (KPIs) -->
     <div id="productionSubtotals" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3"></div>
 
-    <!-- ULTIMOS REGISTROS -->
-    <div class="bg-white rounded-xl border border-[#E7E7E7] shadow-[0_4px_12px_rgba(0,0,0,0.02)] px-5 py-3 flex items-center justify-between gap-4 flex-wrap">
-      <span class="text-xs font-bold text-[#737373] uppercase tracking-wider">Últimos registros:</span>
-      <div id="productionRecent" class="flex items-center gap-2 flex-wrap min-w-0"></div>
-    </div>
 
-    <!-- PRIMARY ACTION -->
-    <button id="openRegisterCommandBtn" type="button"
-      class="w-full flex items-center justify-center gap-2 px-6 py-4 bg-[#B5120B] text-white font-semibold rounded-xl hover:bg-[#9a0f09] active:scale-[0.99] transition-all duration-150 shadow-md text-base">
-      <i data-lucide="plus-circle" class="w-5 h-5"></i>
-      Nova comanda
-    </button>
+
 
     <!-- HISTORY / TABLE -->
     <article id="commandHistoryPanel" class="bg-white rounded-xl border border-[#E7E7E7] shadow-[0_4px_12px_rgba(0,0,0,0.02)]">
@@ -50,11 +40,10 @@
           <h3 class="text-base font-semibold text-[#171717]">Comandas da operação</h3>
           <p class="text-xs text-[#737373] mt-0.5">No forno aparecem primeiro · clique na ação principal para avançar.</p>
         </div>
-        <button id="openUpdateCommandsBtn" type="button"
-          class="relative flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#9a5200] bg-orange-50 border border-orange-200 rounded-lg hover:bg-orange-100 active:scale-[0.98] transition-all duration-150">
-          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
-          Atualizar comandas
-          <span id="updatePendingBadge" class="absolute -top-1.5 -right-1.5 w-4 h-4 bg-[#B5120B] text-white text-[10px] font-bold rounded-full flex items-center justify-center leading-none">0</span>
+        <button id="openRegisterCommandBtn" type="button"
+          class="px-4 py-3 bg-[#B5120B] text-white text-xs font-semibold rounded-lg hover:bg-[#9a0f09] active:scale-[0.98] transition-all duration-150 shadow-sm flex items-center gap-1.5">
+          <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+          Nova comanda
         </button>
       </div>
 

@@ -710,7 +710,7 @@
     function renderProduction() { renderHeader(); const op = currentOperation(); el.manageTeamBtn.disabled = op?.status === 'completed'; if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Operação não iniciada", "Cadastre a equipe do dia e inicie a operação para liberar a tela de produção.", "Ir para equipe", "team", "chef-hat"); el.productionContent.classList.add('hidden'); el.closeKitchenBtn.disabled = true; el.reopenKitchenBtn.classList.add('hidden'); el.registerCommandModal.classList.remove('show'); el.manageTeamBtn.classList.add('hidden'); el.closeKitchenBtn.classList.add('hidden'); return } if (op.status === 'completed') { el.productionGate.innerHTML = gateCard("Operação finalizada", "Consulte os relatórios do dia para ver o histórico e resultados.", "Abrir relatórios", "reports", "bar-chart-2"); el.productionContent.classList.add('hidden'); el.closeKitchenBtn.disabled = true; el.reopenKitchenBtn.classList.add('hidden'); el.registerCommandModal.classList.remove('show'); el.manageTeamBtn.classList.add('hidden'); el.closeKitchenBtn.classList.add('hidden'); return } el.productionGate.innerHTML = ''; el.productionContent.classList.remove('hidden'); const kitchenOpen = op.status === 'production_open'; el.manageTeamBtn.classList.remove('hidden'); el.closeKitchenBtn.disabled = !kitchenOpen; el.closeKitchenBtn.classList.toggle('hidden', !kitchenOpen); el.reopenKitchenBtn.classList.toggle('hidden', op.status !== 'kitchen_closed'); el.openRegisterCommandBtn.disabled = !kitchenOpen; el.addCommandBtn.disabled = !kitchenOpen; el.assemblerPickerBtn.disabled = !kitchenOpen; el.commandNumber.disabled = !kitchenOpen; el.pizzaQty.disabled = !kitchenOpen; el.commandNote.disabled = !kitchenOpen; el.initialOven.disabled = !kitchenOpen; if (!kitchenOpen) el.registerCommandModal.classList.remove('show'); renderProductionSub(op); renderAssemblerFilter(op); renderCommandSuggestions(op); renderProductionRecent(op); renderProductionTable(op) }
     function renderProductionSub(op) { const s = stats(op); const pills = [['list-ordered', 'Comandas', s.commands, ''], ['flame', 'No forno', s.oven, s.oven > 0 ? 'text-orange-600' : ''], ['truck', 'No despacho', s.dispatchPending + s.released, ''], ['alert-triangle', 'Erros', s.errors, s.errors > 0 ? 'text-red-600' : '']]; el.productionSubtotals.innerHTML = pills.map(([icon, label, val, cls]) => `<div class="flex items-center gap-2"><i data-lucide="${icon}" class="w-4 h-4 text-[#737373] shrink-0"></i><span class="text-xs text-[#737373]">${label}</span><span class="text-sm font-bold ${cls || 'text-[#171717]'}">${val}</span></div>`).join('<span class="text-[#E7E7E7]">/</span>'); setTimeout(() => { if (typeof lucide !== 'undefined') lucide.createIcons(); }, 10) }
 
-    function renderProductionRecent(op) { const recent = [...op.commands].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 4), pending = op.commands.filter(c => c.status === 'cozinha' || c.status === 'forno').length; el.updatePendingBadge.textContent = pending; const statusChipClass = c => c.status === 'forno' ? 'bg-orange-100 text-orange-700' : c.status === 'cozinha' ? 'bg-blue-50 text-blue-700' : 'bg-green-50 text-green-700'; el.productionRecent.innerHTML = recent.length ? recent.map(c => `<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${statusChipClass(c)} whitespace-nowrap">#${String(c.number).padStart(3,'0')} · ${esc(c.assemblerName.split(' ')[0])} · ${c.pizzas}🍕</span>`).join('') : `<span class="text-xs text-[#737373] italic">Aguardando primeira comanda…</span>` }
+    function renderProductionRecent(op) { const recent = [...op.commands].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 4), pending = op.commands.filter(c => c.status === 'cozinha' || c.status === 'forno').length; if (el.updatePendingBadge) el.updatePendingBadge.textContent = pending; const statusChipClass = c => c.status === 'forno' ? 'bg-orange-100 text-orange-700' : c.status === 'cozinha' ? 'bg-blue-50 text-blue-700' : 'bg-green-50 text-green-700'; if (el.productionRecent) el.productionRecent.innerHTML = recent.length ? recent.map(c => `<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${statusChipClass(c)} whitespace-nowrap">#${String(c.number).padStart(3,'0')} · ${esc(c.assemblerName.split(' ')[0])} · ${c.pizzas}🍕</span>`).join('') : `<span class="text-xs text-[#737373] italic">Aguardando primeira comanda…</span>` }
     function openRegisterCommand() { const op = currentOperation(); if (!op || op.status !== 'production_open') return toast('A cozinha não está aberta.', 'warn'); resetRegistration(); renderCommandSuggestions(op); const body = el.registerCommandModal.querySelector('.register-modal-body'); if (body) body.scrollTop = 0; el.registerCommandModal.classList.add('show'); setTimeout(() => el.assemblerPickerBtn.focus(), 120) }
     function openCommandUpdates() { const op = currentOperation(); if (!op || !op.commands.length) return toast('Ainda não existem comandas registradas.', 'warn'); el.registerCommandModal.classList.remove('show'); el.prodStatus.value = op.commands.some(c => c.status === 'forno') ? 'forno' : ''; renderProductionTable(op); setTimeout(() => el.commandHistoryPanel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80) }
 
@@ -1019,7 +1019,7 @@
     // central moderna de produção
 
     el.openRegisterCommandBtn.addEventListener('click', openRegisterCommand);
-    el.openUpdateCommandsBtn.addEventListener('click', openCommandUpdates);
+    if (el.openUpdateCommandsBtn) el.openUpdateCommandsBtn.addEventListener('click', openCommandUpdates);
     el.closeAndUpdateBtn.addEventListener('click', openCommandUpdates);
     el.assemblerPickerBtn.addEventListener('click', openAssemblerPicker);
     el.assemblerPickerSearch.addEventListener('input', renderAssemblerPickerList);
@@ -1392,33 +1392,54 @@
 
     renderProductionSub = function (op) {
       const s = stats(op);
-      const items = [
-        ['Comandas', s.commands],
-        ['Pizzas', fmt(s.pizzas)],
-        ['No forno', s.oven],
-        ['Vulcão', fmt(s.volcano)],
-        ['Esfirras', fmt(s.esfihas, 0)],
-        ['Doces', fmt(s.sweet)],
-        ['Erros', s.errors]
+      
+      const kpis = [
+        { label: 'Comandas', value: s.commands, icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>' },
+        { label: 'Pizzas', value: fmt(s.pizzas), icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 11V4.234a2 2 0 012-1.986l.283.028a2 2 0 011.666 1.638L16.275 11H11zM11 13v6.766a2 2 0 002 1.986l.283-.028a2 2 0 001.666-1.638L16.275 13H11zM9 11H3.725a2 2 0 00-1.666 1.638l-.283.028A2 2 0 003.762 14.65L9 14.65V11zM9 13H3.725a2 2 0 01-1.666-1.638l-.283-.028A2 2 0 013.762 9.35L9 9.35V13z"></path></svg>' },
+        { label: 'No forno', value: s.oven, icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z"></path></svg>' },
+        { label: 'Vulcão', value: fmt(s.volcano), icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>' },
+        { label: 'Esfirras', value: fmt(s.esfihas, 0), icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>' },
+        { label: 'Doces', value: fmt(s.sweet), icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>' },
+        { label: 'Erros', value: s.errors, icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>' }
       ];
-      el.productionSubtotals.innerHTML = items.map(([l, v]) => `
-        <div class="bg-white rounded-xl border border-[#E7E7E7] shadow-[0_4px_12px_rgba(0,0,0,0.02)] p-4 flex flex-col justify-center min-h-[82px] transition-all duration-200 hover:shadow-md">
-          <small class="text-[10px] font-semibold text-[#737373] uppercase tracking-wider">${l}</small>
-          <strong class="text-xl font-bold text-[#171717] mt-1">${v}</strong>
+
+      el.productionSubtotals.innerHTML = kpis.map(k => `
+        <div class="group bg-white border border-[#E5E7EB] rounded-xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.02)] transition-all duration-200 hover:shadow-[0_4px_12px_rgba(0,0,0,0.04)] hover:border-[#D1D5DB] flex flex-col justify-between min-h-[96px]">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[13px] font-medium text-[#6B7280] tracking-tight">${k.label}</span>
+            <div class="w-5 h-5 text-[#9CA3AF] transition-colors duration-200 group-hover:text-[#4F46E5]">
+              ${k.icon}
+            </div>
+          </div>
+          <div class="flex items-end justify-between">
+            <span class="text-[28px] font-bold text-[#111827] tracking-tight leading-none">${k.value}</span>
+          </div>
         </div>
       `).join('');
     };
 
     renderProductionRecent = function (op) {
-      const recent = [...op.commands].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 4),
-            pending = op.commands.filter(c => c.status === 'cozinha' || c.status === 'forno').length;
-      el.updatePendingBadge.textContent = pending;
-      const statusChipClass = c => c.status === 'forno' ? 'bg-orange-100 text-orange-700' : c.status === 'cozinha' ? 'bg-blue-50 text-blue-700' : 'bg-green-50 text-green-700';
+      const pending = op.commands.filter(c => c.status === 'cozinha' || c.status === 'forno').length;
+      if (el.updatePendingBadge) el.updatePendingBadge.textContent = pending;
+      
+      if (!el.productionRecent) return;
+      const recent = [...op.commands].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 4);
+      
+      const sassChip = c => {
+        if (c.status === 'forno') return 'bg-[#FFF7ED] text-[#C2410C] border-[#FFEDD5]';
+        if (c.status === 'cozinha') return 'bg-[#EFF6FF] text-[#1D4ED8] border-[#DBEAFE]';
+        return 'bg-[#F0FDF4] text-[#15803D] border-[#DCFCE7]';
+      };
+
       el.productionRecent.innerHTML = recent.length ? recent.map(c => `
-        <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${statusChipClass(c)} whitespace-nowrap">
-          #${String(c.number).padStart(3,'0')} · ${esc(c.assemblerName.split(' ')[0])} · ${fmt(commandEquivalent(c))}🍕
-        </span>
-      `).join('') : `<span class="text-xs text-[#737373] italic">Aguardando primeira comanda…</span>`;
+        <div class="flex items-center gap-2 px-2.5 py-1 rounded-[6px] border ${sassChip(c)} text-[12px] font-medium shadow-sm">
+          <span class="font-semibold opacity-90">#${String(c.number).padStart(3,'0')}</span>
+          <span class="opacity-30">|</span>
+          <span class="truncate max-w-[80px]">${esc(c.assemblerName.split(' ')[0])}</span>
+          <span class="opacity-30">|</span>
+          <span class="flex items-center gap-0.5">${fmt(commandEquivalent(c))} <span class="opacity-60 text-[10px]">🍕</span></span>
+        </div>
+      `).join('') : `<span class="text-[13px] text-[#9CA3AF]">Nenhum registro recente</span>`;
     };
 
     function prodFlowActions(c) {
