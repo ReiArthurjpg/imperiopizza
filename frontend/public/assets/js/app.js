@@ -417,11 +417,7 @@
             </div>
           </label>
           <div class="flex items-center gap-1 shrink-0">
-            <button class="opacity-0 group-hover:opacity-100 transition-opacity duration-150
-                           p-1.5 rounded-md text-[#D97706] hover:bg-[#FFF9E5] hover:text-[#B45309]"
-                    type="button"
-                    onclick="window.openEditPerson('${p.id}')"
-                    title="Editar profissional">
+            <button class="opacity-0 group-hover:opacity-100 transition-opacity duration-150 p-1.5 rounded-md text-[#D97706] hover:bg-[#FFF9E5] hover:text-[#B45309]" type="button" data-edit-person="${p.id}" title="Editar profissional">
               <i data-lucide="pencil" class="w-3.5 h-3.5 pointer-events-none"></i>
             </button>
             <button class="opacity-0 group-hover:opacity-100 transition-opacity duration-150
@@ -804,36 +800,103 @@
           state.people = state.people.filter(x => x.id !== p.id);
           save();
           renderTeam();
-          toast('Profissional removido.', 'warn')
+          toast('Profissional removido.', 'warn');
         }
       }
 
+      // Abertura do modal de edição (REESCRITA DO ZERO)
       const editBtn = e.target.closest('[data-edit-person]');
       if (editBtn) {
-        // Fallback for old cached HTML
-        e.preventDefault(); e.stopPropagation();
-        if (window.openEditPerson) window.openEditPerson(editBtn.dataset.editPerson);
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const personId = editBtn.dataset.editPerson;
+        const p = getPerson(personId);
+        if (!p) {
+          alert('Erro: Profissional não encontrado na lista local.');
+          return;
+        }
+
+        const modal = document.getElementById('editPersonModal');
+        const idField = document.getElementById('editPersonId');
+        const nameField = document.getElementById('editPersonName');
+        const roleField = document.getElementById('editPersonRole');
+
+        if (!modal || !idField || !nameField || !roleField) {
+          alert('Erro: Elementos do modal de edição não encontrados no DOM.');
+          return;
+        }
+
+        // Popula os dados
+        idField.value = p.id;
+        nameField.value = p.name;
+        roleField.value = p.role;
+
+        // Exibe o modal
+        modal.classList.add('show');
+        modal.style.display = 'flex';
+        modal.style.zIndex = '999999';
       }
     });
 
-    // Expose explicit function to bypass delegation issues
-    window.openEditPerson = function(personId) {
-      const p = getPerson(personId);
-      if (p) {
-        if (!el.editPersonModal) {
-          alert("Erro: modal editPersonModal não encontrado no DOM!");
-          return;
+    // Submissão do form de edição
+    const editPersonForm = document.getElementById('editPersonForm');
+    if (editPersonForm) {
+      editPersonForm.addEventListener('submit', async e => {
+        e.preventDefault();
+        
+        const idField = document.getElementById('editPersonId');
+        const nameField = document.getElementById('editPersonName');
+        const roleField = document.getElementById('editPersonRole');
+        
+        const id = idField.value;
+        const name = nameField.value.trim();
+        const role = roleField.value;
+
+        if (!id || !name || !role) return toast('Preencha todos os campos.', 'warn');
+
+        try {
+          const res = await fetch(`/api/profissionais/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, role })
+          });
+          
+          const result = await res.json();
+          if (result.success) {
+            const person = state.people.find(x => x.id === id);
+            if (person) {
+              person.name = name;
+              person.role = role;
+            }
+            
+            const op = currentOperation();
+            if (op) {
+              const teamMember = op.team.find(t => t.personId === id);
+              if (teamMember) {
+                teamMember.name = name;
+                teamMember.role = role;
+              }
+              const cmds = op.commands.filter(c => c.assemblerId === id);
+              cmds.forEach(c => c.assemblerName = name);
+            }
+            
+            save();
+            renderTeam();
+            if (typeof renderProduction === 'function') renderProduction();
+            if (typeof renderDispatch === 'function') renderDispatch();
+            
+            document.getElementById('editPersonModal').classList.remove('show');
+            document.getElementById('editPersonModal').style.display = 'none';
+            toast('Profissional atualizado com sucesso!', 'success');
+          } else {
+            toast(result.error || 'Erro ao atualizar.', 'error');
+          }
+        } catch (err) {
+          toast('Erro de rede: ' + err.message, 'error');
         }
-        el.editPersonId.value = p.id;
-        el.editPersonName.value = p.name;
-        el.editPersonRole.value = p.role;
-        el.editPersonModal.classList.add('show');
-        el.editPersonModal.style.display = 'flex';
-        el.editPersonModal.style.zIndex = '9999';
-      } else {
-        alert("Erro: Profissional não encontrado!");
-      }
-    };
+      });
+    }
 
     el.saveTeamBtn.addEventListener('click', () => saveTeam(true)); el.startOperationBtn.addEventListener('click', () => { const op = ensureOperation(); if (op.status !== 'draft') return toast('A operação já foi iniciada.', 'warn'); saveTeam(false); if (!op.team.length) return toast('Selecione a equipe do dia.', 'error'); if (!op.team.some(p => p.role === 'Montagem')) return toast('Inclua ao menos um montador.', 'error'); op.status = 'production_open'; op.startedAt = new Date().toISOString(); save(); fetch('/api/operacao/iniciar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ operacao_id: op.id, startedAt: op.startedAt }) }); showPage('production'); toast('Operação iniciada.') });
     // Filtros da lista de profissionais (busca por nome + setor)
