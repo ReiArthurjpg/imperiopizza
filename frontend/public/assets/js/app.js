@@ -381,7 +381,10 @@
       'Liderança':   { bg: 'bg-indigo-50', text: 'text-indigo-700', ring: 'ring-indigo-200' },
       'Outros':      { bg: 'bg-gray-50',   text: 'text-gray-600',   ring: 'ring-gray-200'   },
     };
-    function sectorColors(role) { return SECTOR_COLORS[role] || SECTOR_COLORS['Outros']; }
+    function sectorColors(role) { 
+      const firstRole = (role || '').split(',')[0].trim();
+      return SECTOR_COLORS[firstRole] || SECTOR_COLORS['Outros']; 
+    }
 
     // ── Renderiza um item da lista de profissionais (Tailwind) ────────────────
     function personItemHtml(p, selected, usedIds) {
@@ -773,7 +776,21 @@
     }
 
     // ── Equipe: Cadastro de profissional (POST) ──
-    el.personForm.addEventListener('submit', async e => { e.preventDefault(); const name = proper(el.personName.value), role = el.personRole.value; if (name.length < 2 || !role) return toast('Preencha nome e setor.', 'error'); if (state.people.some(p => norm(p.name) === norm(name) && p.role === role)) return toast('Este profissional já está cadastrado neste setor.', 'warn'); const newPerson = { id: uid(), name, role, createdAt: new Date().toISOString() }; try { const res = await fetch('/api/profissionais', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(newPerson) }); if (!res.ok) throw new Error('Erro ao salvar profissional no servidor'); state.people.push(newPerson); save(); el.personForm.reset(); closeModal($('addPersonModal')); renderTeam(); toast('Profissional cadastrado.'); } catch (err) { toast(err.message, 'error'); } });
+    el.personForm.addEventListener('submit', async e => { 
+      e.preventDefault(); 
+      const name = proper(el.personName.value);
+      const roleChecks = Array.from(el.personForm.querySelectorAll('input[name="personRole"]:checked')).map(cb => cb.value);
+      if (name.length < 2 || roleChecks.length === 0) return toast('Preencha nome e selecione pelo menos um setor.', 'error'); 
+      if (roleChecks.length > 3) return toast('Selecione no máximo 3 setores.', 'error');
+      const role = roleChecks.join(', ');
+      if (state.people.some(p => norm(p.name) === norm(name) && p.role === role)) return toast('Este profissional já está cadastrado com estes setores.', 'warn'); 
+      const newPerson = { id: uid(), name, role, createdAt: new Date().toISOString() }; 
+      try { 
+        const res = await fetch('/api/profissionais', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(newPerson) }); 
+        if (!res.ok) throw new Error('Erro ao salvar profissional no servidor'); 
+        state.people.push(newPerson); save(); el.personForm.reset(); closeModal($('addPersonModal')); renderTeam(); toast('Profissional cadastrado.'); 
+      } catch (err) { toast(err.message, 'error'); } 
+    });
     
     // ── Equipe: Edição de profissional (PUT) — handler ÚNICO ──
     el.editPersonForm.addEventListener('submit', async e => {
@@ -782,11 +799,15 @@
 
       const id = el.editPersonId.value;
       const name = proper(el.editPersonName.value);
-      const role = el.editPersonRole.value;
+      const roleChecks = Array.from(el.editPersonForm.querySelectorAll('input[name="editPersonRole"]:checked')).map(cb => cb.value);
 
-      if (name.length < 2 || !role) return toast('Preencha nome e setor.', 'error');
+      if (name.length < 2 || roleChecks.length === 0) return toast('Preencha nome e selecione pelo menos um setor.', 'error');
+      if (roleChecks.length > 3) return toast('Selecione no máximo 3 setores.', 'error');
+      
+      const role = roleChecks.join(', ');
+
       if (state.people.some(p => p.id !== id && norm(p.name) === norm(name) && p.role === role)) {
-        return toast('Este profissional já está cadastrado neste setor.', 'warn');
+        return toast('Este profissional já está cadastrado com estes setores.', 'warn');
       }
 
       try {
@@ -866,7 +887,11 @@
         // Popula os campos do formulário de edição
         el.editPersonId.value = p.id;
         el.editPersonName.value = p.name;
-        el.editPersonRole.value = p.role;
+        
+        const currentRoles = p.role ? p.role.split(',').map(r => r.trim()) : [];
+        el.editPersonForm.querySelectorAll('input[name="editPersonRole"]').forEach(cb => {
+          cb.checked = currentRoles.includes(cb.value);
+        });
 
         // Exibe o modal
         openModal(el.editPersonModal);

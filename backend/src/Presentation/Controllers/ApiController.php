@@ -168,6 +168,11 @@ class ApiController
         if (!isset($data['id'], $data['name'], $data['role'])) {
             $this->jsonResponse(['error' => 'Invalid data'], 400);
         }
+        
+        $roles = explode(',', $data['role']);
+        if (count($roles) > 3) {
+            $this->jsonResponse(['error' => 'Permitido no máximo 3 setores.'], 400);
+        }
 
         // Insert into database
         Equipe::create($data['id'], $data['name'], $data['role']);
@@ -213,6 +218,11 @@ class ApiController
         
         if (!isset($data['name'], $data['role'])) {
             $this->jsonResponse(['error' => 'Invalid data'], 400);
+        }
+        
+        $roles = explode(',', $data['role']);
+        if (count($roles) > 3) {
+            $this->jsonResponse(['error' => 'Permitido no máximo 3 setores.'], 400);
         }
 
         // Insert into database, using ON DUPLICATE KEY UPDATE in create()
