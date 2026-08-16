@@ -237,6 +237,49 @@ class ApiController
         $this->jsonResponse(['success' => true, 'profissional' => ['id' => $id, 'name' => $data['name'], 'role' => $data['role']]]);
     }
 
+    public function deleteProfissional($id)
+    {
+        try {
+            Equipe::delete($id);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['error' => 'Erro ao excluir profissional do banco de dados: ' . $e->getMessage()], 500);
+        }
+
+        $file = __DIR__ . '/../../../../storage/state.json';
+        if (file_exists($file)) {
+            $jsonData = json_decode(file_get_contents($file), true);
+            if (is_array($jsonData)) {
+                if (isset($jsonData['people'])) {
+                    $jsonData['people'] = array_values(array_filter($jsonData['people'], function($p) use ($id) {
+                        return $p['id'] != $id;
+                    }));
+                }
+                
+                if (isset($jsonData['operations']) && is_array($jsonData['operations'])) {
+                    foreach ($jsonData['operations'] as &$op) {
+                        if (isset($op['team']) && is_array($op['team'])) {
+                            $op['team'] = array_values(array_filter($op['team'], function($t) use ($id) {
+                                return $t['personId'] != $id;
+                            }));
+                        }
+                        if (isset($op['commands']) && is_array($op['commands'])) {
+                            foreach ($op['commands'] as &$c) {
+                                if (isset($c['assemblerId']) && $c['assemblerId'] == $id) {
+                                    $c['assemblerId'] = '';
+                                    $c['assemblerName'] = '';
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                file_put_contents($file, json_encode($jsonData));
+            }
+        }
+
+        $this->jsonResponse(['success' => true]);
+    }
+
     public function getProfissionais()
     {
         try {

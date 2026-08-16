@@ -475,6 +475,23 @@ $swagger = [
                     "200" => ["description" => "Profissional atualizado com sucesso"],
                     "400" => ["description" => "Dados inválidos"]
                 ]
+            ],
+            "delete" => [
+                "tags" => ["Equipe"],
+                "summary" => "Excluir um profissional e todos os seus registros de operação",
+                "parameters" => [
+                    [
+                        "name" => "id",
+                        "in" => "path",
+                        "required" => true,
+                        "schema" => ["type" => "string"],
+                        "description" => "ID do profissional"
+                    ]
+                ],
+                "responses" => [
+                    "200" => ["description" => "Profissional excluído com sucesso"],
+                    "500" => ["description" => "Erro interno do servidor"]
+                ]
             ]
         ]
     ]

@@ -48,4 +48,11 @@ class Equipe
             }
         }
     }
+
+    public static function delete($id)
+    {
+        $db = Database::getInstance()->getConnection();
+        $stmt = $db->prepare("DELETE FROM equipe WHERE id = :id");
+        $stmt->execute(['id' => $id]);
+    }
 }
