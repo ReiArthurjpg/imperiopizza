@@ -118,6 +118,7 @@
           </span>
         </div>
 
+        
         <!-- Conteúdo da lista de presença (renderizado pelo JS) -->
         <div id="dayTeamGroups" class="flex-1 max-h-[310px] min-h-[80px] overflow-y-auto pr-2 custom-scrollbar"></div>
 
@@ -193,30 +194,22 @@
             >
           </div>
 
-          <!-- Setor -->
+          <!-- Setores (Máx 3) -->
           <div>
-            <label for="personRole" class="block text-xs font-semibold text-[#173F69] mb-1.5">
-              Setor de Atuação
+            <label class="block text-xs font-semibold text-[#173F69] mb-1.5">
+              Setores de Atuação (Selecione até 3)
             </label>
-            <select
-              id="personRole"
-              required
-              class="w-full border border-[#E7E7E7] rounded-lg px-3 py-2.5 text-sm
-                     text-[#171717] bg-white
-                     focus:outline-none focus:border-[#1F6FB2] focus:ring-2 focus:ring-[#eaf5ff]
-                     transition-all duration-150"
-            >
-              <option value="">Selecione o setor...</option>
-              <option>Montagem</option>
-              <option>Massa</option>
-              <option>Cozinha</option>
-              <option>Forno</option>
-              <option>Despacho</option>
-              <option>Atendimento</option>
-              <option>Estoque</option>
-              <option>Liderança</option>
-              <option>Outros</option>
-            </select>
+            <div id="personRoleGroup" class="grid grid-cols-2 gap-2 border border-[#E7E7E7] rounded-lg p-3 bg-white max-h-40 overflow-y-auto">
+              <label class="flex items-center gap-2 text-sm text-[#171717] cursor-pointer"><input type="checkbox" name="personRole" value="Montagem" class="rounded border-gray-300 text-[#1F6FB2] focus:ring-[#1F6FB2]"> Montagem</label>
+              <label class="flex items-center gap-2 text-sm text-[#171717] cursor-pointer"><input type="checkbox" name="personRole" value="Massa" class="rounded border-gray-300 text-[#1F6FB2] focus:ring-[#1F6FB2]"> Massa</label>
+              <label class="flex items-center gap-2 text-sm text-[#171717] cursor-pointer"><input type="checkbox" name="personRole" value="Cozinha" class="rounded border-gray-300 text-[#1F6FB2] focus:ring-[#1F6FB2]"> Cozinha</label>
+              <label class="flex items-center gap-2 text-sm text-[#171717] cursor-pointer"><input type="checkbox" name="personRole" value="Forno" class="rounded border-gray-300 text-[#1F6FB2] focus:ring-[#1F6FB2]"> Forno</label>
+              <label class="flex items-center gap-2 text-sm text-[#171717] cursor-pointer"><input type="checkbox" name="personRole" value="Despacho" class="rounded border-gray-300 text-[#1F6FB2] focus:ring-[#1F6FB2]"> Despacho</label>
+              <label class="flex items-center gap-2 text-sm text-[#171717] cursor-pointer"><input type="checkbox" name="personRole" value="Atendimento" class="rounded border-gray-300 text-[#1F6FB2] focus:ring-[#1F6FB2]"> Atendimento</label>
+              <label class="flex items-center gap-2 text-sm text-[#171717] cursor-pointer"><input type="checkbox" name="personRole" value="Estoque" class="rounded border-gray-300 text-[#1F6FB2] focus:ring-[#1F6FB2]"> Estoque</label>
+              <label class="flex items-center gap-2 text-sm text-[#171717] cursor-pointer"><input type="checkbox" name="personRole" value="Liderança" class="rounded border-gray-300 text-[#1F6FB2] focus:ring-[#1F6FB2]"> Liderança</label>
+              <label class="flex items-center gap-2 text-sm text-[#171717] cursor-pointer"><input type="checkbox" name="personRole" value="Outros" class="rounded border-gray-300 text-[#1F6FB2] focus:ring-[#1F6FB2]"> Outros</label>
+            </div>
           </div>
 
           <!-- Ações (Rodapé) -->
@@ -245,6 +238,7 @@
       </div>
 
     </div>
+  </div>
   <!-- ═══════════════════════════════════════════════════
        MODAL: EDITAR COLABORADOR (Design System Moderno)
   ════════════════════════════════════════════════════ -->
@@ -289,30 +283,22 @@
             >
           </div>
 
-          <!-- Setor -->
+          <!-- Setores (Máx 3) -->
           <div>
-            <label for="editPersonRole" class="block text-xs font-semibold text-[#173F69] mb-1.5">
-              Setor de Atuação
+            <label class="block text-xs font-semibold text-[#173F69] mb-1.5">
+              Setores de Atuação (Selecione até 3)
             </label>
-            <select
-              id="editPersonRole"
-              required
-              class="w-full border border-[#E7E7E7] rounded-lg px-3 py-2.5 text-sm
-                     text-[#171717] bg-white
-                     focus:outline-none focus:border-[#1F6FB2] focus:ring-2 focus:ring-[#eaf5ff]
-                     transition-all duration-150"
-            >
-              <option value="">Selecione o setor...</option>
-              <option>Montagem</option>
-              <option>Massa</option>
-              <option>Cozinha</option>
-              <option>Forno</option>
-              <option>Despacho</option>
-              <option>Atendimento</option>
-              <option>Estoque</option>
-              <option>Liderança</option>
-              <option>Outros</option>
-            </select>
+            <div id="editPersonRoleGroup" class="grid grid-cols-2 gap-2 border border-[#E7E7E7] rounded-lg p-3 bg-white max-h-40 overflow-y-auto">
+              <label class="flex items-center gap-2 text-sm text-[#171717] cursor-pointer"><input type="checkbox" name="editPersonRole" value="Montagem" class="rounded border-gray-300 text-[#1F6FB2] focus:ring-[#1F6FB2]"> Montagem</label>
+              <label class="flex items-center gap-2 text-sm text-[#171717] cursor-pointer"><input type="checkbox" name="editPersonRole" value="Massa" class="rounded border-gray-300 text-[#1F6FB2] focus:ring-[#1F6FB2]"> Massa</label>
+              <label class="flex items-center gap-2 text-sm text-[#171717] cursor-pointer"><input type="checkbox" name="editPersonRole" value="Cozinha" class="rounded border-gray-300 text-[#1F6FB2] focus:ring-[#1F6FB2]"> Cozinha</label>
+              <label class="flex items-center gap-2 text-sm text-[#171717] cursor-pointer"><input type="checkbox" name="editPersonRole" value="Forno" class="rounded border-gray-300 text-[#1F6FB2] focus:ring-[#1F6FB2]"> Forno</label>
+              <label class="flex items-center gap-2 text-sm text-[#171717] cursor-pointer"><input type="checkbox" name="editPersonRole" value="Despacho" class="rounded border-gray-300 text-[#1F6FB2] focus:ring-[#1F6FB2]"> Despacho</label>
+              <label class="flex items-center gap-2 text-sm text-[#171717] cursor-pointer"><input type="checkbox" name="editPersonRole" value="Atendimento" class="rounded border-gray-300 text-[#1F6FB2] focus:ring-[#1F6FB2]"> Atendimento</label>
+              <label class="flex items-center gap-2 text-sm text-[#171717] cursor-pointer"><input type="checkbox" name="editPersonRole" value="Estoque" class="rounded border-gray-300 text-[#1F6FB2] focus:ring-[#1F6FB2]"> Estoque</label>
+              <label class="flex items-center gap-2 text-sm text-[#171717] cursor-pointer"><input type="checkbox" name="editPersonRole" value="Liderança" class="rounded border-gray-300 text-[#1F6FB2] focus:ring-[#1F6FB2]"> Liderança</label>
+              <label class="flex items-center gap-2 text-sm text-[#171717] cursor-pointer"><input type="checkbox" name="editPersonRole" value="Outros" class="rounded border-gray-300 text-[#1F6FB2] focus:ring-[#1F6FB2]"> Outros</label>
+            </div>
           </div>
 
           <!-- Ações (Rodapé) -->
@@ -340,6 +326,7 @@
         </form>
       </div>
 
+    </div>
   </div>
 
   <!-- ═══════════════════════════════════════════════════
