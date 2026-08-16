@@ -70,11 +70,21 @@ class Operacao
         $stmt->execute([$operacaoId]);
 
         if (is_array($team) && count($team) > 0) {
+            // Upsert each person into equipe to guarantee FK integrity.
+            // Without this, if the person doesn't exist in equipe table,
+            // the INSERT IGNORE silently skips the row → attendance list disappears on reload.
+            $upsertPerson = $db->prepare(
+                "INSERT INTO equipe (id, nome, cargo) VALUES (?, ?, ?) " .
+                "ON DUPLICATE KEY UPDATE nome = VALUES(nome), cargo = VALUES(cargo)"
+            );
             $insertStmt = $db->prepare("INSERT IGNORE INTO operacao_equipe (operacao_id, equipe_id) VALUES (?, ?)");
             foreach ($team as $member) {
                 // Front sends personId for the team member
                 $personId = $member['personId'] ?? $member['id'] ?? null;
+                $name     = $member['name'] ?? 'Desconhecido';
+                $role     = $member['role'] ?? 'Outros';
                 if ($personId) {
+                    $upsertPerson->execute([$personId, $name, $role]);
                     $insertStmt->execute([$operacaoId, $personId]);
                 }
             }

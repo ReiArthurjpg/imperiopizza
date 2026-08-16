@@ -61,8 +61,16 @@ class ApiController
                             $op['completedAt'] = $dbOp['completed_at'] ? (new \DateTime($dbOp['completed_at']))->format(\DateTime::ATOM) : null;
                         }
 
+                        // Use DB team if available; otherwise keep team from state.json as fallback.
+                        // This prevents wiping the attendance list when operacao_equipe is empty
+                        // due to FK issues or when the team was saved before the DB was ready.
                         $dbTeam = \App\Models\Operacao::getEquipe($op['id']);
-                        $op['team'] = $dbTeam ?: [];
+                        if (!empty($dbTeam)) {
+                            $op['team'] = $dbTeam;
+                        } elseif (!isset($op['team'])) {
+                            $op['team'] = [];
+                        }
+                        // else: keep existing op['team'] from state.json
                     }
                 }
             }
@@ -103,6 +111,20 @@ class ApiController
         if (!isset($data['volcano'])) $data['volcano'] = 0;
         if (!isset($data['esfiha'])) $data['esfiha'] = 0;
         if (!isset($data['sweet'])) $data['sweet'] = 0;
+
+        // Guarantee the assembler exists in equipe table before assigning lotes.
+        // Without this upsert, assignAssembler's INSERT IGNORE silently fails on FK violation
+        // and the assembler never appears in the Top Montadores ranking.
+        if (!empty($data['assembler_id'])) {
+            try {
+                $db = \App\Core\Database::getInstance()->getConnection();
+                $name = $data['assembler_name'] ?? 'Desconhecido';
+                $db->prepare(
+                    "INSERT INTO equipe (id, nome, cargo) VALUES (?, ?, 'Montagem') "
+                    . "ON DUPLICATE KEY UPDATE nome = VALUES(nome)"
+                )->execute([$data['assembler_id'], $name]);
+            } catch (\Exception $e) { /* non-fatal */ }
+        }
         
         Comanda::create($data);
         

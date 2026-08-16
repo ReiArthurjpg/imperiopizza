@@ -308,11 +308,7 @@
       
 
 
-      // Update team badge
-      const onlineBadge = document.getElementById('dashboardTeamOnlineBadge');
-      if (onlineBadge) {
-        onlineBadge.textContent = `${op ? op.team.length : 0} Online`;
-      }
+      // (removed duplicate team badge update)
       
       renderPipeline(op);
       
@@ -367,6 +363,28 @@
       </div>`;
       el.dashboardTeam.innerHTML = teamHtml(op.team);
       el.dashboardLive.innerHTML = dashboardLiveHtml(op);
+      
+      const pBadge = document.getElementById('dashboardPipelineBadge');
+      if (pBadge) {
+        if (op.status === 'kitchen_closed' || op.status === 'completed') {
+          pBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-medium border bg-gray-100 text-gray-500 border-gray-300';
+          pBadge.textContent = 'Inativo';
+        } else {
+          pBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-medium border bg-[#FDECEB] text-[#B5120B] border-[#FCA5A5]';
+          pBadge.textContent = 'Fluxo Atual';
+        }
+      }
+      
+      const onlineBadge = document.getElementById('dashboardTeamOnlineBadge');
+      if (onlineBadge) {
+        if (op.status === 'kitchen_closed' || op.status === 'completed') {
+          onlineBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-medium border bg-gray-100 text-gray-500 border-gray-300';
+          onlineBadge.textContent = `${op.team.length} Offline`;
+        } else {
+          onlineBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-medium border bg-[#E7F8F0] text-[#10B981] border-[#A7F3D0]';
+          onlineBadge.textContent = `${op.team.length} Online`;
+        }
+      }
       
       // Simula Alertas
       const alertsContainer = document.getElementById('alertsContainer');
@@ -653,9 +671,15 @@
     }
     function checkedTeam() { return [...document.querySelectorAll('[data-team-id]:checked')].map(i => { const p = getPerson(i.dataset.teamId); return { personId: p.id, name: p.name, role: p.role } }) }
     function renderCheckedTeam() {
-      el.dayTeamGroups.innerHTML = teamHtml(checkedTeam(), '');
-      // Atualiza badge de selecionados e KPI de presentes
+      // Tenta pegar pelo DOM (checkboxes marcados). Caso o DOM ainda não tenha
+      // sido renderizado (ex: ao recarregar a página), usa op.team salvo no estado.
+      const fromDom = [...document.querySelectorAll('[data-team-id]:checked')]
+        .map(i => { const p = getPerson(i.dataset.teamId); return p ? { personId: p.id, name: p.name, role: p.role } : null })
+        .filter(Boolean);
       const op = currentOperation();
+      const team = fromDom.length > 0 ? fromDom : (op?.team || []);
+      el.dayTeamGroups.innerHTML = teamHtml(team, '');
+      // Atualiza badge de selecionados e KPI de presentes
       renderTeamKpis(op, state.people);
       if (typeof lucide !== 'undefined') lucide.createIcons();
     }
@@ -684,9 +708,9 @@
     }
 
     function renderProduction() { renderHeader(); const op = currentOperation(); el.manageTeamBtn.disabled = op?.status === 'completed'; if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Operação não iniciada", "Cadastre a equipe do dia e inicie a operação para liberar a tela de produção.", "Ir para equipe", "team", "chef-hat"); el.productionContent.classList.add('hidden'); el.closeKitchenBtn.disabled = true; el.reopenKitchenBtn.classList.add('hidden'); el.registerCommandModal.classList.remove('show'); el.manageTeamBtn.classList.add('hidden'); el.closeKitchenBtn.classList.add('hidden'); return } if (op.status === 'completed') { el.productionGate.innerHTML = gateCard("Operação finalizada", "Consulte os relatórios do dia para ver o histórico e resultados.", "Abrir relatórios", "reports", "bar-chart-2"); el.productionContent.classList.add('hidden'); el.closeKitchenBtn.disabled = true; el.reopenKitchenBtn.classList.add('hidden'); el.registerCommandModal.classList.remove('show'); el.manageTeamBtn.classList.add('hidden'); el.closeKitchenBtn.classList.add('hidden'); return } el.productionGate.innerHTML = ''; el.productionContent.classList.remove('hidden'); const kitchenOpen = op.status === 'production_open'; el.manageTeamBtn.classList.remove('hidden'); el.closeKitchenBtn.disabled = !kitchenOpen; el.closeKitchenBtn.classList.toggle('hidden', !kitchenOpen); el.reopenKitchenBtn.classList.toggle('hidden', op.status !== 'kitchen_closed'); el.openRegisterCommandBtn.disabled = !kitchenOpen; el.addCommandBtn.disabled = !kitchenOpen; el.assemblerPickerBtn.disabled = !kitchenOpen; el.commandNumber.disabled = !kitchenOpen; el.pizzaQty.disabled = !kitchenOpen; el.commandNote.disabled = !kitchenOpen; el.initialOven.disabled = !kitchenOpen; if (!kitchenOpen) el.registerCommandModal.classList.remove('show'); renderProductionSub(op); renderAssemblerFilter(op); renderCommandSuggestions(op); renderProductionRecent(op); renderProductionTable(op) }
-    function renderProductionSub(op) { const s = stats(op); el.productionSubtotals.innerHTML = [['Comandas', s.commands], ['Pizzas', s.pizzas], ['Na cozinha', s.kitchen], ['No forno', s.oven], ['No despacho', s.dispatchPending + s.released], ['Erros', s.errors]].map(([l, v]) => `<div class="subtotal-item"><small>${l}</small><strong>${v}</strong></div>`).join('') }
+    function renderProductionSub(op) { const s = stats(op); const pills = [['list-ordered', 'Comandas', s.commands, ''], ['flame', 'No forno', s.oven, s.oven > 0 ? 'text-orange-600' : ''], ['truck', 'No despacho', s.dispatchPending + s.released, ''], ['alert-triangle', 'Erros', s.errors, s.errors > 0 ? 'text-red-600' : '']]; el.productionSubtotals.innerHTML = pills.map(([icon, label, val, cls]) => `<div class="flex items-center gap-2"><i data-lucide="${icon}" class="w-4 h-4 text-[#737373] shrink-0"></i><span class="text-xs text-[#737373]">${label}</span><span class="text-sm font-bold ${cls || 'text-[#171717]'}">${val}</span></div>`).join('<span class="text-[#E7E7E7]">/</span>'); setTimeout(() => { if (typeof lucide !== 'undefined') lucide.createIcons(); }, 10) }
 
-    function renderProductionRecent(op) { const recent = [...op.commands].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 5), pending = op.commands.filter(c => c.status === 'cozinha' || c.status === 'forno').length; el.updatePendingBadge.textContent = pending; el.productionRecent.innerHTML = `<h4>${recent.length ? 'Últimos registros' : 'Aguardando primeira comanda'}</h4><div class="recent-command-list">${recent.length ? recent.map(c => `<span class="recent-command">#${String(c.number).padStart(3, '0')} · ${c.pizzas} pizza${Number(c.pizzas) === 1 ? '' : 's'} · ${statusText(c)}</span>`).join('') : '<span class="chip">Use “Nova comanda” para começar</span>'}</div>` }
+    function renderProductionRecent(op) { const recent = [...op.commands].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 4), pending = op.commands.filter(c => c.status === 'cozinha' || c.status === 'forno').length; el.updatePendingBadge.textContent = pending; const statusChipClass = c => c.status === 'forno' ? 'bg-orange-100 text-orange-700' : c.status === 'cozinha' ? 'bg-blue-50 text-blue-700' : 'bg-green-50 text-green-700'; el.productionRecent.innerHTML = recent.length ? recent.map(c => `<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${statusChipClass(c)} whitespace-nowrap">#${String(c.number).padStart(3,'0')} · ${esc(c.assemblerName.split(' ')[0])} · ${c.pizzas}🍕</span>`).join('') : `<span class="text-xs text-[#737373] italic">Aguardando primeira comanda…</span>` }
     function openRegisterCommand() { const op = currentOperation(); if (!op || op.status !== 'production_open') return toast('A cozinha não está aberta.', 'warn'); resetRegistration(); renderCommandSuggestions(op); const body = el.registerCommandModal.querySelector('.register-modal-body'); if (body) body.scrollTop = 0; el.registerCommandModal.classList.add('show'); setTimeout(() => el.assemblerPickerBtn.focus(), 120) }
     function openCommandUpdates() { const op = currentOperation(); if (!op || !op.commands.length) return toast('Ainda não existem comandas registradas.', 'warn'); el.registerCommandModal.classList.remove('show'); el.prodStatus.value = op.commands.some(c => c.status === 'forno') ? 'forno' : ''; renderProductionTable(op); setTimeout(() => el.commandHistoryPanel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80) }
 
@@ -701,7 +725,7 @@
     function filteredCommands(op) { const q = norm(el.prodSearch.value), st = el.prodStatus.value, a = el.prodAssembler.value, priority = { forno: 0, cozinha: 1, despacho: 2 }; return [...op.commands].filter(c => (!q || norm(`${c.number} ${c.assemblerName} ${c.note || ''} ${c.error?.type || ''}`).includes(q)) && (!st || c.status === st) && (!a || c.assemblerId === a)).sort((x, y) => (priority[x.status] ?? 9) - (priority[y.status] ?? 9) || y.createdAt.localeCompare(x.createdAt)) }
     function statusText(c) { if (c.status === 'cozinha') return 'Na cozinha'; if (c.status === 'forno') return 'No forno'; return c.dispatch?.status === 'liberado' ? 'Liberada pelo despacho' : 'Saiu para o despacho' }
     function statusClass(c) { if (c.status === 'cozinha') return 'b-kitchen'; if (c.status === 'forno') return 'b-oven'; return c.dispatch?.status === 'liberado' ? 'b-released' : 'b-dispatch' }
-    function renderProductionTable(op) { const cs = filteredCommands(op); const actionHtml = c => { if (c.status === 'cozinha') return `<button class="btn btn-orange btn-small primary-flow" data-cmd-action="next" data-id="${c.id}">Enviar ao forno</button>`; if (c.status === 'forno') return `<button class="btn btn-primary btn-small primary-flow" data-cmd-action="next" data-id="${c.id}">Saiu do forno · enviar ao despacho</button><button class="btn btn-ghost btn-small" data-cmd-action="back" data-id="${c.id}">Voltar à cozinha</button>`; return `<button class="btn btn-ghost btn-small primary-flow" data-cmd-action="back" data-id="${c.id}">Voltar ao forno</button>` }; el.productionBody.innerHTML = cs.map(c => `<tr><td><span class="command-no">#${String(c.number).padStart(3, '0')}</span></td><td><strong>${c.pizzas}</strong></td><td><strong>${esc(c.assemblerName)}</strong></td><td><span class="badge ${statusClass(c)}">${statusText(c)}</span></td><td class="times"><div>Registro: ${formatTime(c.createdAt)}</div><div>Forno: ${formatTime(c.statusTimes?.forno)}</div><div>Despacho: ${formatTime(c.statusTimes?.despacho)}</div></td><td>${esc(c.note || '—')}</td><td>${c.error?.active ? `<span class="badge b-error">${esc(c.error.type)}</span>` : '—'}</td><td><div class="row-actions">${actionHtml(c)}<button class="btn btn-soft btn-small" data-cmd-action="edit" data-id="${c.id}">Editar</button><button class="btn btn-soft-red btn-small" data-cmd-action="error" data-id="${c.id}">${c.error?.active ? 'Editar erro' : 'Sinalizar erro'}</button></div></td></tr>`).join(''); el.productionMobileList.innerHTML = cs.map(c => `<article class="mobile-command-card"><div class="mobile-command-top"><div><div class="mobile-command-number">#${String(c.number).padStart(3, '0')}</div><div class="mobile-command-meta">Registrada ${formatTime(c.createdAt)} · ${esc(c.assemblerName)}</div></div><span class="badge ${statusClass(c)}">${statusText(c)}</span></div><div class="mobile-command-main"><div><strong>${esc(c.assemblerName)}</strong><small>${c.note ? esc(c.note) : 'Sem observação'}${c.error?.active ? ` · Erro: ${esc(c.error.type)}` : ''}</small></div><div class="mobile-pizza-count">${c.pizzas}<small>pizza${Number(c.pizzas) === 1 ? '' : 's'}</small></div></div><div class="mobile-command-actions">${actionHtml(c)}<button class="btn btn-soft btn-small" data-cmd-action="edit" data-id="${c.id}">Editar</button><button class="btn btn-soft-red btn-small" data-cmd-action="error" data-id="${c.id}">${c.error?.active ? 'Editar erro' : 'Sinalizar erro'}</button></div></article>`).join(''); el.productionEmpty.classList.toggle('hidden', cs.length > 0) }
+    function renderProductionTable(op) { const cs = filteredCommands(op); const actionHtml = c => { if (c.status === 'cozinha') return `<button class="btn btn-orange btn-small primary-flow" data-cmd-action="next" data-id="${c.id}">Enviar ao forno</button>`; if (c.status === 'forno') return `<button class="btn btn-primary btn-small primary-flow" data-cmd-action="next" data-id="${c.id}">Saiu do forno</button><button class="btn btn-ghost btn-small" data-cmd-action="back" data-id="${c.id}">Voltar</button>`; return `<button class="btn btn-ghost btn-small primary-flow" data-cmd-action="back" data-id="${c.id}">Voltar ao forno</button>` }; el.productionBody.innerHTML = cs.map(c => `<tr><td><span class="command-no">#${String(c.number).padStart(3, '0')}</span></td><td><strong>${esc(c.assemblerName)}</strong></td><td><strong>${c.pizzas}</strong></td><td><div class="flex flex-col gap-1"><span class="badge ${statusClass(c)}">${statusText(c)}</span>${c.error?.active ? `<span class="badge b-error">${esc(c.error.type)}</span>` : ''}</div></td><td><div class="row-actions">${actionHtml(c)}<button class="btn btn-soft btn-small" data-cmd-action="edit" data-id="${c.id}">Editar</button><button class="btn btn-soft-red btn-small" data-cmd-action="error" data-id="${c.id}">${c.error?.active ? 'Editar erro' : 'Erro'}</button></div></td></tr>`).join(''); el.productionMobileList.innerHTML = cs.map(c => `<article class="mobile-command-card"><div class="mobile-command-top"><div><div class="mobile-command-number">#${String(c.number).padStart(3, '0')}</div><div class="mobile-command-meta">Registrada ${formatTime(c.createdAt)} · ${esc(c.assemblerName)}</div></div><span class="badge ${statusClass(c)}">${statusText(c)}</span></div><div class="mobile-command-main"><div><strong>${esc(c.assemblerName)}</strong><small>${c.error?.active ? `Erro: ${esc(c.error.type)}` : 'Sem erros'}</small></div><div class="mobile-pizza-count">${c.pizzas}<small>pizza${Number(c.pizzas) === 1 ? '' : 's'}</small></div></div><div class="mobile-command-actions">${actionHtml(c)}<button class="btn btn-soft btn-small" data-cmd-action="edit" data-id="${c.id}">Editar</button><button class="btn btn-soft-red btn-small" data-cmd-action="error" data-id="${c.id}">${c.error?.active ? 'Editar erro' : 'Erro'}</button></div></article>`).join(''); el.productionEmpty.classList.toggle('hidden', cs.length > 0) }
     function resetRegistration() { el.assemblerSearch.value = ''; el.assemblerId.value = ''; el.assemblerPickerValue.textContent = 'Toque para escolher'; el.assemblerPickerBtn.classList.remove('has-value'); el.commandNumber.value = ''; el.pizzaQty.value = 1; el.commandNote.value = ''; el.initialOven.checked = false; el.assemblerPickerModal.classList.remove('show'); setTimeout(() => el.assemblerPickerBtn.focus(), 100) }
     function addCommand() {
       const op = currentOperation();
@@ -717,7 +741,7 @@
       const newCmd = { id: commandId, number: n, pizzas: q, assemblerId: a.personId, assemblerName: a.name, note: el.commandNote.value.trim(), status, createdAt: now, updatedAt: now, statusTimes: { cozinha: now, forno: status === 'forno' ? now : null, despacho: null }, error: { active: false, type: '', note: '', createdAt: null }, dispatch: { status: 'aguardando', beverage: false, change: false, changeAmount: '', ketchup: false, mayonnaise: false, note: '', checkedAt: null, releasedAt: null } };
       op.commands.push(newCmd);
       save();
-      fetch('/api/comandas', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: commandId, assembler_id: a.personId, number: n, pizzas: q, note: el.commandNote.value.trim() }) });
+      fetch('/api/comandas', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: commandId, assembler_id: a.personId, assembler_name: a.name, number: n, pizzas: q, note: el.commandNote.value.trim() }) });
       resetRegistration(); renderProduction(); renderDashboard(); toast(`Comanda ${n} registrada com ${q} pizza${q > 1 ? 's' : ''}.`);
     }
     function move(c, dir) {
@@ -1368,41 +1392,81 @@
 
     renderProductionSub = function (op) {
       const s = stats(op);
-      el.productionSubtotals.innerHTML = [
-        ['Comandas', s.commands], ['Equivalentes', fmt(s.pizzas)], ['Físicas', fmt(s.physicalPizzas)],
-        ['No forno', s.oven], ['Vulcão', fmt(s.volcano)], ['Esfirras', fmt(s.esfihas, 0)], ['Doces', fmt(s.sweet)], ['Erros', s.errors]
-      ].map(([l, v]) => `<div class="subtotal-item"><small>${l}</small><strong>${v}</strong></div>`).join('');
+      const items = [
+        ['Comandas', s.commands],
+        ['Equivalentes', fmt(s.pizzas)],
+        ['No forno', s.oven],
+        ['Vulcão', fmt(s.volcano)],
+        ['Esfirras', fmt(s.esfihas, 0)],
+        ['Doces', fmt(s.sweet)],
+        ['Erros', s.errors]
+      ];
+      el.productionSubtotals.innerHTML = items.map(([l, v]) => `
+        <div class="bg-white rounded-xl border border-[#E7E7E7] shadow-[0_4px_12px_rgba(0,0,0,0.02)] p-4 flex flex-col justify-center min-h-[82px] transition-all duration-200 hover:shadow-md">
+          <small class="text-[10px] font-semibold text-[#737373] uppercase tracking-wider">${l}</small>
+          <strong class="text-xl font-bold text-[#171717] mt-1">${v}</strong>
+        </div>
+      `).join('');
     };
 
     renderProductionRecent = function (op) {
-      const recent = [...op.commands].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 5), pending = op.commands.filter(c => c.status === 'cozinha' || c.status === 'forno').length;
+      const recent = [...op.commands].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 4),
+            pending = op.commands.filter(c => c.status === 'cozinha' || c.status === 'forno').length;
       el.updatePendingBadge.textContent = pending;
-      el.productionRecent.innerHTML = `<h4>${recent.length ? 'Últimos registros' : 'Aguardando primeira comanda'}</h4><div class="recent-command-list">${recent.length ? recent.map(c => `<span class="recent-command">#${String(c.number).padStart(3, '0')} · ${fmt(commandEquivalent(c))} equiv. · ${statusText(c)}</span>`).join('') : '<span class="chip">Use “Nova comanda” para começar</span>'}</div>`;
+      const statusChipClass = c => c.status === 'forno' ? 'bg-orange-100 text-orange-700' : c.status === 'cozinha' ? 'bg-blue-50 text-blue-700' : 'bg-green-50 text-green-700';
+      el.productionRecent.innerHTML = recent.length ? recent.map(c => `
+        <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${statusChipClass(c)} whitespace-nowrap">
+          #${String(c.number).padStart(3,'0')} · ${esc(c.assemblerName.split(' ')[0])} · ${fmt(commandEquivalent(c))}🍕
+        </span>
+      `).join('') : `<span class="text-xs text-[#737373] italic">Aguardando primeira comanda…</span>`;
     };
 
     function prodFlowActions(c) {
       if (c.status === 'cozinha') return `<button class="btn btn-orange btn-small primary-flow" data-cmd-action="next" data-id="${c.id}">Enviar ao forno</button>`;
-      if (c.status === 'forno') return `<button class="btn btn-primary btn-small primary-flow" data-dispatch-intake="${c.id}">Abrir no atendimento</button><button class="btn btn-ghost btn-small" data-cmd-action="back" data-id="${c.id}">Voltar à cozinha</button>`;
+      if (c.status === 'forno') return `<button class="btn btn-primary btn-small primary-flow" data-dispatch-intake="${c.id}">Abrir no atendimento</button><button class="btn btn-ghost btn-small" data-cmd-action="back" data-id="${c.id}">Voltar</button>`;
       if (c.dispatch?.status === 'entrega') return `<button class="btn btn-soft btn-small primary-flow" data-open-dispatch="${c.id}">Ver entrega</button>`;
       return `<button class="btn btn-primary btn-small primary-flow" data-open-dispatch="${c.id}">Abrir conferência</button><button class="btn btn-ghost btn-small" data-cmd-action="back" data-id="${c.id}">Voltar ao forno</button>`;
     }
+
     renderProductionTable = function (op) {
       const cs = filteredCommands(op);
       el.productionBody.innerHTML = cs.map(c => `<tr>
-    <td><span class="command-no">#${String(c.number).padStart(3, '0')}</span></td>
-    <td><strong>${fmt(commandEquivalent(c))}</strong>${specialTagsHtml(c)}</td>
-    <td><strong>${esc(c.assemblerName)}</strong></td>
-    <td><span class="badge ${statusClass(c)}">${statusText(c)}</span></td>
-    <td class="times"><div>Registro: ${formatTime(c.createdAt)}</div><div>Forno: ${formatTime(c.statusTimes?.forno)}</div><div>Atendimento: ${formatTime(c.dispatch?.receivedAt)}</div></td>
-    <td>${esc(c.note || '—')}</td>
-    <td>${c.error?.active ? `<span class="badge b-error">${esc(c.error.type)}</span>` : '—'}</td>
-    <td><div class="row-actions">${prodFlowActions(c)}<button class="btn btn-soft btn-small" data-cmd-action="edit" data-id="${c.id}">Editar</button><button class="btn btn-soft-red btn-small" data-cmd-action="error" data-id="${c.id}">${c.error?.active ? 'Editar erro' : 'Sinalizar erro'}</button></div></td>
-  </tr>`).join('');
+        <td><span class="command-no">#${String(c.number).padStart(3, '0')}</span></td>
+        <td><strong>${esc(c.assemblerName)}</strong></td>
+        <td><strong>${fmt(commandEquivalent(c))}</strong>${specialTagsHtml(c)}</td>
+        <td>
+          <div class="flex flex-col gap-1">
+            <span class="badge ${statusClass(c)}">${statusText(c)}</span>
+            ${c.error?.active ? `<span class="badge b-error">${esc(c.error.type)}</span>` : ''}
+          </div>
+        </td>
+        <td>
+          <div class="row-actions">
+            ${prodFlowActions(c)}
+            <button class="btn btn-soft btn-small" data-cmd-action="edit" data-id="${c.id}">Editar</button>
+            <button class="btn btn-soft-red btn-small" data-cmd-action="error" data-id="${c.id}">${c.error?.active ? 'Editar erro' : 'Erro'}</button>
+          </div>
+        </td>
+      </tr>`).join('');
+
       el.productionMobileList.innerHTML = cs.map(c => `<article class="mobile-command-card">
-    <div class="mobile-command-top"><div><div class="mobile-command-number">#${String(c.number).padStart(3, '0')}</div><div class="mobile-command-meta">Registro ${formatTime(c.createdAt)} · ${esc(c.assemblerName)}</div></div><span class="badge ${statusClass(c)}">${statusText(c)}</span></div>
-    <div class="mobile-command-main"><div><strong>${esc(c.assemblerName)}</strong><small>${c.note ? esc(c.note) : 'Sem observação'}${specialTagsHtml(c)}</small></div><div class="mobile-pizza-count">${fmt(commandEquivalent(c))}<small>equiv.</small></div></div>
-    <div class="mobile-command-actions">${prodFlowActions(c)}<button class="btn btn-soft btn-small" data-cmd-action="edit" data-id="${c.id}">Editar</button><button class="btn btn-soft-red btn-small" data-cmd-action="error" data-id="${c.id}">${c.error?.active ? 'Editar erro' : 'Sinalizar erro'}</button></div>
-  </article>`).join('');
+        <div class="mobile-command-top">
+          <div>
+            <div class="mobile-command-number">#${String(c.number).padStart(3, '0')}</div>
+            <div class="mobile-command-meta">Registro ${formatTime(c.createdAt)} · ${esc(c.assemblerName)}</div>
+          </div>
+          <span class="badge ${statusClass(c)}">${statusText(c)}</span>
+        </div>
+        <div class="mobile-command-main">
+          <div><strong>${esc(c.assemblerName)}</strong><small>${c.error?.active ? `Erro: ${esc(c.error.type)}` : 'Sem erros'}${specialTagsHtml(c)}</small></div>
+          <div class="mobile-pizza-count">${fmt(commandEquivalent(c))}<small>equiv.</small></div>
+        </div>
+        <div class="mobile-command-actions">
+          ${prodFlowActions(c)}
+          <button class="btn btn-soft btn-small" data-cmd-action="edit" data-id="${c.id}">Editar</button>
+          <button class="btn btn-soft-red btn-small" data-cmd-action="error" data-id="${c.id}">${c.error?.active ? 'Editar erro' : 'Erro'}</button>
+        </div>
+      </article>`).join('');
       el.productionEmpty.classList.toggle('hidden', cs.length > 0);
     };
 
