@@ -51,4 +51,57 @@ class Operacao
             }
         }
     }
+
+    public static function syncEquipe($operacaoId, $team)
+    {
+        $db = Database::getInstance()->getConnection();
+        
+        // Ensure table exists
+        $db->exec("CREATE TABLE IF NOT EXISTS operacao_equipe (
+            operacao_id VARCHAR(36) NOT NULL,
+            equipe_id VARCHAR(36) NOT NULL,
+            PRIMARY KEY (operacao_id, equipe_id),
+            FOREIGN KEY (operacao_id) REFERENCES operacoes(id) ON DELETE CASCADE,
+            FOREIGN KEY (equipe_id) REFERENCES equipe(id) ON DELETE CASCADE
+        )");
+
+        // Delete old team for this operation
+        $stmt = $db->prepare("DELETE FROM operacao_equipe WHERE operacao_id = ?");
+        $stmt->execute([$operacaoId]);
+
+        if (is_array($team) && count($team) > 0) {
+            $insertStmt = $db->prepare("INSERT IGNORE INTO operacao_equipe (operacao_id, equipe_id) VALUES (?, ?)");
+            foreach ($team as $member) {
+                // Front sends personId for the team member
+                $personId = $member['personId'] ?? $member['id'] ?? null;
+                if ($personId) {
+                    $insertStmt->execute([$operacaoId, $personId]);
+                }
+            }
+        }
+    }
+
+    public static function start($operacaoId, $startedAt = null)
+    {
+        $db = Database::getInstance()->getConnection();
+        
+        $startedAt = $startedAt ? date('Y-m-d H:i:s', strtotime($startedAt)) : date('Y-m-d H:i:s');
+
+        $stmt = $db->prepare("UPDATE operacoes SET status = 'production_open', started_at = ? WHERE id = ?");
+        $stmt->execute([$startedAt, $operacaoId]);
+    }
+
+    public static function getEquipe($operacaoId)
+    {
+        $db = Database::getInstance()->getConnection();
+        
+        $stmt = $db->prepare("
+            SELECT e.id as personId, e.nome as name, e.cargo as role 
+            FROM operacao_equipe oe
+            JOIN equipe e ON oe.equipe_id = e.id
+            WHERE oe.operacao_id = ?
+        ");
+        $stmt->execute([$operacaoId]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
 }

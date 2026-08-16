@@ -2,10 +2,10 @@
     const SECTORS = ['Montagem', 'Massa', 'Cozinha', 'Forno', 'Despacho', 'Atendimento', 'Estoque', 'Liderança', 'Outros'];
     let state = { people: [], operations: [] }; let selectedReportOperationId = null;
     const $ = id => document.getElementById(id);
-    const el = { globalDate: $('globalDate'), globalStartDate: $('globalStartDate'), globalEndDate: $('globalEndDate'), phasePill: $('phasePill'), dashboardBanner: $('dashboardBanner'), dashCommands: $('dashCommands'), dashPizzas: $('dashPizzas'), dashKitchen: $('dashKitchen'), dashOven: $('dashOven'), dashDispatch: $('dashDispatch'), dashErrors: $('dashErrors'), dashboardTeam: $('dashboardTeam'), dashboardRank: $('dashboardRank'), dashboardLive: $('dashboardLive'), personForm: $('personForm'), personName: $('personName'), personRole: $('personRole'), editPersonModal: $('editPersonModal'), editPersonForm: $('editPersonForm'), editPersonId: $('editPersonId'), editPersonName: $('editPersonName'), editPersonRole: $('editPersonRole'), peopleChecklist: $('peopleChecklist'), dayTeamGroups: $('dayTeamGroups'), teamOperationNotice: $('teamOperationNotice'), saveTeamBtn: $('saveTeamBtn'), startOperationBtn: $('startOperationBtn'), manageTeamBtn: $('manageTeamBtn'), manageTeamDispatchBtn: $('manageTeamDispatchBtn'), productionGate: $('productionGate'), productionContent: $('productionContent'), productionSubtotals: $('productionSubtotals'), openRegisterCommandBtn: $('openRegisterCommandBtn'), openUpdateCommandsBtn: $('openUpdateCommandsBtn'), updatePendingBadge: $('updatePendingBadge'), productionRecent: $('productionRecent'), commandHistoryPanel: $('commandHistoryPanel'), registerCommandModal: $('registerCommandModal'), closeAndUpdateBtn: $('closeAndUpdateBtn'), assemblerSearch: $('assemblerSearch'), assemblerId: $('assemblerId'), assemblerSuggestions: $('assemblerSuggestions'), assemblerPickerBtn: $('assemblerPickerBtn'), assemblerPickerValue: $('assemblerPickerValue'), assemblerPickerModal: $('assemblerPickerModal'), assemblerPickerSearch: $('assemblerPickerSearch'), assemblerPickerList: $('assemblerPickerList'), pickerManageTeamBtn: $('pickerManageTeamBtn'), commandNumber: $('commandNumber'), pizzaQty: $('pizzaQty'), commandSuggestions: $('commandSuggestions'), commandNote: $('commandNote'), initialOven: $('initialOven'), addCommandBtn: $('addCommandBtn'), prodSearch: $('prodSearch'), prodStatus: $('prodStatus'), prodAssembler: $('prodAssembler'), clearProdFilters: $('clearProdFilters'), productionBody: $('productionBody'), productionMobileList: $('productionMobileList'), productionEmpty: $('productionEmpty'), closeKitchenBtn: $('closeKitchenBtn'), reopenKitchenBtn: $('reopenKitchenBtn'), dispatchGate: $('dispatchGate'), dispatchContent: $('dispatchContent'), dispatchSubtotals: $('dispatchSubtotals'), dispatchSearch: $('dispatchSearch'), dispatchFilter: $('dispatchFilter'), clearDispatchFilters: $('clearDispatchFilters'), dispatchGrid: $('dispatchGrid'), dispatchEmpty: $('dispatchEmpty'), finishDayBtn: $('finishDayBtn'), historyList: $('historyList'), reportOverview: $('reportOverview'), reportCards: $('reportCards'), backupBtn: $('backupBtn'), restoreBtn: $('restoreBtn'), restoreFile: $('restoreFile'), editModal: $('editModal'), editForm: $('editForm'), editId: $('editId'), editNumber: $('editNumber'), editQty: $('editQty'), editAssembler: $('editAssembler'), editStatus: $('editStatus'), editNote: $('editNote'), deleteCommandBtn: $('deleteCommandBtn'), errorModal: $('errorModal'), errorForm: $('errorForm'), errorId: $('errorId'), errorType: $('errorType'), errorNote: $('errorNote'), clearErrorBtn: $('clearErrorBtn'), toast: $('toast') };
+    const el = { globalDate: $('globalDate'), globalStartDate: $('globalStartDate'), globalEndDate: $('globalEndDate'), phasePill: $('phasePill'), dashboardBanner: $('dashboardBanner'), dashCommands: $('dashCommands'), dashPizzas: $('dashPizzas'), dashKitchen: $('dashKitchen'), dashOven: $('dashOven'), dashDispatch: $('dashDispatch'), dashErrors: $('dashErrors'), dashboardTeam: $('dashboardTeam'), dashboardRank: $('dashboardRank'), dashboardLive: $('dashboardLive'), personForm: $('personForm'), personName: $('personName'), personRole: $('personRole'), editPersonModal: $('editPersonModal'), editPersonForm: $('editPersonForm'), editPersonId: $('editPersonId'), editPersonName: $('editPersonName'), editPersonRole: $('editPersonRole'), peopleChecklist: $('peopleChecklist'), dayTeamGroups: $('dayTeamGroups'), teamOperationNotice: $('teamOperationNotice'), saveTeamBtn: $('saveTeamBtn'), startOperationBtn: $('startOperationBtn'), manageTeamBtn: $('manageTeamBtn'), manageTeamDispatchBtn: $('manageTeamDispatchBtn'), productionGate: $('productionGate'), productionContent: $('productionContent'), productionSubtotals: $('productionSubtotals'), openRegisterCommandBtn: $('openRegisterCommandBtn'), openUpdateCommandsBtn: $('openUpdateCommandsBtn'), updatePendingBadge: $('updatePendingBadge'), productionRecent: $('productionRecent'), commandHistoryPanel: $('commandHistoryPanel'), registerCommandModal: $('registerCommandModal'), closeAndUpdateBtn: $('closeAndUpdateBtn'), assemblerSearch: $('assemblerSearch'), assemblerId: $('assemblerId'), assemblerSuggestions: $('assemblerSuggestions'), assemblerPickerBtn: $('assemblerPickerBtn'), assemblerPickerValue: $('assemblerPickerValue'), assemblerPickerModal: $('assemblerPickerModal'), assemblerPickerSearch: $('assemblerPickerSearch'), assemblerPickerList: $('assemblerPickerList'), pickerManageTeamBtn: $('pickerManageTeamBtn'), commandNumber: $('commandNumber'), pizzaQty: $('pizzaQty'), commandSuggestions: $('commandSuggestions'), commandNote: $('commandNote'), initialOven: $('initialOven'), addCommandBtn: $('addCommandBtn'), prodSearch: $('prodSearch'), prodStatus: $('prodStatus'), prodAssembler: $('prodAssembler'), clearProdFilters: $('clearProdFilters'), productionBody: $('productionBody'), productionMobileList: $('productionMobileList'), productionEmpty: $('productionEmpty'), closeKitchenBtn: $('closeKitchenBtn'), reopenKitchenBtn: $('reopenKitchenBtn'), dispatchGate: $('dispatchGate'), dispatchContent: $('dispatchContent'), dispatchSubtotals: $('dispatchSubtotals'), dispatchSearch: $('dispatchSearch'), dispatchFilter: $('dispatchFilter'), clearDispatchFilters: $('clearDispatchFilters'), dispatchGrid: $('dispatchGrid'), dispatchEmpty: $('dispatchEmpty'), finishDayBtn: $('finishDayBtn'), historyList: $('historyList'), reportOverview: $('reportOverview'), reportCards: $('reportCards'), backupBtn: $('backupBtn'), restoreBtn: $('restoreBtn'), restoreFile: $('restoreFile'), editModal: $('editModal'), editForm: $('editForm'), editId: $('editId'), editNumber: $('editNumber'), editQty: $('editQty'), editAssembler: $('editAssembler'), editStatus: $('editStatus'), editNote: $('editNote'), deleteCommandBtn: $('deleteCommandBtn'), errorModal: $('errorModal'), errorForm: $('errorForm'), errorId: $('errorId'), errorType: $('errorType'), errorNote: $('errorNote'), clearErrorBtn: $('clearErrorBtn'), toast: $('toast'), confirmDeleteModal: $('confirmDeleteModal') };
 
     function save() {
-      fetch('http://localhost:8001/api/sync', {
+      fetch('/api/sync', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(state)
@@ -214,7 +214,7 @@
     function fetchTopMontadoresMensal() {
       initHeaderMonthPicker();
       const picker = document.getElementById('headerMonthPicker');
-      let url = 'http://localhost:8001/api/dashboard/top-montadores-mensal';
+      let url = '/api/dashboard/top-montadores-mensal';
       
       if (picker && picker.value) {
         const [ano, mes] = picker.value.split('-');
@@ -272,7 +272,7 @@
         endDate = new Date(y, now.getMonth() + 1, 0).toISOString().split('T')[0];
       }
 
-      fetch(`http://localhost:8001/api/dashboard/kpis?start_date=${startDate}&end_date=${endDate}`)
+      fetch(`/api/dashboard/kpis?start_date=${startDate}&end_date=${endDate}`)
         .then(res => res.json())
         .then(kpis => {
           animateMetric(el.dashCommands, kpis.comandas);
@@ -417,11 +417,7 @@
             </div>
           </label>
           <div class="flex items-center gap-1 shrink-0">
-            <button class="opacity-0 group-hover:opacity-100 transition-opacity duration-150
-                           p-1.5 rounded-md text-[#D97706] hover:bg-[#FFF9E5] hover:text-[#B45309]"
-                    type="button"
-                    data-edit-person="${p.id}"
-                    title="Editar profissional">
+            <button class="opacity-0 group-hover:opacity-100 transition-opacity duration-150 p-1.5 rounded-md text-[#D97706] hover:bg-[#FFF9E5] hover:text-[#B45309]" type="button" data-edit-person="${p.id}" title="Editar profissional">
               <i data-lucide="pencil" class="w-3.5 h-3.5 pointer-events-none"></i>
             </button>
             <button class="opacity-0 group-hover:opacity-100 transition-opacity duration-150
@@ -451,18 +447,31 @@
       const peopleCount = document.getElementById('teamPeopleCount');
       if (peopleCount) peopleCount.textContent = allPeople.length;
 
-      const teamToday = op?.team || [];
-
-      // Badge dinâmico na lista de presença
       const selBadge = document.getElementById('teamSelectedBadge');
-      if (selBadge) {
-        const count = teamToday.length;
-        selBadge.textContent = count === 0 ? '0 selecionados' : `${count} ${count === 1 ? 'selecionado' : 'selecionados'}`;
-        selBadge.className = `px-2.5 py-0.5 rounded-full text-xs font-semibold border transition-all ${
-          count > 0
-            ? 'bg-[#E7F8F0] text-[#10B981] border-[#A7F3D0]'
-            : 'bg-gray-100 text-[#737373] border-gray-200'
-        }`;
+      if (selBadge && op) {
+        const updateBadge = (count) => {
+          selBadge.textContent = count === 0 ? '0 selecionados' : `${count} ${count === 1 ? 'selecionado' : 'selecionados'}`;
+          selBadge.className = `px-2.5 py-0.5 rounded-full text-xs font-semibold border transition-all ${
+            count > 0
+              ? 'bg-[#E7F8F0] text-[#10B981] border-[#A7F3D0]'
+              : 'bg-gray-100 text-[#737373] border-gray-200'
+          }`;
+        };
+        
+        if (op.status === 'draft') {
+          updateBadge(op.team ? op.team.length : 0);
+        } else if (op.id) {
+          fetch(`/api/operacao/equipe?operacao_id=${op.id}`)
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) {
+                updateBadge(data.count || 0);
+              }
+            })
+            .catch(err => console.error('Erro ao buscar quantidade de equipe', err));
+        } else {
+          updateBadge(0);
+        }
       }
     }
 
@@ -579,7 +588,18 @@
     }
 
     // ── renderTeam() — orquestrador principal ──────────────────────────────────
-    function renderTeam() {
+    async function renderTeam() {
+      try {
+        const res = await fetch('/api/profissionais');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.profissionais) {
+            state.people = data.profissionais;
+          }
+        }
+      } catch (e) {
+        console.error("Erro ao buscar profissionais", e);
+      }
       renderHeader();
       const op = currentOperation();
 
@@ -633,7 +653,12 @@
       }
       op.team = selected;
       save();
-      fetch('http://localhost:8001/api/equipe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ team: selected }) });
+      fetch('/api/equipe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ operacao_id: op.id, team: selected }) })
+        .then(res => {
+          if (res.ok) {
+            renderCheckedTeam();
+          }
+        });
       renderHeader(); renderCheckedTeam(); renderProduction(); renderDispatch(); renderDashboard();
       if (show && !kept.length) toast(op.status === 'draft' ? 'Equipe salva.' : 'Equipe atualizada durante a operação.');
       return true;
@@ -673,7 +698,7 @@
       const newCmd = { id: commandId, number: n, pizzas: q, assemblerId: a.personId, assemblerName: a.name, note: el.commandNote.value.trim(), status, createdAt: now, updatedAt: now, statusTimes: { cozinha: now, forno: status === 'forno' ? now : null, despacho: null }, error: { active: false, type: '', note: '', createdAt: null }, dispatch: { status: 'aguardando', beverage: false, change: false, changeAmount: '', ketchup: false, mayonnaise: false, note: '', checkedAt: null, releasedAt: null } };
       op.commands.push(newCmd);
       save();
-      fetch('http://localhost:8001/api/comandas', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: commandId, assembler_id: a.personId, number: n, pizzas: q, note: el.commandNote.value.trim() }) });
+      fetch('/api/comandas', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: commandId, assembler_id: a.personId, number: n, pizzas: q, note: el.commandNote.value.trim() }) });
       resetRegistration(); renderProduction(); renderDashboard(); toast(`Comanda ${n} registrada com ${q} pizza${q > 1 ? 's' : ''}.`);
     }
     function move(c, dir) {
@@ -687,7 +712,7 @@
       }
       c.updatedAt = now;
       save();
-      fetch('http://localhost:8001/api/comandas/status', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: c.id, status: c.status }) });
+      fetch('/api/comandas/status', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: c.id, status: c.status }) });
       renderProduction(); renderDispatch(); renderDashboard();
     }
     function openEdit(c) { const op = currentOperation(); el.editId.value = c.id; el.editNumber.value = c.number; el.editQty.value = c.pizzas; el.editStatus.value = c.status; el.editNote.value = c.note || ''; el.editAssembler.innerHTML = assemblers(op).map(p => `<option value="${p.personId}" ${p.personId === c.assemblerId ? 'selected' : ''}>${esc(p.name)}</option>`).join(''); el.editModal.classList.add('show') }
@@ -739,7 +764,7 @@
     if (el.globalEndDate) el.globalEndDate.addEventListener('change', () => { el.assemblerId.value = ''; el.assemblerSearch.value = ''; renderAll() });
     // equipe
     // equipe
-    el.personForm.addEventListener('submit', e => { e.preventDefault(); const name = proper(el.personName.value), role = el.personRole.value; if (name.length < 2 || !role) return toast('Preencha nome e setor.', 'error'); if (state.people.some(p => norm(p.name) === norm(name) && p.role === role)) return toast('Este profissional já está cadastrado neste setor.', 'warn'); state.people.push({ id: uid(), name, role, createdAt: new Date().toISOString() }); save(); el.personForm.reset(); const addModal = $('addPersonModal'); if (addModal) addModal.classList.remove('show'); renderTeam(); toast('Profissional cadastrado.') });
+    el.personForm.addEventListener('submit', async e => { e.preventDefault(); const name = proper(el.personName.value), role = el.personRole.value; if (name.length < 2 || !role) return toast('Preencha nome e setor.', 'error'); if (state.people.some(p => norm(p.name) === norm(name) && p.role === role)) return toast('Este profissional já está cadastrado neste setor.', 'warn'); const newPerson = { id: uid(), name, role, createdAt: new Date().toISOString() }; try { const res = await fetch('/api/profissionais', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(newPerson) }); if (!res.ok) throw new Error('Erro ao salvar profissional no servidor'); state.people.push(newPerson); save(); el.personForm.reset(); const addModal = $('addPersonModal'); if (addModal) addModal.classList.remove('show'); renderTeam(); toast('Profissional cadastrado.'); } catch (err) { toast(err.message, 'error'); } });
     
     el.editPersonForm.addEventListener('submit', e => {
       e.preventDefault();
@@ -769,18 +794,117 @@
     el.peopleChecklist.addEventListener('click', e => {
       const b = e.target.closest('[data-remove-person]');
       if (b) {
-        const p = getPerson(b.dataset.removePerson), used = state.operations.some(o => o.team.some(t => t.personId === p.id) || o.commands.some(c => c.assemblerId === p.id));
-        if (used) return toast('Este profissional já está vinculado a operações.', 'warn');
-        if (confirm(`Remover ${p.name}?`)) {
-          state.people = state.people.filter(x => x.id !== p.id);
-          save();
-          renderTeam();
-          toast('Profissional removido.', 'warn')
+        const p = getPerson(b.dataset.removePerson);
+        if (p) {
+          const deleteModal = $('confirmDeleteModal');
+          if (deleteModal) {
+            $('deletePersonNameLabel').textContent = p.name;
+            const confirmBtn = $('confirmDeletePersonBtn');
+            if (confirmBtn) {
+              confirmBtn.dataset.personId = p.id;
+            }
+            deleteModal.classList.add('show');
+            deleteModal.style.display = 'flex';
+            deleteModal.style.zIndex = '999999';
+          }
         }
+      }
+
+      // Abertura do modal de edição (REESCRITA DO ZERO)
+      const editBtn = e.target.closest('[data-edit-person]');
+      if (editBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const personId = editBtn.dataset.editPerson;
+        const p = getPerson(personId);
+        if (!p) {
+          alert('Erro: Profissional não encontrado na lista local.');
+          return;
+        }
+
+        const modal = document.getElementById('editPersonModal');
+        const idField = document.getElementById('editPersonId');
+        const nameField = document.getElementById('editPersonName');
+        const roleField = document.getElementById('editPersonRole');
+
+        if (!modal || !idField || !nameField || !roleField) {
+          alert('Erro: Elementos do modal de edição não encontrados no DOM.');
+          return;
+        }
+
+        // Popula os dados
+        idField.value = p.id;
+        nameField.value = p.name;
+        roleField.value = p.role;
+
+        // Exibe o modal
+        modal.classList.add('show');
+        modal.style.display = 'flex';
+        modal.style.zIndex = '999999';
       }
     });
 
-    el.saveTeamBtn.addEventListener('click', () => saveTeam(true)); el.startOperationBtn.addEventListener('click', () => { const op = ensureOperation(); if (op.status !== 'draft') return toast('A operação já foi iniciada.', 'warn'); saveTeam(false); if (!op.team.length) return toast('Selecione a equipe do dia.', 'error'); if (!op.team.some(p => p.role === 'Montagem')) return toast('Inclua ao menos um montador.', 'error'); op.status = 'production_open'; op.startedAt = new Date().toISOString(); save(); showPage('production'); toast('Operação iniciada.') });
+    // Submissão do form de edição
+    const editPersonForm = document.getElementById('editPersonForm');
+    if (editPersonForm) {
+      editPersonForm.addEventListener('submit', async e => {
+        e.preventDefault();
+        
+        const idField = document.getElementById('editPersonId');
+        const nameField = document.getElementById('editPersonName');
+        const roleField = document.getElementById('editPersonRole');
+        
+        const id = idField.value;
+        const name = nameField.value.trim();
+        const role = roleField.value;
+
+        if (!id || !name || !role) return toast('Preencha todos os campos.', 'warn');
+
+        try {
+          const res = await fetch(`/api/profissionais/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, role })
+          });
+          
+          const result = await res.json();
+          if (result.success) {
+            const person = state.people.find(x => x.id === id);
+            if (person) {
+              person.name = name;
+              person.role = role;
+            }
+            
+            const op = currentOperation();
+            if (op) {
+              const teamMember = op.team.find(t => t.personId === id);
+              if (teamMember) {
+                teamMember.name = name;
+                teamMember.role = role;
+              }
+              const cmds = op.commands.filter(c => c.assemblerId === id);
+              cmds.forEach(c => c.assemblerName = name);
+            }
+            
+            save();
+            renderTeam();
+            if (typeof renderProduction === 'function') renderProduction();
+            if (typeof renderDispatch === 'function') renderDispatch();
+            
+            document.getElementById('editPersonModal').classList.remove('show');
+            document.getElementById('editPersonModal').style.display = 'none';
+            toast('Profissional atualizado com sucesso!', 'success');
+          } else {
+            toast(result.error || 'Erro ao atualizar.', 'error');
+          }
+        } catch (err) {
+          toast('Erro de rede: ' + err.message, 'error');
+        }
+      });
+    }
+
+    el.saveTeamBtn.addEventListener('click', () => saveTeam(true)); el.startOperationBtn.addEventListener('click', () => { const op = ensureOperation(); if (op.status !== 'draft') return toast('A operação já foi iniciada.', 'warn'); saveTeam(false); if (!op.team.length) return toast('Selecione a equipe do dia.', 'error'); if (!op.team.some(p => p.role === 'Montagem')) return toast('Inclua ao menos um montador.', 'error'); op.status = 'production_open'; op.startedAt = new Date().toISOString(); save(); fetch('/api/operacao/iniciar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ operacao_id: op.id, startedAt: op.startedAt }) }); showPage('production'); toast('Operação iniciada.') });
     // Filtros da lista de profissionais (busca por nome + setor)
     document.addEventListener('input', e => { if (e.target.id === 'teamPersonSearch') renderPeopleList(); });
     document.addEventListener('change', e => { if (e.target.id === 'teamSectorFilter') renderPeopleList(); });
@@ -793,18 +917,6 @@
         if (addModal) addModal.classList.add('show');
       }
 
-      // Abrir edição
-      const editBtn = e.target.closest('[data-edit-person]');
-      if (editBtn) {
-        const p = getPerson(editBtn.dataset.editPerson);
-        if (p) {
-          el.editPersonId.value = p.id;
-          el.editPersonName.value = p.name;
-          el.editPersonRole.value = p.role;
-          el.editPersonModal.classList.add('show');
-        }
-      }
-      
       // Fechar cadastro ao clicar fora
       const addModal = $('addPersonModal');
       if (addModal && e.target === addModal) {
@@ -817,6 +929,54 @@
         editModal.classList.remove('show');
       }
     });
+
+    if (el.editPersonForm) {
+      el.editPersonForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const id = el.editPersonId.value;
+        const name = el.editPersonName.value.trim();
+        const role = el.editPersonRole.value;
+
+        if (!id || !name || !role) return toast('Preencha todos os campos.', 'warn');
+
+        fetch(`/api/profissionais/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, role })
+        })
+        .then(res => res.json())
+        .then(result => {
+          if (result.success) {
+            const person = state.people.find(p => p.id === id);
+            if (person) {
+              person.name = name;
+              person.role = role;
+            }
+            
+            const op = currentOperation();
+            if (op) {
+              const teamMember = op.team.find(t => t.personId === id);
+              if (teamMember) {
+                teamMember.name = name;
+                teamMember.role = role;
+                save();
+              }
+            }
+            
+            el.editPersonModal.classList.remove('show');
+            renderTeam();
+            toast('Profissional atualizado.');
+          } else {
+            toast(result.error || 'Erro ao atualizar.', 'error');
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          toast('Erro ao atualizar profissional.', 'error');
+        });
+      });
+    }
+
     // central moderna de produção
 
     el.openRegisterCommandBtn.addEventListener('click', openRegisterCommand);
@@ -841,7 +1001,69 @@
     el.reopenKitchenBtn.addEventListener('click', () => { const op = currentOperation(); if (!op || op.status !== 'kitchen_closed') return; if (!confirm('Reabrir a cozinha para novos registros?')) return; op.status = 'production_open'; op.kitchenClosedAt = null; save(); renderAll(); toast('Cozinha reaberta.', 'warn') });
 
     // modais
-    document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => $(b.dataset.close + 'Modal').classList.remove('show')));[el.registerCommandModal, el.assemblerPickerModal, el.editModal, el.errorModal, el.editPersonModal].forEach(m => m.addEventListener('click', e => { if (e.target === m) m.classList.remove('show') })); el.editForm.addEventListener('submit', e => { e.preventDefault(); const op = currentOperation(), c = getCommand(op, el.editId.value), n = Number(el.editNumber.value), q = Number(el.editQty.value); if (!c) return; if (!Number.isInteger(n) || n < 1 || n > 1000) return toast('Número inválido.', 'error'); if (op.commands.some(x => x.id !== c.id && x.number === n)) return toast('Essa comanda já existe.', 'warn'); if (!Number.isInteger(q) || q < 1 || q > 50) return toast('Quantidade inválida.', 'error'); const a = assemblers(op).find(p => p.personId === el.editAssembler.value); c.number = n; c.pizzas = q; c.assemblerId = a.personId; c.assemblerName = a.name; c.note = el.editNote.value.trim(); const st = el.editStatus.value, now = new Date().toISOString(); if (st !== c.status) { c.status = st; if (st === 'forno') c.statusTimes.forno ||= now; if (st === 'despacho') c.statusTimes.despacho ||= now; if (st !== 'despacho') { c.dispatch.status = 'aguardando'; c.dispatch.checkedAt = null; c.dispatch.releasedAt = null } } c.updatedAt = now; save(); el.editModal.classList.remove('show'); renderProduction(); renderDispatch(); renderDashboard(); toast('Comanda atualizada.') }); el.deleteCommandBtn.addEventListener('click', () => { const op = currentOperation(), c = getCommand(op, el.editId.value); if (c && confirm(`Excluir a comanda ${c.number}?`)) { op.commands = op.commands.filter(x => x.id !== c.id); save(); el.editModal.classList.remove('show'); renderProduction(); renderDispatch(); renderDashboard(); toast('Comanda excluída.', 'warn') } }); el.errorForm.addEventListener('submit', e => { e.preventDefault(); const c = getCommand(currentOperation(), el.errorId.value); if (!c || !el.errorType.value) return toast('Selecione o tipo de erro.', 'error'); c.error = { active: true, type: el.errorType.value, note: el.errorNote.value.trim(), createdAt: new Date().toISOString() }; save(); el.errorModal.classList.remove('show'); renderProduction(); renderDashboard(); toast('Erro registrado.', 'warn') }); el.clearErrorBtn.addEventListener('click', () => { const c = getCommand(currentOperation(), el.errorId.value); if (c) { c.error = { active: false, type: '', note: '', createdAt: null }; save(); el.errorModal.classList.remove('show'); renderProduction(); renderDashboard(); toast('Sinalização retirada.') } });
+    document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => $(b.dataset.close + 'Modal').classList.remove('show')));
+    [el.registerCommandModal, el.assemblerPickerModal, el.editModal, el.errorModal, el.editPersonModal, el.confirmDeleteModal].forEach(m => {
+      if (m) {
+        m.addEventListener('click', e => { if (e.target === m) m.classList.remove('show') });
+      }
+    });
+
+    const confirmDeletePersonBtn = $('confirmDeletePersonBtn');
+    if (confirmDeletePersonBtn) {
+      confirmDeletePersonBtn.addEventListener('click', async () => {
+        const id = confirmDeletePersonBtn.dataset.personId;
+        if (!id) return;
+        
+        try {
+          confirmDeletePersonBtn.disabled = true;
+          confirmDeletePersonBtn.textContent = 'Excluindo...';
+          
+          const res = await fetch(`/api/profissionais/${id}`, {
+            method: 'DELETE'
+          });
+          
+          const result = await res.json();
+          if (result.success) {
+            state.people = state.people.filter(x => x.id !== id);
+            
+            state.operations.forEach(op => {
+              if (op.team) {
+                op.team = op.team.filter(t => t.personId !== id);
+              }
+              if (op.commands) {
+                op.commands.forEach(c => {
+                  if (c.assemblerId === id) {
+                    c.assemblerId = '';
+                    c.assemblerName = '';
+                  }
+                });
+              }
+            });
+            
+            save();
+            renderTeam();
+            if (typeof renderProduction === 'function') renderProduction();
+            if (typeof renderDispatch === 'function') renderDispatch();
+            if (typeof renderDashboard === 'function') renderDashboard();
+            
+            const modal = $('confirmDeleteModal');
+            if (modal) {
+              modal.classList.remove('show');
+              modal.style.display = 'none';
+            }
+            toast('Profissional e registros excluídos com sucesso!', 'ok');
+          } else {
+            toast(result.error || 'Erro ao excluir profissional.', 'error');
+          }
+        } catch (err) {
+          toast('Erro de rede: ' + err.message, 'error');
+        } finally {
+          confirmDeletePersonBtn.disabled = false;
+          confirmDeletePersonBtn.innerHTML = '<i data-lucide="trash-2" class="w-4 h-4"></i> Excluir Tudo e Confirmar';
+          if (window.lucide) lucide.createIcons();
+        }
+      });
+    } el.editForm.addEventListener('submit', e => { e.preventDefault(); const op = currentOperation(), c = getCommand(op, el.editId.value), n = Number(el.editNumber.value), q = Number(el.editQty.value); if (!c) return; if (!Number.isInteger(n) || n < 1 || n > 1000) return toast('Número inválido.', 'error'); if (op.commands.some(x => x.id !== c.id && x.number === n)) return toast('Essa comanda já existe.', 'warn'); if (!Number.isInteger(q) || q < 1 || q > 50) return toast('Quantidade inválida.', 'error'); const a = assemblers(op).find(p => p.personId === el.editAssembler.value); c.number = n; c.pizzas = q; c.assemblerId = a.personId; c.assemblerName = a.name; c.note = el.editNote.value.trim(); const st = el.editStatus.value, now = new Date().toISOString(); if (st !== c.status) { c.status = st; if (st === 'forno') c.statusTimes.forno ||= now; if (st === 'despacho') c.statusTimes.despacho ||= now; if (st !== 'despacho') { c.dispatch.status = 'aguardando'; c.dispatch.checkedAt = null; c.dispatch.releasedAt = null } } c.updatedAt = now; save(); el.editModal.classList.remove('show'); renderProduction(); renderDispatch(); renderDashboard(); toast('Comanda atualizada.') }); el.deleteCommandBtn.addEventListener('click', () => { const op = currentOperation(), c = getCommand(op, el.editId.value); if (c && confirm(`Excluir a comanda ${c.number}?`)) { op.commands = op.commands.filter(x => x.id !== c.id); save(); el.editModal.classList.remove('show'); renderProduction(); renderDispatch(); renderDashboard(); toast('Comanda excluída.', 'warn') } }); el.errorForm.addEventListener('submit', e => { e.preventDefault(); const c = getCommand(currentOperation(), el.errorId.value); if (!c || !el.errorType.value) return toast('Selecione o tipo de erro.', 'error'); c.error = { active: true, type: el.errorType.value, note: el.errorNote.value.trim(), createdAt: new Date().toISOString() }; save(); el.errorModal.classList.remove('show'); renderProduction(); renderDashboard(); toast('Erro registrado.', 'warn') }); el.clearErrorBtn.addEventListener('click', () => { const c = getCommand(currentOperation(), el.errorId.value); if (c) { c.error = { active: false, type: '', note: '', createdAt: null }; save(); el.errorModal.classList.remove('show'); renderProduction(); renderDashboard(); toast('Sinalização retirada.') } });
     // despacho
     [el.dispatchSearch, el.dispatchFilter].forEach(x => x.addEventListener(x.tagName === 'INPUT' ? 'input' : 'change', renderDispatch)); el.clearDispatchFilters.addEventListener('click', () => { el.dispatchSearch.value = ''; el.dispatchFilter.value = ''; renderDispatch() }); el.dispatchGrid.addEventListener('change', e => { if (e.target.dataset.dField === 'change') { const card = e.target.closest('[data-dispatch-card]'), amt = card.querySelector('[data-d-field="changeAmount"]'); amt.disabled = !e.target.checked; if (!e.target.checked) amt.value = '' } }); el.dispatchGrid.addEventListener('click', e => { const b = e.target.closest('[data-d-action]'); if (!b) return; const op = currentOperation(), c = getCommand(op, b.dataset.id), card = e.target.closest('[data-dispatch-card]'); if (!c || !card) return; collectDispatch(card, c); const now = new Date().toISOString(); if (b.dataset.dAction === 'check') { c.dispatch.status = 'conferido'; c.dispatch.checkedAt = now } if (b.dataset.dAction === 'release') { c.dispatch.status = 'liberado'; c.dispatch.checkedAt ||= now; c.dispatch.releasedAt = now } save(); renderDispatch(); renderDashboard(); toast(b.dataset.dAction === 'release' ? 'Pedido liberado.' : 'Conferência salva.') }); el.finishDayBtn.addEventListener('click', () => { const op = currentOperation(); if (!op || op.status !== 'kitchen_closed') return toast('Encerre a cozinha antes de finalizar o dia.', 'warn'); const p = pendingToFinish(op); if (p) return toast(`Ainda existem ${p} pedidos não finalizados.`, 'warn'); if (!confirm('Finalizar toda a operação do dia?')) return; op.status = 'completed'; op.completedAt = new Date().toISOString(); save(); selectedReportOperationId = op.id; renderAll(); showPage('reports'); toast('Operação do dia finalizada.') });
     // relatórios
@@ -1510,7 +1732,7 @@
     };
 
     function loadState() {
-      fetch('http://localhost:8001/api/init')
+      fetch('/api/init')
         .then(res => res.json())
         .then(data => {
           state = data;

@@ -291,9 +291,206 @@ $swagger = [
         "/api/equipe" => [
             "post" => [
                 "tags" => ["Equipe"],
-                "summary" => "Sincronizar equipe",
+                "summary" => "Salvar profissionais na operação do dia (Lista de presença)",
+                "requestBody" => [
+                    "required" => true,
+                    "content" => [
+                        "application/json" => [
+                            "schema" => [
+                                "type" => "object",
+                                "properties" => [
+                                    "operacao_id" => ["type" => "string"],
+                                    "team" => [
+                                        "type" => "array",
+                                        "items" => [
+                                            "type" => "object",
+                                            "properties" => [
+                                                "personId" => ["type" => "string"],
+                                                "name" => ["type" => "string"],
+                                                "role" => ["type" => "string"]
+                                            ]
+                                        ]
+                                    ]
+                                ],
+                                "required" => ["operacao_id", "team"]
+                            ]
+                        ]
+                    ]
+                ],
                 "responses" => [
-                    "200" => ["description" => "Equipe sincronizada"]
+                    "200" => ["description" => "Equipe sincronizada com a operação"]
+                ]
+            ]
+        ],
+        "/api/operacao/iniciar" => [
+            "post" => [
+                "tags" => ["Operação"],
+                "summary" => "Iniciar a operação do dia",
+                "requestBody" => [
+                    "required" => true,
+                    "content" => [
+                        "application/json" => [
+                            "schema" => [
+                                "type" => "object",
+                                "properties" => [
+                                    "operacao_id" => ["type" => "string"],
+                                    "startedAt" => ["type" => "string", "format" => "date-time"]
+                                ],
+                                "required" => ["operacao_id"]
+                            ]
+                        ]
+                    ]
+                ],
+                "responses" => [
+                    "200" => ["description" => "Operação iniciada com sucesso"]
+                ]
+            ]
+        ],
+        "/api/operacao/equipe" => [
+            "get" => [
+                "tags" => ["Operação"],
+                "summary" => "Obter profissionais selecionados para a operação (Lista de presença)",
+                "parameters" => [
+                    [
+                        "name" => "operacao_id",
+                        "in" => "query",
+                        "required" => true,
+                        "schema" => ["type" => "string"]
+                    ]
+                ],
+                "responses" => [
+                    "200" => [
+                        "description" => "Lista de presença retornada com sucesso",
+                        "content" => [
+                            "application/json" => [
+                                "schema" => [
+                                    "type" => "object",
+                                    "properties" => [
+                                        "success" => ["type" => "boolean"],
+                                        "count" => ["type" => "integer"],
+                                        "team" => [
+                                            "type" => "array",
+                                            "items" => [
+                                                "type" => "object",
+                                                "properties" => [
+                                                    "personId" => ["type" => "string"],
+                                                    "name" => ["type" => "string"],
+                                                    "role" => ["type" => "string"]
+                                                ]
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ],
+        "/api/profissionais" => [
+            "get" => [
+                "tags" => ["Equipe"],
+                "summary" => "Obter todos os profissionais cadastrados",
+                "responses" => [
+                    "200" => [
+                        "description" => "Lista de profissionais retornada com sucesso",
+                        "content" => [
+                            "application/json" => [
+                                "schema" => [
+                                    "type" => "object",
+                                    "properties" => [
+                                        "success" => ["type" => "boolean"],
+                                        "profissionais" => [
+                                            "type" => "array",
+                                            "items" => [
+                                                "type" => "object",
+                                                "properties" => [
+                                                    "id" => ["type" => "string"],
+                                                    "name" => ["type" => "string"],
+                                                    "role" => ["type" => "string"]
+                                                ]
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            "post" => [
+                "tags" => ["Equipe"],
+                "summary" => "Cadastrar novo profissional",
+                "requestBody" => [
+                    "required" => true,
+                    "content" => [
+                        "application/json" => [
+                            "schema" => [
+                                "type" => "object",
+                                "properties" => [
+                                    "id" => ["type" => "string"],
+                                    "name" => ["type" => "string", "example" => "João Silva"],
+                                    "role" => ["type" => "string", "example" => "Montagem"]
+                                ],
+                                "required" => ["id", "name", "role"]
+                            ]
+                        ]
+                    ]
+                ],
+                "responses" => [
+                    "200" => ["description" => "Profissional cadastrado com sucesso"],
+                    "400" => ["description" => "Dados inválidos"]
+                ]
+            ]
+        ],
+        "/api/profissionais/{id}" => [
+            "put" => [
+                "tags" => ["Equipe"],
+                "summary" => "Editar um profissional existente",
+                "parameters" => [
+                    [
+                        "name" => "id",
+                        "in" => "path",
+                        "required" => true,
+                        "schema" => ["type" => "string"],
+                        "description" => "ID do profissional"
+                    ]
+                ],
+                "requestBody" => [
+                    "required" => true,
+                    "content" => [
+                        "application/json" => [
+                            "schema" => [
+                                "type" => "object",
+                                "properties" => [
+                                    "name" => ["type" => "string", "example" => "João Silva"],
+                                    "role" => ["type" => "string", "example" => "Forno"]
+                                ],
+                                "required" => ["name", "role"]
+                            ]
+                        ]
+                    ]
+                ],
+                "responses" => [
+                    "200" => ["description" => "Profissional atualizado com sucesso"],
+                    "400" => ["description" => "Dados inválidos"]
+                ]
+            ],
+            "delete" => [
+                "tags" => ["Equipe"],
+                "summary" => "Excluir um profissional e todos os seus registros de operação",
+                "parameters" => [
+                    [
+                        "name" => "id",
+                        "in" => "path",
+                        "required" => true,
+                        "schema" => ["type" => "string"],
+                        "description" => "ID do profissional"
+                    ]
+                ],
+                "responses" => [
+                    "200" => ["description" => "Profissional excluído com sucesso"],
+                    "500" => ["description" => "Erro interno do servidor"]
                 ]
             ]
         ]

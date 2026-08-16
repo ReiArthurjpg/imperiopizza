@@ -340,6 +340,76 @@
         </form>
       </div>
 
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       MODAL: CONFIRMAR EXCLUSÃO DE COLABORADOR (Design System Moderno)
+  ════════════════════════════════════════════════════ -->
+  <div id="confirmDeleteModal" class="modal-bg">
+    <!-- Caixa do modal (dialog) -->
+    <div class="bg-white rounded-2xl border border-[#E7E7E7] shadow-[0_8px_32px_rgba(0,0,0,0.08)] w-[95%] max-w-[500px] overflow-hidden transform transition-all duration-200">
+      
+      <!-- Cabeçalho -->
+      <div class="flex items-center justify-between p-5 border-b border-[#E7E7E7] bg-red-50/50">
+        <div class="flex items-center gap-2">
+          <i data-lucide="alert-triangle" class="w-5 h-5 text-red-600"></i>
+          <div>
+            <h3 class="text-lg font-bold text-red-700">Confirmar Exclusão</h3>
+            <p class="text-xs text-[#737373] mt-0.5">Esta ação é irreversível.</p>
+          </div>
+        </div>
+        <button 
+          class="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+          type="button" 
+          data-close="confirmDelete"
+          id="closeConfirmDeleteBtn"
+        >
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Corpo -->
+      <div class="p-5">
+        <p class="text-sm text-[#171717] mb-4">
+          Você está prestes a excluir o profissional <strong id="deletePersonNameLabel"></strong>.
+        </p>
+        
+        <div class="p-4 bg-red-50 rounded-xl border border-red-100 text-red-800 text-xs space-y-2 mb-6">
+          <p class="font-semibold flex items-center gap-1.5 text-red-950">
+            <i data-lucide="info" class="w-4 h-4 shrink-0"></i>
+            Atenção: Todos os registros vinculados serão apagados!
+          </p>
+          <p class="leading-relaxed text-red-900">
+            Ao confirmar a exclusão, <strong>todos os registros de operação desta pessoa serão excluídos permanentemente do banco de dados</strong>. Isso inclui presenças, lotes de massas produzidas e comandas montadas vinculadas a ela.
+          </p>
+        </div>
+
+        <!-- Ações (Rodapé) -->
+        <div class="flex items-center justify-end gap-3 pt-4 border-t border-[#E7E7E7]">
+          <button 
+            type="button" 
+            class="px-4 py-2.5 text-sm font-semibold text-gray-700 bg-gray-100 border border-transparent rounded-lg
+                   hover:bg-gray-200 active:scale-[0.98] transition-all duration-150
+                   flex items-center gap-1.5" 
+            data-close="confirmDelete"
+            id="cancelDeleteBtn"
+          >
+            <i data-lucide="x-circle" class="w-4 h-4"></i>
+            Cancelar
+          </button>
+          <button 
+            type="button" 
+            id="confirmDeletePersonBtn"
+            class="px-6 py-2.5 text-sm font-semibold text-white bg-red-600 rounded-lg
+                   hover:bg-red-700 active:scale-[0.98] transition-all duration-150 shadow-sm
+                   flex items-center gap-1.5"
+          >
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+            Excluir Tudo e Confirmar
+          </button>
+        </div>
+      </div>
+
     </div>
   </div>
 
