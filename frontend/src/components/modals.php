@@ -19,19 +19,6 @@
       <!-- Body -->
       <div class="register-modal-body px-6 py-5 space-y-5 overflow-y-auto" style="max-height:70vh;">
 
-        <!-- Sweet Pending Alert Panel (inside scroll body) -->
-        <div id="sweetPendingPanel" class="hidden">
-          <div class="rounded-xl border border-pink-200 bg-pink-50 p-3.5">
-            <div class="flex items-center gap-2 mb-2.5">
-              <svg class="w-4 h-4 text-pink-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-              </svg>
-              <span class="text-[12px] font-bold text-pink-700 uppercase tracking-wide">Doces aguardando 2ª entrega</span>
-            </div>
-            <div id="sweetPendingList" class="space-y-1.5 overflow-y-auto" style="max-height:108px;"></div>
-          </div>
-        </div>
-
         <div class="space-y-1.5">
           <label class="text-[12px] font-semibold text-gray-500 uppercase tracking-wider">Montador responsável</label>
           <div class="relative">
@@ -367,6 +354,102 @@
         <div class="actions end mobile-stack"><button id="clearErrorBtn" type="button" class="btn btn-soft">Retirar
             erro</button><button type="button" class="btn btn-ghost" data-close="error">Cancelar</button><button
             class="btn btn-red" type="submit">Registrar erro</button></div>
+      </form>
+    </div>
+  </div>
+  <div id="sweetAssemblerModal" class="modal-bg">
+    <div class="modal" style="max-width:440px; border-radius:24px; padding:0; overflow:hidden; border: 1px solid rgba(0,0,0,0.06); shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);">
+      <!-- Header -->
+      <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100 bg-gradient-to-r from-blue-50/40 via-white to-pink-50/40">
+        <div>
+          <h3 class="text-[16px] font-bold text-gray-900 leading-snug">Adicionar 2º Montador</h3>
+          <p class="text-[12px] text-gray-500">Vincular montador responsável pelos doces</p>
+        </div>
+        <button type="button" data-close-v4="sweetAssembler"
+          class="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <form id="sweetAssemblerForm">
+        <div class="px-6 py-5 space-y-4">
+          <input id="sweetAssemblerCmdId" type="hidden">
+          
+          <!-- Summary Info Card -->
+          <div class="bg-gradient-to-br from-slate-50 via-gray-50 to-pink-50/30 rounded-2xl p-4 border border-pink-100/70 shadow-sm relative overflow-hidden space-y-3">
+            <!-- Top Row: Comanda # Badge + Sweet Pill -->
+            <div class="flex items-center justify-between pb-3 border-b border-gray-200/50">
+              <div class="flex items-center gap-2">
+                <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Comanda</span>
+                <span id="sweetAssemblerCmdNumber" class="text-base font-black text-gray-900 bg-white px-3 py-1 rounded-xl border border-gray-200 shadow-xs">-</span>
+              </div>
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-extrabold bg-pink-100 text-pink-700 border border-pink-200/60 shadow-2xs">
+                <svg class="w-3.5 h-3.5 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+                <span id="sweetAssemblerCmdSweetQty">0</span> doces
+              </span>
+            </div>
+
+            <!-- Details Grid -->
+            <div class="grid grid-cols-2 gap-2.5">
+              <div class="bg-white/90 p-3 rounded-xl border border-gray-100 shadow-2xs">
+                <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Total Pizzas</span>
+                <div class="flex items-center gap-1 text-sm font-bold text-gray-800">
+                  <span>🍕</span>
+                  <span id="sweetAssemblerCmdQty">0</span>
+                </div>
+              </div>
+              <div class="bg-white/90 p-3 rounded-xl border border-gray-100 shadow-2xs">
+                <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">1º Montador</span>
+                <span id="sweetAssemblerCmdMainName" class="text-sm font-bold text-gray-800 truncate block">-</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Select Field -->
+          <div class="space-y-1.5 pt-1">
+            <label class="flex items-center gap-1.5 text-[12px] font-bold text-gray-600 uppercase tracking-wider">
+              <svg class="w-4 h-4 text-[#1F6FB2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+              </svg>
+              Montador de Doces (2º Montador)
+            </label>
+            <div class="relative">
+              <select id="sweetAssemblerSelect" required class="w-full appearance-none px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 focus:bg-white focus:border-[#1F6FB2] focus:ring-2 focus:ring-[#1F6FB2]/20 transition-all text-[14px] font-semibold text-gray-800 outline-none cursor-pointer">
+                <option value="">Selecione o montador</option>
+              </select>
+              <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="flex items-center justify-end gap-3 px-6 py-4 bg-gray-50/80 border-t border-gray-100">
+          <button type="button" data-close-v4="sweetAssembler"
+            class="inline-flex items-center px-4 py-2.5 text-[13px] font-semibold text-gray-700 bg-gray-100 border border-transparent rounded-xl hover:bg-gray-200 transition-colors">
+            <svg class="w-4 h-4 mr-1.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10" stroke-width="2"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 9l-6 6M9 9l6 6"/>
+            </svg>
+            Cancelar
+          </button>
+          <button type="submit"
+            class="inline-flex items-center px-5 py-2.5 text-[13px] font-bold text-white bg-[#2f9e64] rounded-xl hover:bg-[#248150] active:scale-[0.98] transition-all shadow-sm cursor-pointer">
+            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 21v-8H7v8M7 3v5h8"/>
+            </svg>
+            Salvar comanda
+          </button>
+        </div>
       </form>
     </div>
   </div>
