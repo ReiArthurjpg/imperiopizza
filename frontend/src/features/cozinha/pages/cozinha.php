@@ -79,6 +79,7 @@
             <option value="">Todos os status</option>
             <option value="cozinha">Na cozinha</option>
             <option value="forno">No forno</option>
+            <option value="pronto">Aguardando atendimento</option>
             <option value="despacho">Saiu para o despacho</option>
           </select>
           <select id="prodAssembler" class="w-full px-3 py-2 text-sm border border-[#E7E7E7] rounded-lg text-[#737373] bg-white focus:outline-none focus:border-[#B5120B] focus:ring-2 focus:ring-[#FDECEB] transition-all duration-150">

@@ -78,7 +78,7 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
     function renderHeader() { const op = currentOperation(); if (el.phasePill) { el.phasePill.textContent = phaseLabel(op); el.phasePill.className = 'phase-pill'; if (op?.status === 'production_open') el.phasePill.classList.add('open'); if (op?.status === 'kitchen_closed') el.phasePill.classList.add('kitchen-closed'); if (op?.status === 'completed') el.phasePill.classList.add('done') } }
-    function stats(op) { const cs = op?.commands || []; return { commands: cs.length, pizzas: cs.reduce((a, c) => a + (Number(c.pizzas) || 1), 0), kitchen: cs.filter(c => c.status === 'cozinha').length, oven: cs.filter(c => c.status === 'forno').length, dispatchPending: cs.filter(c => c.status === 'despacho' && c.dispatch?.status !== 'liberado').length, released: cs.filter(c => c.status === 'despacho' && c.dispatch?.status === 'liberado').length, errors: cs.filter(c => c.error?.active).length } }
+    function stats(op) { const cs = op?.commands || []; return { commands: cs.length, pizzas: cs.reduce((a, c) => a + (Number(c.pizzas) || 1), 0), kitchen: cs.filter(c => c.status === 'cozinha').length, oven: cs.filter(c => c.status === 'forno' || c.status === 'pronto').length, dispatchPending: cs.filter(c => c.status === 'despacho' && c.dispatch?.status !== 'liberado').length, released: cs.filter(c => c.status === 'despacho' && c.dispatch?.status === 'liberado').length, errors: cs.filter(c => c.error?.active).length } }
     function pendingToFinish(op) { return (op?.commands || []).filter(c => c.status !== 'despacho' || c.dispatch?.status !== 'liberado').length }
     function empty(title, text) { return `<div class="empty"><strong>${esc(title)}</strong>${esc(text)}</div>` }
     function teamHtml(team, scrollClass = 'max-h-[170px] overflow-y-auto pr-2 custom-scrollbar') { 
@@ -719,9 +719,9 @@
 if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Operação não iniciada", "Cadastre a equipe do dia e inicie a operação para liberar a tela de produção.", "Ir para equipe", "team", "chef-hat"); el.productionContent.classList.add('hidden'); el.closeKitchenBtn.disabled = true; el.reopenKitchenBtn.classList.add('hidden'); if (el.manageTeamBtn) el.manageTeamBtn.classList.add('hidden'); el.closeKitchenBtn.classList.add('hidden'); return } if (op.status === 'completed') { el.productionGate.innerHTML = gateCard("Operação finalizada", "Consulte os relatórios do dia para ver o histórico e resultados.", "Abrir relatórios", "reports", "bar-chart-2"); el.productionContent.classList.add('hidden'); el.closeKitchenBtn.disabled = true; el.reopenKitchenBtn.classList.add('hidden'); if (el.manageTeamBtn) el.manageTeamBtn.classList.add('hidden'); el.closeKitchenBtn.classList.add('hidden'); return } el.productionGate.innerHTML = ''; el.productionContent.classList.remove('hidden'); if (el.manageTeamBtn) el.manageTeamBtn.classList.remove('hidden'); el.closeKitchenBtn.disabled = !kitchenOpen; el.closeKitchenBtn.classList.toggle('hidden', !kitchenOpen); el.reopenKitchenBtn.classList.toggle('hidden', op.status !== 'kitchen_closed'); el.openRegisterCommandBtn.disabled = !kitchenOpen; el.addCommandBtn.disabled = !kitchenOpen; el.assemblerId.disabled = !kitchenOpen; el.commandNumber.disabled = !kitchenOpen; el.pizzaQty.disabled = !kitchenOpen; el.commandNote.disabled = !kitchenOpen; el.initialOven.disabled = !kitchenOpen; renderProductionSub(op); renderAssemblerFilter(op); renderCommandSuggestions(op); renderProductionRecent(op); renderProductionTable(op); if (typeof renderSweetPendingPanel === 'function') renderSweetPendingPanel(); }
     function renderProductionSub(op) { const s = stats(op); const pills = [['list-ordered', 'Comandas', s.commands, ''], ['flame', 'No forno', s.oven, s.oven > 0 ? 'text-orange-600' : ''], ['truck', 'No despacho', s.dispatchPending + s.released, ''], ['alert-triangle', 'Erros', s.errors, s.errors > 0 ? 'text-red-600' : '']]; el.productionSubtotals.innerHTML = pills.map(([icon, label, val, cls]) => `<div class="flex items-center gap-2"><i data-lucide="${icon}" class="w-4 h-4 text-[#737373] shrink-0"></i><span class="text-xs text-[#737373]">${label}</span><span class="text-sm font-bold ${cls || 'text-[#171717]'}">${val}</span></div>`).join('<span class="text-[#E7E7E7]">/</span>'); setTimeout(() => { if (typeof lucide !== 'undefined') lucide.createIcons(); }, 10) }
 
-    function renderProductionRecent(op) { const recent = [...op.commands].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 4), pending = op.commands.filter(c => c.status === 'cozinha' || c.status === 'forno').length; if (el.updatePendingBadge) el.updatePendingBadge.textContent = pending; const statusChipClass = c => c.status === 'forno' ? 'bg-orange-100 text-orange-700' : c.status === 'cozinha' ? 'bg-blue-50 text-blue-700' : 'bg-green-50 text-green-700'; if (el.productionRecent) el.productionRecent.innerHTML = recent.length ? recent.map(c => `<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${statusChipClass(c)} whitespace-nowrap">#${String(c.number).padStart(3,'0')} · ${formatAssemblers(c)} · ${c.pizzas}🍕</span>`).join('') : `<span class="text-xs text-[#737373] italic">Aguardando primeira comanda…</span>` }
+    function renderProductionRecent(op) { const recent = [...op.commands].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 4), pending = op.commands.filter(c => c.status === 'cozinha' || c.status === 'forno' || c.status === 'pronto').length; if (el.updatePendingBadge) el.updatePendingBadge.textContent = pending; const statusChipClass = c => (c.status === 'forno' || c.status === 'pronto') ? 'bg-orange-100 text-orange-700' : c.status === 'cozinha' ? 'bg-blue-50 text-blue-700' : 'bg-green-50 text-green-700'; if (el.productionRecent) el.productionRecent.innerHTML = recent.length ? recent.map(c => `<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${statusChipClass(c)} whitespace-nowrap">#${String(c.number).padStart(3,'0')} · ${formatAssemblers(c)} · ${c.pizzas}🍕</span>`).join('') : `<span class="text-xs text-[#737373] italic">Aguardando primeira comanda…</span>` }
     function openRegisterCommand() { const op = currentOperation(); if (!op || op.status !== 'production_open') return toast('A cozinha não está aberta.', 'warn'); el.assemblerId.innerHTML = '<option value="">Selecione o montador</option>' + assemblers(op).map(p => `<option value="${p.personId}">${esc(p.name)}</option>`).join(''); resetRegistration(); renderCommandSuggestions(op); const body = el.registerCommandModal.querySelector('.register-modal-body'); if (body) body.scrollTop = 0; el.registerCommandModal.classList.add('show'); setTimeout(() => el.assemblerId.focus(), 120) }
-    function openCommandUpdates() { const op = currentOperation(); if (!op || !op.commands.length) return toast('Ainda não existem comandas registradas.', 'warn'); el.registerCommandModal?.classList.remove('show'); el.prodStatus.value = op.commands.some(c => c.status === 'forno') ? 'forno' : ''; renderProductionTable(op); setTimeout(() => el.commandHistoryPanel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80) }
+    function openCommandUpdates() { const op = currentOperation(); if (!op || !op.commands.length) return toast('Ainda não existem comandas registradas.', 'warn'); el.registerCommandModal?.classList.remove('show'); el.prodStatus.value = op.commands.some(c => c.status === 'forno' || c.status === 'pronto') ? 'forno' : ''; renderProductionTable(op); setTimeout(() => el.commandHistoryPanel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80) }
 
     function assemblers(op) { return (op?.team || []).filter(p => p.role === 'Montagem') }
     function formatAssemblers(c) { return c.sweetAssemblerName && c.sweetAssemblerName !== c.assemblerName ? esc(c.assemblerName) + " / " + esc(c.sweetAssemblerName) : esc(c.assemblerName); }
@@ -740,22 +740,24 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
             el.assemblerId.value = v2;
         }
     }
-    function filteredCommands(op) { const q = norm(el.prodSearch.value), st = el.prodStatus.value, a = el.prodAssembler.value, priority = { forno: 0, cozinha: 1, despacho: 2 }; return [...op.commands].filter(c => (!q || norm(`${c.number} ${c.assemblerName} ${c.sweetAssemblerName || ''} ${c.note || ''} ${c.error?.type || ''}`).includes(q)) && (!st || c.status === st) && (!a || c.assemblerId === a || c.sweetAssemblerId === a)).sort((x, y) => (priority[x.status] ?? 9) - (priority[y.status] ?? 9) || y.createdAt.localeCompare(x.createdAt)) }
-    function statusText(c) { if (c.status === 'cozinha') return 'Na cozinha'; if (c.status === 'forno') return 'No forno'; return c.dispatch?.status === 'liberado' ? 'Liberada pelo despacho' : 'Saiu para o despacho' }
-    function statusClass(c) { if (c.status === 'cozinha') return 'b-kitchen'; if (c.status === 'forno') return 'b-oven'; return c.dispatch?.status === 'liberado' ? 'b-released' : 'b-dispatch' }
+    function filteredCommands(op) { const q = norm(el.prodSearch.value), st = el.prodStatus.value, a = el.prodAssembler.value, priority = { forno: 0, pronto: 1, cozinha: 2, despacho: 3 }; return [...op.commands].filter(c => (!q || norm(`${c.number} ${c.assemblerName} ${c.sweetAssemblerName || ''} ${c.note || ''} ${c.error?.type || ''}`).includes(q)) && (!st || c.status === st || (st === 'forno' && c.status === 'pronto')) && (!a || c.assemblerId === a || c.sweetAssemblerId === a)).sort((x, y) => (priority[x.status] ?? 9) - (priority[y.status] ?? 9) || y.createdAt.localeCompare(x.createdAt)) }
+    function statusText(c) { if (c.status === 'cozinha') return 'Na cozinha'; if (c.status === 'forno') return 'No forno'; if (c.status === 'pronto') return 'Aguardando atendimento'; return c.dispatch?.status === 'liberado' ? 'Liberada pelo despacho' : 'Saiu para o despacho' }
+    function statusClass(c) { if (c.status === 'cozinha') return 'b-kitchen'; if (c.status === 'forno') return 'b-oven'; if (c.status === 'pronto') return 'b-dispatch'; return c.dispatch?.status === 'liberado' ? 'b-released' : 'b-dispatch' }
     function updateProductionViewMode() { if (productionViewMode === 'list') { if (el.viewListBtn) { el.viewListBtn.classList.add('bg-white', 'shadow-sm', 'text-[#B5120B]'); el.viewListBtn.classList.remove('text-[#9CA3AF]', 'hover:text-[#4B5563]', 'hover:bg-[#E5E7EB]'); } if (el.viewGridBtn) { el.viewGridBtn.classList.remove('bg-white', 'shadow-sm', 'text-[#B5120B]'); el.viewGridBtn.classList.add('text-[#9CA3AF]', 'hover:text-[#4B5563]', 'hover:bg-[#E5E7EB]'); } if (el.productionTableContainer) el.productionTableContainer.classList.remove('hidden'); if (el.productionGridContainer) el.productionGridContainer.classList.add('hidden'); if (el.productionMobileList) el.productionMobileList.classList.remove('hidden'); } else { if (el.viewGridBtn) { el.viewGridBtn.classList.add('bg-white', 'shadow-sm', 'text-[#B5120B]'); el.viewGridBtn.classList.remove('text-[#9CA3AF]', 'hover:text-[#4B5563]', 'hover:bg-[#E5E7EB]'); } if (el.viewListBtn) { el.viewListBtn.classList.remove('bg-white', 'shadow-sm', 'text-[#B5120B]'); el.viewListBtn.classList.add('text-[#9CA3AF]', 'hover:text-[#4B5563]', 'hover:bg-[#E5E7EB]'); } if (el.productionTableContainer) el.productionTableContainer.classList.add('hidden'); if (el.productionGridContainer) el.productionGridContainer.classList.remove('hidden'); if (el.productionMobileList) el.productionMobileList.classList.add('hidden'); } }
     function renderProductionTable(op) {
       const cs = filteredCommands(op);
       
       const actionHtml = c => {
         if (c.status === 'cozinha') return `<button class="px-3 py-1.5 text-xs font-semibold text-white bg-[#1F6FB2] rounded-md hover:bg-[#1a5e98] transition-colors shadow-sm" data-cmd-action="next" data-id="${c.id}">Enviar ao forno</button>`;
-        if (c.status === 'forno') return `<button class="px-3 py-1.5 text-xs font-semibold text-white bg-[#2f9e64] rounded-md hover:bg-[#257f4f] transition-colors shadow-sm" data-cmd-action="next" data-id="${c.id}">Saiu do forno</button><button class="px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-200 rounded-md hover:bg-gray-50 transition-colors shadow-sm" data-cmd-action="back" data-id="${c.id}">Voltar</button>`;
-        return `<button class="px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-200 rounded-md hover:bg-gray-50 transition-colors shadow-sm" data-cmd-action="back" data-id="${c.id}">Voltar ao forno</button>`
+        if (c.status === 'forno') return `<button class="px-3 py-1.5 text-xs font-semibold text-white bg-[#1F6FB2] rounded-md hover:bg-[#1a5e98] transition-colors shadow-sm" data-cmd-action="next" data-id="${c.id}">Enviar para o atendimento</button><button class="px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-200 rounded-md hover:bg-gray-50 transition-colors shadow-sm ml-2" data-cmd-action="back" data-id="${c.id}">Voltar</button>`;
+        if (c.status === 'pronto') return `<button class="px-3 py-1.5 text-xs font-semibold text-white bg-[#B5120B] rounded-md hover:bg-[#910e08] transition-colors shadow-sm" data-dispatch-intake="${c.id}">Abrir no atendimento</button><button class="px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-200 rounded-md hover:bg-gray-50 transition-colors shadow-sm ml-2" data-cmd-action="back" data-id="${c.id}">Voltar</button>`;
+        return `<button class="px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-200 rounded-md hover:bg-gray-50 transition-colors shadow-sm" data-cmd-action="back" data-id="${c.id}">Voltar ao atendimento</button>`
       };
 
       const tableStatusBadge = c => {
         if (c.status === 'cozinha') return 'bg-blue-50 text-[#1F6FB2] border-blue-100';
         if (c.status === 'forno') return 'bg-orange-50 text-orange-600 border-orange-100';
+        if (c.status === 'pronto') return 'bg-purple-50 text-purple-600 border-purple-100';
         return c.dispatch?.status === 'liberado' ? 'bg-green-50 text-green-600 border-green-100' : 'bg-purple-50 text-purple-600 border-purple-100';
       };
 
@@ -825,9 +827,10 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
       const now = new Date().toISOString();
       if (dir === 'next') {
         if (c.status === 'cozinha') { c.status = 'forno'; c.statusTimes.forno = now; }
-        else if (c.status === 'forno') { c.status = 'despacho'; c.statusTimes.despacho = now; c.dispatch.status = 'aguardando'; }
+        else if (c.status === 'forno') { c.status = 'pronto'; c.statusTimes.pronto = now; }
       } else {
-        if (c.status === 'despacho') { c.status = 'forno'; c.dispatch.status = 'aguardando'; c.dispatch.checkedAt = null; c.dispatch.releasedAt = null; }
+        if (c.status === 'despacho') { c.status = 'pronto'; c.dispatch.status = 'aguardando'; c.dispatch.checkedAt = null; c.dispatch.releasedAt = null; }
+        else if (c.status === 'pronto') c.status = 'forno';
         else if (c.status === 'forno') c.status = 'cozinha';
       }
       c.updatedAt = now;
@@ -1193,7 +1196,7 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
           if (window.lucide) lucide.createIcons();
         }
       });
-    } el.editForm.addEventListener('submit', e => { e.preventDefault(); const op = currentOperation(), c = getCommand(op, el.editId.value), n = Number(el.editNumber.value), q = Number(el.editQty.value); if (!c) return; if (!Number.isInteger(n) || n < 1 || n > 1000) return toast('Número inválido.', 'error'); if (op.commands.some(x => x.id !== c.id && x.number === n)) return toast('Essa comanda já existe.', 'warn'); if (!Number.isInteger(q) || q < 1 || q > 50) return toast('Quantidade inválida.', 'error'); const a = assemblers(op).find(p => p.personId === el.editAssembler.value); c.number = n; c.pizzas = q; c.assemblerId = a.personId; c.assemblerName = a.name; c.note = el.editNote.value.trim(); const st = el.editStatus.value, now = new Date().toISOString(); if (st !== c.status) { c.status = st; if (st === 'forno') c.statusTimes.forno ||= now; if (st === 'despacho') c.statusTimes.despacho ||= now; if (st !== 'despacho') { c.dispatch.status = 'aguardando'; c.dispatch.checkedAt = null; c.dispatch.releasedAt = null } } c.updatedAt = now; save(); el.editModal.classList.remove('show'); renderProduction(); renderDispatch(); renderDashboard(); if(typeof renderSweetPendingPanel==='function') renderSweetPendingPanel(); toast('Comanda atualizada.') }); el.deleteCommandBtn.addEventListener('click', () => { const op = currentOperation(), c = getCommand(op, el.editId.value); if (c && confirm(`Excluir a comanda ${c.number}?`)) { op.commands = op.commands.filter(x => x.id !== c.id); save(); el.editModal.classList.remove('show'); renderProduction(); renderDispatch(); renderDashboard(); toast('Comanda excluída.', 'warn') } }); el.errorForm.addEventListener('submit', e => { e.preventDefault(); const c = getCommand(currentOperation(), el.errorId.value); if (!c || !el.errorType.value) return toast('Selecione o tipo de erro.', 'error'); c.error = { active: true, type: el.errorType.value, note: el.errorNote.value.trim(), createdAt: new Date().toISOString() }; save(); el.errorModal.classList.remove('show'); renderProduction(); renderDashboard(); toast('Erro registrado.', 'warn') }); el.clearErrorBtn.addEventListener('click', () => { const c = getCommand(currentOperation(), el.errorId.value); if (c) { c.error = { active: false, type: '', note: '', createdAt: null }; save(); el.errorModal.classList.remove('show'); renderProduction(); renderDashboard(); toast('Sinalização retirada.') } });
+    } el.editForm.addEventListener('submit', e => { e.preventDefault(); const op = currentOperation(), c = getCommand(op, el.editId.value), n = Number(el.editNumber.value), q = Number(el.editQty.value); if (!c) return; if (!Number.isInteger(n) || n < 1 || n > 1000) return toast('Número inválido.', 'error'); if (op.commands.some(x => x.id !== c.id && x.number === n)) return toast('Essa comanda já existe.', 'warn'); if (!Number.isInteger(q) || q < 1 || q > 50) return toast('Quantidade inválida.', 'error'); const a = assemblers(op).find(p => p.personId === el.editAssembler.value); c.number = n; c.pizzas = q; c.assemblerId = a.personId; c.assemblerName = a.name; c.note = el.editNote.value.trim(); const st = el.editStatus.value, now = new Date().toISOString(); if (st !== c.status) { c.status = st; if (st === 'forno') c.statusTimes.forno ||= now; if (st === 'pronto') c.statusTimes.pronto ||= now; if (st === 'despacho') c.statusTimes.despacho ||= now; if (st !== 'despacho') { c.dispatch.status = 'aguardando'; c.dispatch.checkedAt = null; c.dispatch.releasedAt = null } } c.updatedAt = now; save(); el.editModal.classList.remove('show'); renderProduction(); renderDispatch(); renderDashboard(); if(typeof renderSweetPendingPanel==='function') renderSweetPendingPanel(); toast('Comanda atualizada.') }); el.deleteCommandBtn.addEventListener('click', () => { const op = currentOperation(), c = getCommand(op, el.editId.value); if (c && confirm(`Excluir a comanda ${c.number}?`)) { op.commands = op.commands.filter(x => x.id !== c.id); save(); el.editModal.classList.remove('show'); renderProduction(); renderDispatch(); renderDashboard(); toast('Comanda excluída.', 'warn') } }); el.errorForm.addEventListener('submit', e => { e.preventDefault(); const c = getCommand(currentOperation(), el.errorId.value); if (!c || !el.errorType.value) return toast('Selecione o tipo de erro.', 'error'); c.error = { active: true, type: el.errorType.value, note: el.errorNote.value.trim(), createdAt: new Date().toISOString() }; save(); el.errorModal.classList.remove('show'); renderProduction(); renderDashboard(); toast('Erro registrado.', 'warn') }); el.clearErrorBtn.addEventListener('click', () => { const c = getCommand(currentOperation(), el.errorId.value); if (c) { c.error = { active: false, type: '', note: '', createdAt: null }; save(); el.errorModal.classList.remove('show'); renderProduction(); renderDashboard(); toast('Sinalização retirada.') } });
 
     el.sweetAssemblerForm.addEventListener('submit', e => {
       e.preventDefault();
@@ -1341,7 +1344,7 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
         esfihas: cs.reduce((a, c) => a + num(c.special?.esfiha), 0),
         sweet: cs.reduce((a, c) => a + num(c.special?.sweet), 0),
         kitchen: cs.filter(c => c.status === 'cozinha').length,
-        oven: cs.filter(c => c.status === 'forno').length,
+        oven: cs.filter(c => c.status === 'forno' || c.status === 'pronto').length,
         dispatchPending: cs.filter(c => c.status === 'despacho' && c.dispatch?.status !== 'entrega').length,
         released: cs.filter(dispatchDone).length,
         errors: cs.filter(c => c.error?.active).length
@@ -1398,6 +1401,7 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
     statusText = function (c) {
       if (c.status === 'cozinha') return 'Na cozinha';
       if (c.status === 'forno') return 'No forno';
+      if (c.status === 'pronto') return 'Aguardando atendimento';
       if (c.dispatch?.status === 'entrega') return 'Saiu para entrega';
       if (c.dispatch?.status === 'conferido') return 'Conferido no atendimento';
       return 'No atendimento / despacho';
@@ -1405,6 +1409,7 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
     statusClass = function (c) {
       if (c.status === 'cozinha') return 'b-kitchen';
       if (c.status === 'forno') return 'b-oven';
+      if (c.status === 'pronto') return 'b-dispatch';
       if (c.dispatch?.status === 'entrega') return 'b-released';
       return 'b-dispatch';
     };
@@ -1555,7 +1560,7 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
     };
 
     renderProductionRecent = function (op) {
-      const pending = op.commands.filter(c => c.status === 'cozinha' || c.status === 'forno').length;
+      const pending = op.commands.filter(c => c.status === 'cozinha' || c.status === 'forno' || c.status === 'pronto').length;
       if (el.updatePendingBadge) el.updatePendingBadge.textContent = pending;
       
       if (!el.productionRecent) return;
@@ -1563,6 +1568,7 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
       
       const sassChip = c => {
         if (c.status === 'forno') return 'bg-[#FFF7ED] text-[#C2410C] border-[#FFEDD5]';
+        if (c.status === 'pronto') return 'bg-purple-50 text-purple-700 border-purple-100';
         if (c.status === 'cozinha') return 'bg-[#EFF6FF] text-[#1D4ED8] border-[#DBEAFE]';
         return 'bg-[#F0FDF4] text-[#15803D] border-[#DCFCE7]';
       };
@@ -1580,9 +1586,10 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
 
     function prodFlowActions(c) {
       if (c.status === 'cozinha') return `<button class="inline-flex items-center px-4 py-2 text-[13px] font-bold text-white bg-orange-600 rounded-lg hover:bg-orange-700 transition-colors shadow-sm whitespace-nowrap" data-cmd-action="next" data-id="${c.id}"><svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 7 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z"></path></svg>Enviar ao forno</button>`;
-      if (c.status === 'forno') return `<button class="inline-flex items-center px-4 py-2 text-[13px] font-bold text-white bg-[#B5120B] rounded-lg hover:bg-[#910e08] transition-colors shadow-sm whitespace-nowrap" data-dispatch-intake="${c.id}"><svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>Abrir no atendimento</button><button class="inline-flex items-center px-4 py-2 text-[13px] font-semibold text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors shadow-sm whitespace-nowrap ml-2" data-cmd-action="back" data-id="${c.id}"><svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>Voltar</button>`;
+      if (c.status === 'forno') return `<button class="inline-flex items-center px-4 py-2 text-[13px] font-bold text-white bg-[#1F6FB2] rounded-lg hover:bg-[#1a5e98] transition-colors shadow-sm whitespace-nowrap" data-cmd-action="next" data-id="${c.id}"><svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>Enviar para o atendimento</button><button class="inline-flex items-center px-4 py-2 text-[13px] font-semibold text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors shadow-sm whitespace-nowrap ml-2" data-cmd-action="back" data-id="${c.id}"><svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>Voltar</button>`;
+      if (c.status === 'pronto') return `<button class="inline-flex items-center px-4 py-2 text-[13px] font-bold text-white bg-[#B5120B] rounded-lg hover:bg-[#910e08] transition-colors shadow-sm whitespace-nowrap" data-dispatch-intake="${c.id}"><svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>Abrir no atendimento</button><button class="inline-flex items-center px-4 py-2 text-[13px] font-semibold text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors shadow-sm whitespace-nowrap ml-2" data-cmd-action="back" data-id="${c.id}"><svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>Voltar</button>`;
       if (c.dispatch?.status === 'entrega') return `<button class="inline-flex items-center px-4 py-2 text-[13px] font-semibold text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors shadow-sm whitespace-nowrap" data-open-dispatch="${c.id}"><svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>Ver entrega</button>`;
-      return `<button class="inline-flex items-center px-4 py-2 text-[13px] font-bold text-white bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors shadow-sm whitespace-nowrap" data-open-dispatch="${c.id}"><svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>Abrir conferência</button><button class="inline-flex items-center px-4 py-2 text-[13px] font-semibold text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors shadow-sm whitespace-nowrap ml-2" data-cmd-action="back" data-id="${c.id}"><svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>Voltar ao forno</button>`;
+      return `<button class="inline-flex items-center px-4 py-2 text-[13px] font-bold text-white bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors shadow-sm whitespace-nowrap" data-open-dispatch="${c.id}"><svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>Abrir conferência</button><button class="inline-flex items-center px-4 py-2 text-[13px] font-semibold text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors shadow-sm whitespace-nowrap ml-2" data-cmd-action="back" data-id="${c.id}"><svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>Voltar ao atendimento</button>`;
     }
 
     renderProductionTable = function (op) {
@@ -1591,6 +1598,7 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
       const tableStatusBadge = c => {
         if (c.status === 'cozinha') return 'bg-blue-50 text-[#1F6FB2] border-blue-100/60';
         if (c.status === 'forno') return 'bg-orange-50 text-orange-600 border-orange-100/60';
+        if (c.status === 'pronto') return 'bg-purple-50 text-purple-600 border-purple-100/60';
         return c.dispatch?.status === 'liberado' ? 'bg-green-50 text-green-600 border-green-100/60' : 'bg-purple-50 text-purple-600 border-purple-100/60';
       };
 
@@ -1681,11 +1689,17 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
 
     move = function (c, dir) {
       const now = new Date().toISOString();
-      if (dir === 'next' && c.status === 'cozinha') { c.status = 'forno'; c.statusTimes.forno = now }
-      else if (dir === 'back') {
+      if (dir === 'next') {
+        if (c.status === 'cozinha') { c.status = 'forno'; c.statusTimes.forno = now; }
+        else if (c.status === 'forno') { c.status = 'pronto'; c.statusTimes.pronto = now; }
+      } else if (dir === 'back') {
         if (c.status === 'despacho') {
-          c.status = 'forno'; c.dispatch.status = 'aguardando'; c.dispatch.receivedAt = null; c.dispatch.checkedAt = null; c.dispatch.outForDeliveryAt = null; c.statusTimes.despacho = null;
-        } else if (c.status === 'forno') c.status = 'cozinha';
+          c.status = 'pronto'; c.dispatch.status = 'aguardando'; c.dispatch.receivedAt = null; c.dispatch.checkedAt = null; c.dispatch.outForDeliveryAt = null; c.statusTimes.despacho = null;
+        } else if (c.status === 'pronto') {
+          c.status = 'forno';
+        } else if (c.status === 'forno') {
+          c.status = 'cozinha';
+        }
       }
       c.updatedAt = now; save(); renderProduction(); renderDispatch(); renderDashboard();
     };
@@ -1810,7 +1824,7 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
     }
 
     /* ---------- ATENDIMENTO / DESPACHO ---------- */
-    function ovenAvailable(op) { return (op?.commands || []).filter(c => c.status === 'forno') }
+    function ovenAvailable(op) { return (op?.commands || []).filter(c => c.status === 'pronto') }
     function dispatchQueue(op) { return (op?.commands || []).filter(c => c.status === 'despacho') }
     function resetDispatchFields() {
       el.dispatchBeverage.checked = false; el.dispatchChange.checked = false; el.dispatchChangeAmount.value = ''; el.dispatchChangeAmount.disabled = true;
@@ -1971,7 +1985,7 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
     el.dispatchChange.addEventListener('change', () => { el.dispatchChangeAmount.disabled = !el.dispatchChange.checked; if (!el.dispatchChange.checked) el.dispatchChangeAmount.value = '' });
 
     el.receiveDispatchBtn.addEventListener('click', () => {
-      const op = currentOperation(), c = getCommand(op, el.dispatchCommandId.value); if (!c || c.status !== 'forno') return toast('Selecione uma comanda que esteja no forno.', 'warn');
+      const op = currentOperation(), c = getCommand(op, el.dispatchCommandId.value); if (!c || c.status !== 'pronto') return toast('Selecione uma comanda enviada para o atendimento.', 'warn');
       collectDispatchModal(c); const now = new Date().toISOString(); c.status = 'despacho'; c.statusTimes.despacho = now; c.dispatch.receivedAt = now; c.dispatch.status = 'aguardando';
       save(); el.dispatchCommandModal.classList.remove('show'); renderDispatch(); renderProduction(); renderDashboard(); toast(`Comanda ${c.number} recebida no atendimento.`);
     });

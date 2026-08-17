@@ -323,6 +323,7 @@
         <div class="field"><label for="editStatus">Status</label><select id="editStatus">
             <option value="cozinha">Na cozinha</option>
             <option value="forno">No forno</option>
+            <option value="pronto">Aguardando atendimento</option>
             <option value="despacho">Saiu para o despacho</option>
           </select></div>
         <div class="field"><label for="editNote">Observação</label><textarea id="editNote" maxlength="220"></textarea>
