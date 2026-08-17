@@ -108,6 +108,10 @@
         <strong class="text-base text-[#171717] mb-1">Nenhuma comanda encontrada</strong>
         <p class="text-sm text-[#737373]">Registre a primeira comanda ou ajuste os filtros.</p>
       </div>
+
+      <!-- Pagination -->
+      <div id="prodPagination"></div>
+
     </div>
   </div>
 </section>

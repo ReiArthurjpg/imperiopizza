@@ -745,6 +745,7 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
     function statusClass(c) { if (c.status === 'cozinha') return 'b-kitchen'; if (c.status === 'forno') return 'b-oven'; if (c.status === 'pronto') return 'b-dispatch'; return c.dispatch?.status === 'liberado' ? 'b-released' : 'b-dispatch' }
     function updateProductionViewMode() { if (productionViewMode === 'list') { if (el.viewListBtn) { el.viewListBtn.classList.add('bg-white', 'shadow-sm', 'text-[#B5120B]'); el.viewListBtn.classList.remove('text-[#9CA3AF]', 'hover:text-[#4B5563]', 'hover:bg-[#E5E7EB]'); } if (el.viewGridBtn) { el.viewGridBtn.classList.remove('bg-white', 'shadow-sm', 'text-[#B5120B]'); el.viewGridBtn.classList.add('text-[#9CA3AF]', 'hover:text-[#4B5563]', 'hover:bg-[#E5E7EB]'); } if (el.productionTableContainer) el.productionTableContainer.classList.remove('hidden'); if (el.productionGridContainer) el.productionGridContainer.classList.add('hidden'); if (el.productionMobileList) el.productionMobileList.classList.remove('hidden'); } else { if (el.viewGridBtn) { el.viewGridBtn.classList.add('bg-white', 'shadow-sm', 'text-[#B5120B]'); el.viewGridBtn.classList.remove('text-[#9CA3AF]', 'hover:text-[#4B5563]', 'hover:bg-[#E5E7EB]'); } if (el.viewListBtn) { el.viewListBtn.classList.remove('bg-white', 'shadow-sm', 'text-[#B5120B]'); el.viewListBtn.classList.add('text-[#9CA3AF]', 'hover:text-[#4B5563]', 'hover:bg-[#E5E7EB]'); } if (el.productionTableContainer) el.productionTableContainer.classList.add('hidden'); if (el.productionGridContainer) el.productionGridContainer.classList.remove('hidden'); if (el.productionMobileList) el.productionMobileList.classList.add('hidden'); } }
     function renderProductionTable(op) {
+      if (typeof window.renderProductionTableOverride === 'function') return window.renderProductionTableOverride(op);
       const cs = filteredCommands(op);
       
       const actionHtml = c => {
@@ -1110,8 +1111,8 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
       });
     }
     el.commandNumber.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addCommand() } });
-    [el.prodSearch, el.prodStatus, el.prodAssembler].forEach(x => x.addEventListener(x.tagName === 'INPUT' ? 'input' : 'change', () => renderProductionTable(currentOperation())));
-    if (el.clearProdFilters) el.clearProdFilters.addEventListener('click', () => { el.prodSearch.value = ''; el.prodStatus.value = ''; el.prodAssembler.value = ''; renderProductionTable(currentOperation()) });
+    [el.prodSearch, el.prodStatus, el.prodAssembler].forEach(x => x.addEventListener(x.tagName === 'INPUT' ? 'input' : 'change', () => { window.currentProductionPage = 1; (window.renderProductionTableOverride || renderProductionTable)(currentOperation()); }));
+    if (el.clearProdFilters) el.clearProdFilters.addEventListener('click', () => { el.prodSearch.value = ''; el.prodStatus.value = ''; el.prodAssembler.value = ''; window.currentProductionPage = 1; (window.renderProductionTableOverride || renderProductionTable)(currentOperation()) });
     function handleCommandAction(e) { const b = e.target.closest('[data-cmd-action]'); if (!b) return; const op = currentOperation(), c = getCommand(op, b.dataset.id); if (!c) return; if (b.dataset.cmdAction === 'next' || b.dataset.cmdAction === 'back') move(c, b.dataset.cmdAction); if (b.dataset.cmdAction === 'edit') openEdit(c); if (b.dataset.cmdAction === 'error') openError(c); if (b.dataset.cmdAction === 'sweet-asm') openSweetAssembler(c); }
     el.productionBody.addEventListener('click', handleCommandAction);
     el.productionMobileList.addEventListener('click', handleCommandAction);
@@ -1592,8 +1593,15 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
       return `<button class="inline-flex items-center px-4 py-2 text-[13px] font-bold text-white bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors shadow-sm whitespace-nowrap" data-open-dispatch="${c.id}"><svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>Abrir conferência</button><button class="inline-flex items-center px-4 py-2 text-[13px] font-semibold text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors shadow-sm whitespace-nowrap ml-2" data-cmd-action="back" data-id="${c.id}"><svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>Voltar ao atendimento</button>`;
     }
 
-    renderProductionTable = function (op) {
-      const cs = filteredCommands(op);
+    if (typeof window.currentProductionPage === 'undefined') window.currentProductionPage = 1;
+    const PROD_PAGE_SIZE = 12;
+
+    window.renderProductionTableOverride = renderProductionTable = function (op) {
+      const allCs = filteredCommands(op);
+      const totalPages = Math.max(1, Math.ceil(allCs.length / PROD_PAGE_SIZE));
+      if (window.currentProductionPage > totalPages) window.currentProductionPage = totalPages;
+      const pageStart = (window.currentProductionPage - 1) * PROD_PAGE_SIZE;
+      const cs = allCs.slice(pageStart, pageStart + PROD_PAGE_SIZE);
 
       const tableStatusBadge = c => {
         if (c.status === 'cozinha') return 'bg-blue-50 text-[#1F6FB2] border-blue-100/60';
@@ -1683,9 +1691,53 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
 
       if (el.productionMobileList) el.productionMobileList.innerHTML = cardsHtml;
       if (el.productionGridContainer) el.productionGridContainer.innerHTML = cardsHtml;
-      if (el.productionEmpty) el.productionEmpty.classList.toggle('hidden', cs.length > 0);
+      if (el.productionEmpty) el.productionEmpty.classList.toggle('hidden', allCs.length > 0);
       updateProductionViewMode();
+
+      // --- Pagination Controls ---
+      // totalPages already declared at top of function — do NOT redeclare with const
+      const paginationEl = document.getElementById('prodPagination');
+      if (!paginationEl) return;
+
+      if (allCs.length === 0) { paginationEl.innerHTML = ''; return; }
+
+      const cur = window.currentProductionPage;
+      const pageBtn = (n, label, disabled = false, active = false) =>
+        `<button data-prod-page="${n}" class="prod-page-btn min-w-[34px] h-[34px] px-2.5 text-[13px] font-semibold rounded-lg border transition-colors ${
+          active
+            ? 'bg-[#1F6FB2] text-white border-[#1F6FB2] shadow-sm'
+            : disabled
+              ? 'text-gray-300 border-gray-100 bg-white cursor-not-allowed'
+              : 'text-gray-600 border-gray-200 bg-white hover:bg-blue-50 hover:border-[#1F6FB2] hover:text-[#1F6FB2]'
+        }" ${disabled ? 'disabled' : ''}>${label}</button>`;
+
+      let pages = '';
+      pages += pageBtn(cur - 1, '&#8249;', cur === 1);
+      for (let i = 1; i <= totalPages; i++) {
+        if (totalPages <= 7 || i === 1 || i === totalPages || (i >= cur - 1 && i <= cur + 1)) {
+          pages += pageBtn(i, i, false, i === cur);
+        } else if (i === cur - 2 || i === cur + 2) {
+          pages += `<span class="text-gray-400 text-[13px] px-0.5">…</span>`;
+        }
+      }
+      pages += pageBtn(cur + 1, '&#8250;', cur === totalPages);
+
+      paginationEl.innerHTML = `
+        <div class="flex items-center justify-between px-5 py-3 border-t border-gray-100 bg-white rounded-b-xl">
+          <span class="text-[12px] text-gray-400 font-medium">
+            Mostrando ${pageStart + 1}–${Math.min(pageStart + PROD_PAGE_SIZE, allCs.length)} de ${allCs.length} comanda${allCs.length !== 1 ? 's' : ''}
+          </span>
+          <div class="flex items-center gap-1">${pages}</div>
+        </div>`;
+
+      paginationEl.querySelectorAll('.prod-page-btn:not([disabled])').forEach(btn => {
+        btn.addEventListener('click', () => {
+          window.currentProductionPage = Number(btn.dataset.prodPage);
+          (window.renderProductionTableOverride || renderProductionTable)(op);
+        });
+      });
     };
+
 
     move = function (c, dir) {
       const now = new Date().toISOString();
