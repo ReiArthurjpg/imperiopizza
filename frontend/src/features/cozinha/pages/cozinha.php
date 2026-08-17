@@ -37,11 +37,22 @@
           <h3 class="text-base font-semibold text-[#171717]">Comandas da operação</h3>
           <p class="text-xs text-[#737373] mt-0.5">No forno aparecem primeiro · clique na ação principal para avançar.</p>
         </div>
-        <button id="openRegisterCommandBtn" type="button"
-          class="px-4 py-3 bg-[#1F6FB2] text-white text-xs font-semibold rounded-lg hover:bg-[#1a5e98] active:scale-[0.98] transition-all duration-150 shadow-sm flex items-center gap-1.5">
-          <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
-          Adicionar comanda
-        </button>
+        <div class="flex items-center gap-3">
+          <div class="flex items-center bg-[#F3F4F6] p-1 rounded-lg border border-[#E7E7E7]">
+            <button type="button" id="viewListBtn" class="p-1.5 bg-white shadow-sm rounded-md text-[#1F6FB2] transition-colors" title="Ver em lista">
+              <i data-lucide="list" class="w-4 h-4"></i>
+            </button>
+            <button type="button" id="viewGridBtn" class="p-1.5 text-[#9CA3AF] hover:text-[#4B5563] hover:bg-[#E5E7EB] rounded-md transition-colors" title="Ver em cards">
+              <i data-lucide="layout-grid" class="w-4 h-4"></i>
+            </button>
+          </div>
+
+          <button id="openRegisterCommandBtn" type="button"
+            class="px-4 py-3 bg-[#1F6FB2] text-white text-xs font-semibold rounded-lg hover:bg-[#1a5e98] active:scale-[0.98] transition-all duration-150 shadow-sm flex items-center gap-1.5">
+            <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+            Adicionar comanda
+          </button>
+        </div>
       </div>
 
       <!-- Filters -->
@@ -66,12 +77,14 @@
 
     <!-- HISTORY / TABLE -->
     <div id="commandHistoryPanel">
-      <div class="overflow-x-auto w-full custom-scrollbar pb-4">
+      <div id="productionTableContainer" class="overflow-x-auto w-full custom-scrollbar pb-4">
         <table class="w-full text-left min-w-[600px] table-spaced">
           <tbody id="productionBody"></tbody>
         </table>
       </div>
       
+      <div id="productionGridContainer" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-4"></div>
+
       <div id="productionMobileList" class="mobile-command-list p-4"></div>
 
       <div id="productionEmpty" class="hidden p-10 text-center flex flex-col items-center justify-center">
