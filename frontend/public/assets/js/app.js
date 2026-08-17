@@ -726,7 +726,65 @@
     function statusText(c) { if (c.status === 'cozinha') return 'Na cozinha'; if (c.status === 'forno') return 'No forno'; return c.dispatch?.status === 'liberado' ? 'Liberada pelo despacho' : 'Saiu para o despacho' }
     function statusClass(c) { if (c.status === 'cozinha') return 'b-kitchen'; if (c.status === 'forno') return 'b-oven'; return c.dispatch?.status === 'liberado' ? 'b-released' : 'b-dispatch' }
     function updateProductionViewMode() { if (productionViewMode === 'list') { if (el.viewListBtn) { el.viewListBtn.classList.add('bg-white', 'shadow-sm', 'text-[#B5120B]'); el.viewListBtn.classList.remove('text-[#9CA3AF]', 'hover:text-[#4B5563]', 'hover:bg-[#E5E7EB]'); } if (el.viewGridBtn) { el.viewGridBtn.classList.remove('bg-white', 'shadow-sm', 'text-[#B5120B]'); el.viewGridBtn.classList.add('text-[#9CA3AF]', 'hover:text-[#4B5563]', 'hover:bg-[#E5E7EB]'); } if (el.productionTableContainer) el.productionTableContainer.classList.remove('hidden'); if (el.productionGridContainer) el.productionGridContainer.classList.add('hidden'); if (el.productionMobileList) el.productionMobileList.classList.remove('hidden'); } else { if (el.viewGridBtn) { el.viewGridBtn.classList.add('bg-white', 'shadow-sm', 'text-[#B5120B]'); el.viewGridBtn.classList.remove('text-[#9CA3AF]', 'hover:text-[#4B5563]', 'hover:bg-[#E5E7EB]'); } if (el.viewListBtn) { el.viewListBtn.classList.remove('bg-white', 'shadow-sm', 'text-[#B5120B]'); el.viewListBtn.classList.add('text-[#9CA3AF]', 'hover:text-[#4B5563]', 'hover:bg-[#E5E7EB]'); } if (el.productionTableContainer) el.productionTableContainer.classList.add('hidden'); if (el.productionGridContainer) el.productionGridContainer.classList.remove('hidden'); if (el.productionMobileList) el.productionMobileList.classList.add('hidden'); } }
-    function renderProductionTable(op) { const cs = filteredCommands(op); const actionHtml = c => { if (c.status === 'cozinha') return `<button class="btn btn-orange btn-small primary-flow" data-cmd-action="next" data-id="${c.id}">Enviar ao forno</button>`; if (c.status === 'forno') return `<button class="btn btn-primary btn-small primary-flow" data-cmd-action="next" data-id="${c.id}">Saiu do forno</button><button class="btn btn-ghost btn-small" data-cmd-action="back" data-id="${c.id}">Voltar</button>`; return `<button class="btn btn-ghost btn-small primary-flow" data-cmd-action="back" data-id="${c.id}">Voltar ao forno</button>` }; el.productionBody.innerHTML = cs.map(c => `<tr><td><span class="command-no">#${String(c.number).padStart(3, '0')}</span></td><td><strong>${esc(c.assemblerName)}</strong></td><td class="text-center"><strong>${c.pizzas}</strong></td><td><div class="flex flex-col gap-1"><span class="badge ${statusClass(c)}">${statusText(c)}</span>${c.error?.active ? `<span class="badge b-error">${esc(c.error.type)}</span>` : ''}</div></td><td><div class="row-actions flex justify-end gap-2">${actionHtml(c)}<button class="btn btn-soft btn-small" data-cmd-action="edit" data-id="${c.id}">Editar</button><button class="btn btn-soft-red btn-small" data-cmd-action="error" data-id="${c.id}">${c.error?.active ? 'Editar erro' : 'Erro'}</button></div></td></tr>`).join(''); const cardsHtml = cs.map(c => `<article class="mobile-command-card" style="margin-bottom:0;"><div class="mobile-command-top"><div><div class="mobile-command-number">#${String(c.number).padStart(3, '0')}</div><div class="mobile-command-meta">Registrada ${formatTime(c.createdAt)} · ${esc(c.assemblerName)}</div></div><span class="badge ${statusClass(c)}">${statusText(c)}</span></div><div class="mobile-command-main"><div><strong>${esc(c.assemblerName)}</strong><small>${c.error?.active ? `Erro: ${esc(c.error.type)}` : 'Sem erros'}</small></div><div class="mobile-pizza-count">${c.pizzas}<small>pizza${Number(c.pizzas) === 1 ? '' : 's'}</small></div></div><div class="mobile-command-actions">${actionHtml(c)}<button class="btn btn-soft btn-small" data-cmd-action="edit" data-id="${c.id}">Editar</button><button class="btn btn-soft-red btn-small" data-cmd-action="error" data-id="${c.id}">${c.error?.active ? 'Editar erro' : 'Erro'}</button></div></article>`).join(''); if (el.productionMobileList) el.productionMobileList.innerHTML = cardsHtml; if (el.productionGridContainer) el.productionGridContainer.innerHTML = cardsHtml; if (el.productionEmpty) el.productionEmpty.classList.toggle('hidden', cs.length > 0); updateProductionViewMode(); }
+    function renderProductionTable(op) {
+      const cs = filteredCommands(op);
+      
+      const actionHtml = c => {
+        if (c.status === 'cozinha') return `<button class="px-3 py-1.5 text-xs font-semibold text-white bg-[#1F6FB2] rounded-md hover:bg-[#1a5e98] transition-colors shadow-sm" data-cmd-action="next" data-id="${c.id}">Enviar ao forno</button>`;
+        if (c.status === 'forno') return `<button class="px-3 py-1.5 text-xs font-semibold text-white bg-[#2f9e64] rounded-md hover:bg-[#257f4f] transition-colors shadow-sm" data-cmd-action="next" data-id="${c.id}">Saiu do forno</button><button class="px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-200 rounded-md hover:bg-gray-50 transition-colors shadow-sm" data-cmd-action="back" data-id="${c.id}">Voltar</button>`;
+        return `<button class="px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-200 rounded-md hover:bg-gray-50 transition-colors shadow-sm" data-cmd-action="back" data-id="${c.id}">Voltar ao forno</button>`
+      };
+
+      const tableStatusBadge = c => {
+        if (c.status === 'cozinha') return 'bg-blue-50 text-[#1F6FB2] border-blue-100';
+        if (c.status === 'forno') return 'bg-orange-50 text-orange-600 border-orange-100';
+        return c.dispatch?.status === 'liberado' ? 'bg-green-50 text-green-600 border-green-100' : 'bg-purple-50 text-purple-600 border-purple-100';
+      };
+
+      el.productionBody.innerHTML = cs.map(c => `
+        <tr class="border-b border-gray-50 hover:bg-gray-50/50 transition-colors group">
+          <td class="py-3 pr-2"><span class="text-sm font-bold text-gray-900">#${String(c.number).padStart(3, '0')}</span></td>
+          <td class="py-3 px-2"><span class="text-sm font-medium text-gray-700">${esc(c.assemblerName)}</span></td>
+          <td class="py-3 px-2 text-center"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 text-xs font-semibold text-gray-700">${c.pizzas}</span></td>
+          <td class="py-3 px-2">
+            <div class="flex flex-col gap-1 items-start">
+              <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-semibold border ${tableStatusBadge(c)}">${statusText(c)}</span>
+              ${c.error?.active ? `<span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-semibold border border-red-100 bg-red-50 text-[#B5120B]">${esc(c.error.type)}</span>` : ''}
+            </div>
+          </td>
+          <td class="py-3 pl-2">
+            <div class="flex items-center justify-end gap-2">
+              ${actionHtml(c)}
+              <button class="px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-200 rounded-md hover:bg-gray-50 transition-colors shadow-sm" data-cmd-action="edit" data-id="${c.id}">Editar</button>
+              <button class="px-3 py-1.5 text-xs font-medium text-[#B5120B] bg-white border border-red-100 rounded-md hover:bg-red-50 transition-colors shadow-sm" data-cmd-action="error" data-id="${c.id}">${c.error?.active ? 'Editar erro' : 'Erro'}</button>
+            </div>
+          </td>
+        </tr>`).join('');
+
+      const cardsHtml = cs.map(c => `<article class="mobile-command-card" style="margin:0;">
+        <div class="mobile-command-top">
+          <div>
+            <div class="mobile-command-number">#${String(c.number).padStart(3, '0')}</div>
+            <div class="mobile-command-meta">Registrada ${formatTime(c.createdAt)} · ${esc(c.assemblerName)}</div>
+          </div>
+          <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-semibold border ${tableStatusBadge(c)}">${statusText(c)}</span>
+        </div>
+        <div class="mobile-command-main">
+          <div><strong>${esc(c.assemblerName)}</strong><small>${c.error?.active ? `Erro: ${esc(c.error.type)}` : 'Sem erros'}</small></div>
+          <div class="mobile-pizza-count">${c.pizzas}<small>pizza${Number(c.pizzas) === 1 ? '' : 's'}</small></div>
+        </div>
+        <div class="mobile-command-actions">
+          ${actionHtml(c)}
+          <button class="px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-200 rounded-md hover:bg-gray-50 transition-colors shadow-sm" data-cmd-action="edit" data-id="${c.id}">Editar</button>
+          <button class="px-3 py-1.5 text-xs font-medium text-[#B5120B] bg-white border border-red-100 rounded-md hover:bg-red-50 transition-colors shadow-sm" data-cmd-action="error" data-id="${c.id}">${c.error?.active ? 'Editar erro' : 'Erro'}</button>
+        </div>
+      </article>`).join('');
+
+      if (el.productionMobileList) el.productionMobileList.innerHTML = cardsHtml;
+      if (el.productionGridContainer) el.productionGridContainer.innerHTML = cardsHtml;
+      if (el.productionEmpty) el.productionEmpty.classList.toggle('hidden', cs.length > 0);
+      updateProductionViewMode();
+    }
     function resetRegistration() { el.assemblerSearch.value = ''; el.assemblerId.value = ''; el.assemblerPickerValue.textContent = 'Toque para escolher'; el.assemblerPickerBtn.classList.remove('has-value'); el.commandNumber.value = ''; el.pizzaQty.value = 1; el.commandNote.value = ''; el.initialOven.checked = false; el.assemblerPickerModal.classList.remove('show'); setTimeout(() => el.assemblerPickerBtn.focus(), 100) }
     function addCommand() {
       const op = currentOperation();
@@ -1447,32 +1505,55 @@
     };
 
     function prodFlowActions(c) {
-      if (c.status === 'cozinha') return `<button class="btn btn-orange btn-small primary-flow" data-cmd-action="next" data-id="${c.id}">Enviar ao forno</button>`;
-      if (c.status === 'forno') return `<button class="btn btn-primary btn-small primary-flow" data-dispatch-intake="${c.id}">Abrir no atendimento</button><button class="btn btn-ghost btn-small" data-cmd-action="back" data-id="${c.id}">Voltar</button>`;
-      if (c.dispatch?.status === 'entrega') return `<button class="btn btn-soft btn-small primary-flow" data-open-dispatch="${c.id}">Ver entrega</button>`;
-      return `<button class="btn btn-primary btn-small primary-flow" data-open-dispatch="${c.id}">Abrir conferência</button><button class="btn btn-ghost btn-small" data-cmd-action="back" data-id="${c.id}">Voltar ao forno</button>`;
+      if (c.status === 'cozinha') return `<button class="px-4 py-2.5 text-[13px] font-bold text-white bg-[#1F6FB2] rounded-lg hover:bg-[#1a5e98] transition-colors shadow-sm" data-cmd-action="next" data-id="${c.id}">Enviar ao forno</button>`;
+      if (c.status === 'forno') return `<button class="px-4 py-2.5 text-[13px] font-bold text-white bg-[#2f9e64] rounded-lg hover:bg-[#257f4f] transition-colors shadow-sm" data-dispatch-intake="${c.id}">Abrir no atendimento</button><button class="px-4 py-2.5 text-[13px] font-semibold text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors shadow-sm" data-cmd-action="back" data-id="${c.id}">Voltar</button>`;
+      if (c.dispatch?.status === 'entrega') return `<button class="px-4 py-2.5 text-[13px] font-semibold text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors shadow-sm" data-open-dispatch="${c.id}">Ver entrega</button>`;
+      return `<button class="px-4 py-2.5 text-[13px] font-bold text-white bg-[#1F6FB2] rounded-lg hover:bg-[#1a5e98] transition-colors shadow-sm" data-open-dispatch="${c.id}">Abrir conferência</button><button class="px-4 py-2.5 text-[13px] font-semibold text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors shadow-sm" data-cmd-action="back" data-id="${c.id}">Voltar ao forno</button>`;
     }
 
     renderProductionTable = function (op) {
       const cs = filteredCommands(op);
-      el.productionBody.innerHTML = cs.map(c => `<tr>
-        <td><span class="command-no">#${String(c.number).padStart(3, '0')}</span></td>
-        <td><strong>${esc(c.assemblerName)}</strong></td>
-        <td><strong>${fmt(commandEquivalent(c))}</strong>${specialTagsHtml(c)}</td>
-        <td>
-          <div class="flex flex-col gap-1">
-            <span class="badge ${statusClass(c)}">${statusText(c)}</span>
-            ${c.error?.active ? `<span class="badge b-error">${esc(c.error.type)}</span>` : ''}
-          </div>
-        </td>
-        <td>
-          <div class="row-actions">
-            ${prodFlowActions(c)}
-            <button class="btn btn-soft btn-small" data-cmd-action="edit" data-id="${c.id}">Editar</button>
-            <button class="btn btn-soft-red btn-small" data-cmd-action="error" data-id="${c.id}">${c.error?.active ? 'Editar erro' : 'Erro'}</button>
-          </div>
-        </td>
-      </tr>`).join('');
+
+      const tableStatusBadge = c => {
+        if (c.status === 'cozinha') return 'bg-blue-50 text-[#1F6FB2] border-blue-100/60';
+        if (c.status === 'forno') return 'bg-orange-50 text-orange-600 border-orange-100/60';
+        return c.dispatch?.status === 'liberado' ? 'bg-green-50 text-green-600 border-green-100/60' : 'bg-purple-50 text-purple-600 border-purple-100/60';
+      };
+
+      el.productionBody.innerHTML = cs.map(c => `
+        <tr class="bg-white hover:bg-gray-50/80 transition-colors group border-b border-gray-100/60">
+          <td class="py-4 pl-5 pr-3 w-full">
+            <div class="flex items-center gap-5">
+              
+              <div class="flex flex-col items-center shrink-0 gap-1.5 min-w-[70px]">
+                <div class="flex flex-col items-center justify-center w-14 h-14 bg-blue-50/50 border border-blue-100/50 rounded-[14px]">
+                  <span class="text-[10px] font-bold text-[#1F6FB2]/60 uppercase tracking-wider leading-none mb-0.5">CMD</span>
+                  <span class="text-[18px] font-black tracking-tighter text-[#1F6FB2] leading-none">${String(c.number).padStart(3, '0')}</span>
+                </div>
+                <span class="inline-flex items-center text-center px-1.5 py-0.5 rounded-[4px] text-[9px] font-extrabold tracking-wider uppercase whitespace-nowrap border ${tableStatusBadge(c)}">${statusText(c)}</span>
+              </div>
+              
+              <div class="flex flex-col justify-center gap-1">
+                <div class="flex items-center gap-2">
+                  <span class="text-[15px] font-bold text-gray-900 tracking-tight leading-none">${esc(c.assemblerName)}</span>
+                  ${specialTagsHtml(c)}
+                </div>
+                <span class="text-[13px] font-medium text-gray-500 leading-none">
+                  ${fmt(commandEquivalent(c))} pizza${Number(commandEquivalent(c)) === 1 ? '' : 's'}
+                </span>
+                ${c.error?.active ? `<div class="mt-0.5"><span class="inline-flex items-center px-2 py-0.5 rounded-[5px] text-[10px] font-extrabold tracking-widest uppercase border border-red-200 bg-red-50 text-[#B5120B]"><i data-lucide="alert-circle" class="w-[10px] h-[10px] mr-1"></i>Erro: ${esc(c.error.type)}</span></div>` : ''}
+              </div>
+
+            </div>
+          </td>
+          <td class="py-4 pr-5 pl-3 text-right align-middle">
+            <div class="flex items-center justify-end gap-2.5">
+              ${prodFlowActions(c)}
+              <button class="px-4 py-2.5 text-[13px] font-semibold text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors shadow-sm" data-cmd-action="edit" data-id="${c.id}">Editar</button>
+              <button class="px-4 py-2.5 text-[13px] font-semibold text-[#B5120B] bg-white border border-red-100 rounded-lg hover:bg-red-50 transition-colors shadow-sm" data-cmd-action="error" data-id="${c.id}">${c.error?.active ? 'Editar erro' : 'Erro'}</button>
+            </div>
+          </td>
+        </tr>`).join('');
 
       const cardsHtml = cs.map(c => `<article class="mobile-command-card" style="margin:0;">
         <div class="mobile-command-top">
@@ -1480,7 +1561,7 @@
             <div class="mobile-command-number">#${String(c.number).padStart(3, '0')}</div>
             <div class="mobile-command-meta">Registro ${formatTime(c.createdAt)} · ${esc(c.assemblerName)}</div>
           </div>
-          <span class="badge ${statusClass(c)}">${statusText(c)}</span>
+          <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-semibold border ${tableStatusBadge(c)}">${statusText(c)}</span>
         </div>
         <div class="mobile-command-main">
           <div><strong>${esc(c.assemblerName)}</strong><small>${c.error?.active ? `Erro: ${esc(c.error.type)}` : 'Sem erros'}${specialTagsHtml(c)}</small></div>
@@ -1488,8 +1569,8 @@
         </div>
         <div class="mobile-command-actions">
           ${prodFlowActions(c)}
-          <button class="btn btn-soft btn-small" data-cmd-action="edit" data-id="${c.id}">Editar</button>
-          <button class="btn btn-soft-red btn-small" data-cmd-action="error" data-id="${c.id}">${c.error?.active ? 'Editar erro' : 'Erro'}</button>
+          <button class="px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-200 rounded-md hover:bg-gray-50 transition-colors shadow-sm" data-cmd-action="edit" data-id="${c.id}">Editar</button>
+          <button class="px-3 py-1.5 text-xs font-medium text-[#B5120B] bg-white border border-red-100 rounded-md hover:bg-red-50 transition-colors shadow-sm" data-cmd-action="error" data-id="${c.id}">${c.error?.active ? 'Editar erro' : 'Erro'}</button>
         </div>
       </article>`).join('');
 
