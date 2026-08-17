@@ -736,7 +736,18 @@
     function assemblerInitials(name) { return String(name || '').trim().split(/\s+/).slice(0, 2).map(x => x.charAt(0).toUpperCase()).join('') || 'M' }
     function commandNumberSets(op) { const nums = new Set(op.commands.map(c => c.number)); if (!nums.size) return { missing: [], next: [1, 2, 3, 4, 5, 6, 7, 8] }; const arr = [...nums].sort((a, b) => a - b), min = arr[0], max = arr[arr.length - 1], missing = []; for (let n = Math.max(1, min); n <= max && missing.length < 10; n++)if (!nums.has(n)) missing.push(n); const next = []; for (let n = max + 1; n <= 1000 && next.length < 8; n++)if (!nums.has(n)) next.push(n); return { missing, next } }
     function renderCommandSuggestions(op) { const sets = commandNumberSets(op); el.commandSuggestions.innerHTML = `<h4>${sets.missing.length ? 'Comandas próximas que faltam' : 'Próximas comandas disponíveis'}</h4>${sets.missing.length ? `<div class="num-chips" style="margin-bottom:9px">${sets.missing.map(n => `<button class="num-chip missing" data-num="${n}">${n}</button>`).join('')}</div><h4>Sequência seguinte</h4>` : ''}<div class="num-chips">${sets.next.length ? sets.next.map(n => `<button class="num-chip" data-num="${n}">${n}</button>`).join('') : '<span class="chip">Limite de 1000 atingido</span>'}</div>` }
-    function renderAssemblerFilter(op) { const v = el.prodAssembler.value; el.prodAssembler.innerHTML = '<option value="">Todos os montadores</option>' + assemblers(op).map(p => `<option value="${p.personId}">${esc(p.name)}</option>`).join(''); el.prodAssembler.value = v }
+    function renderAssemblerFilter(op) { 
+        const v = el.prodAssembler.value; 
+        const html = '<option value="">Todos os montadores</option>' + assemblers(op).map(p => `<option value="${p.personId}">${esc(p.name)}</option>`).join('');
+        el.prodAssembler.innerHTML = html; 
+        el.prodAssembler.value = v;
+
+        if (el.assemblerId) {
+            const v2 = el.assemblerId.value;
+            el.assemblerId.innerHTML = '<option value="">Selecione o montador</option>' + assemblers(op).map(p => `<option value="${p.personId}">${esc(p.name)}</option>`).join('');
+            el.assemblerId.value = v2;
+        }
+    }
     function filteredCommands(op) { const q = norm(el.prodSearch.value), st = el.prodStatus.value, a = el.prodAssembler.value, priority = { forno: 0, cozinha: 1, despacho: 2 }; return [...op.commands].filter(c => (!q || norm(`${c.number} ${c.assemblerName} ${c.note || ''} ${c.error?.type || ''}`).includes(q)) && (!st || c.status === st) && (!a || c.assemblerId === a)).sort((x, y) => (priority[x.status] ?? 9) - (priority[y.status] ?? 9) || y.createdAt.localeCompare(x.createdAt)) }
     function statusText(c) { if (c.status === 'cozinha') return 'Na cozinha'; if (c.status === 'forno') return 'No forno'; return c.dispatch?.status === 'liberado' ? 'Liberada pelo despacho' : 'Saiu para o despacho' }
     function statusClass(c) { if (c.status === 'cozinha') return 'b-kitchen'; if (c.status === 'forno') return 'b-oven'; return c.dispatch?.status === 'liberado' ? 'b-released' : 'b-dispatch' }
