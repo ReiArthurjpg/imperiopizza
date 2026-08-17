@@ -148,7 +148,20 @@
       <!-- Body -->
       <div class="register-modal-body px-6 py-5 space-y-5 overflow-y-auto" style="max-height:70vh;">
 
-        <!-- Assembler Picker -->
+        <!-- Sweet Pending Alert Panel (inside scroll body) -->
+        <div id="sweetPendingPanel" class="hidden">
+          <div class="rounded-xl border border-pink-200 bg-pink-50 p-3.5">
+            <div class="flex items-center gap-2 mb-2.5">
+              <svg class="w-4 h-4 text-pink-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+              </svg>
+              <span class="text-[12px] font-bold text-pink-700 uppercase tracking-wide">Doces aguardando 2ª entrega</span>
+            </div>
+            <div id="sweetPendingList" class="space-y-1.5 overflow-y-auto" style="max-height:108px;"></div>
+          </div>
+        </div>
+
+
         <div class="space-y-1.5">
           <label class="text-[12px] font-semibold text-gray-500 uppercase tracking-wider">Montador responsável</label>
           <div class="relative">

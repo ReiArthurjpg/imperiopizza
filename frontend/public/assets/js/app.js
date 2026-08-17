@@ -1399,14 +1399,55 @@
       setTimeout(() => el.assemblerId.focus(), 100);
     };
 
+    renderSweetPendingPanel = function () {
+      const panel = $('sweetPendingPanel'), list = $('sweetPendingList');
+      if (!panel || !list) return;
+      const op = currentOperation();
+      const pending = op ? op.commands.filter(c => num(c.special?.sweet) > 0 && !c.sweetDelivered) : [];
+      if (!pending.length) { panel.classList.add('hidden'); return; }
+      panel.classList.remove('hidden');
+      list.innerHTML = pending.map(c => `
+        <div class="flex items-center justify-between gap-3 bg-white border border-pink-100 rounded-lg px-3 py-2">
+          <div class="flex items-center gap-2 min-w-0 overflow-hidden">
+            <span class="text-[13px] font-bold text-gray-800 shrink-0">#${String(c.number).padStart(3,'0')}</span>
+            <span class="text-[12px] text-gray-500 truncate">${esc(c.assemblerName)}</span>
+            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[11px] font-bold bg-pink-100 text-pink-700 shrink-0">${fmt(c.special.sweet,0)} doce${c.special.sweet>1?'s':''}</span>
+          </div>
+          <button type="button" data-cmd-action="edit" data-id="${c.id}"
+            class="inline-flex items-center px-3 py-1.5 text-[12px] font-semibold text-amber-700 bg-amber-50 border border-amber-200 rounded-lg hover:bg-amber-100 transition-colors shrink-0">
+            <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>Editar
+          </button>
+        </div>
+      `).join('');
+    };
+
+    markSweetDelivered = function (commandId) {
+      const op = currentOperation(); if (!op) return;
+      const c = op.commands.find(x => x.id === commandId); if (!c) return;
+      c.sweetDelivered = true; save();
+      renderSweetPendingPanel();
+      toast(`Comanda #${String(c.number).padStart(3,'0')} · doce marcada como entregue.`, 'success');
+    };
+    window.markSweetDelivered = function (id) { markSweetDelivered(id); };
+
     openRegisterCommand = function () {
       const op = currentOperation();
       if (!op || op.status !== 'production_open') return toast('A cozinha não está aberta.', 'warn');
       el.assemblerId.innerHTML = '<option value="">Selecione o montador</option>' + assemblers(op).map(p => `<option value="${p.personId}">${esc(p.name)}</option>`).join('');
-      resetRegistration(); renderCommandSuggestions(op);
+      resetRegistration(); renderCommandSuggestions(op); renderSweetPendingPanel();
       const body = el.registerCommandModal.querySelector('.register-modal-body'); if (body) body.scrollTop = 0;
       el.registerCommandModal.classList.add('show'); setTimeout(() => el.assemblerId.focus(), 120);
     };
+
+    /* Allow edit buttons inside the sweet panel (inside registerCommandModal) to open the edit modal */
+    el.registerCommandModal.addEventListener('click', function (e) {
+      const b = e.target.closest('[data-cmd-action="edit"]');
+      if (!b) return;
+      const op = currentOperation(), c = getCommand(op, b.dataset.id);
+      if (!c) return;
+      el.registerCommandModal.classList.remove('show');
+      setTimeout(() => openEdit(c), 80);
+    });
 
     addCommand = function () {
       const op = currentOperation();
@@ -1427,11 +1468,12 @@
         id: uid(), number: n, pizzas: q, special: sp, assemblerId: a.personId, assemblerName: a.name, note: el.commandNote.value.trim(), status,
         createdAt: now, updatedAt: now, statusTimes: { cozinha: now, forno: status === 'forno' ? now : null, despacho: null },
         error: { active: false, type: '', note: '', createdAt: null },
+        sweetDelivered: false,
         dispatch: { status: 'aguardando', beverage: false, change: false, changeAmount: '', ketchup: false, mayonnaise: false, note: '', receivedAt: null, checkedAt: null, outForDeliveryAt: null }
       };
       op.commands.push(cmd); save();
       const equivalent = commandEquivalent(cmd);
-      resetRegistration(); renderCommandSuggestions(op); renderProduction(); renderDashboard();
+      resetRegistration(); renderCommandSuggestions(op); renderProduction(); renderDashboard(); renderSweetPendingPanel();
       toast(`Comanda ${n} registrada · ${fmt(equivalent)} pizza${equivalent === 1 ? '' : 's'} equivalente${equivalent === 1 ? '' : 's'}.`);
     };
 
