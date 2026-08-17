@@ -3426,4 +3426,24 @@
         background: #ffffff !important;
       }
     }
+
+    /* Custom Pink Scrollbar for Sweet Pending List */
+    #sweetPendingList::-webkit-scrollbar {
+      width: 6px;
+    }
+    #sweetPendingList::-webkit-scrollbar-track {
+      background: #fce7f3;
+      border-radius: 9999px;
+    }
+    #sweetPendingList::-webkit-scrollbar-thumb {
+      background: #f472b6;
+      border-radius: 9999px;
+    }
+    #sweetPendingList::-webkit-scrollbar-thumb:hover {
+      background: #db2777;
+    }
+    #sweetPendingList {
+      scrollbar-width: thin;
+      scrollbar-color: #f472b6 #fce7f3;
+    }
 

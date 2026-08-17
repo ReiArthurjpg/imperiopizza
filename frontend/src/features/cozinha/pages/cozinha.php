@@ -36,7 +36,7 @@
           </svg>
           <span class="text-[12px] font-bold text-pink-700 uppercase tracking-wide">Doces aguardando o 2ª montador</span>
         </div>
-        <div id="sweetPendingList" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"></div>
+        <div id="sweetPendingList" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-h-[115px] overflow-y-auto pr-1"></div>
       </div>
     </div>
 
