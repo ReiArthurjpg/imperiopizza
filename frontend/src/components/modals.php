@@ -268,14 +268,6 @@
           </div>
         </div>
 
-        <!-- Recent Commands inside modal -->
-        <div class="border-t border-gray-100 pt-4">
-          <div class="flex items-center justify-between mb-2">
-            <h4 class="text-[12px] font-bold text-gray-500 uppercase tracking-wider">Últimas comandas</h4>
-            <span class="text-[11px] text-gray-400">Referência rápida</span>
-          </div>
-          <div id="modalRecentCommands" class="modal-recent-list"></div>
-        </div>
 
       </div>
 

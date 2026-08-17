@@ -682,8 +682,11 @@
 
     .suggest-box h4 {
       margin: 0 0 8px;
-      color: var(--navy);
-      font-size: 13px
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
     }
 
     .num-chips {
@@ -695,18 +698,20 @@
     .num-chip {
       min-width: 46px;
       min-height: 42px;
-      border: 1px solid #b8d9f1;
-      border-radius: 10px;
-      background: #fff;
-      color: var(--navy);
-      font-weight: 950;
-      cursor: pointer
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface);
+      color: var(--text);
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      transition: all 0.2s ease;
     }
 
     .num-chip.missing {
-      border-color: #f1c68f;
-      background: var(--orange-soft);
-      color: #995100
+      border-color: var(--red);
+      background: var(--red-soft);
+      color: var(--red);
     }
 
     .num-chip:hover {
@@ -2486,18 +2491,11 @@
     }
 
     .qty-control button,
-    .num-chip,
     .key {
       color: #121416;
       background: linear-gradient(145deg, #fff, #d9dcdf);
       border-color: #c3c7ca;
       box-shadow: inset 0 1px 0 #fff
-    }
-
-    .num-chip.missing {
-      color: #fff;
-      background: linear-gradient(145deg, #111, #555);
-      border-color: #111
     }
 
     /* Barra de rolagem da janela de nova comanda */

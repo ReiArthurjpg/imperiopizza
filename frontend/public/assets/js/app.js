@@ -1189,7 +1189,7 @@
       settingRecentCommands: $('settingRecentCommands'), saveSettingsBtn: $('saveSettingsBtn'),
       volcanoCheck: $('volcanoCheck'), volcanoQty: $('volcanoQty'), esfihaCheck: $('esfihaCheck'), esfihaQty: $('esfihaQty'),
       sweetCheck: $('sweetCheck'), sweetQty: $('sweetQty'), equivalentPreview: $('equivalentPreview'),
-      volcanoRuleText: $('volcanoRuleText'), esfihaRuleText: $('esfihaRuleText'), modalRecentCommands: $('modalRecentCommands'),
+      volcanoRuleText: $('volcanoRuleText'), esfihaRuleText: $('esfihaRuleText'),
       editVolcanoQty: $('editVolcanoQty'), editEsfihaQty: $('editEsfihaQty'), editSweetQty: $('editSweetQty'),
 
       massGate: $('massGate'), massContent: $('massContent'), massSubtotals: $('massSubtotals'), manageTeamMassBtn: $('manageTeamMassBtn'),
@@ -1385,15 +1385,7 @@
       const temp = { pizzas: Math.max(0, num(el.pizzaQty.value)), special: registrationSpecial() };
       el.equivalentPreview.textContent = `${fmt(commandEquivalent(temp))} equiv.`;
     }
-    function renderModalRecentCommands() {
-      const op = currentOperation(), limit = Math.max(3, num(settings().recentCommands) || 6);
-      const recent = [...(op?.commands || [])].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, limit);
-      el.modalRecentCommands.innerHTML = recent.length ? recent.map(c => `<div class="modal-recent-item">
-    <strong>#${String(c.number).padStart(3, '0')}</strong>
-    <div>${esc(c.assemblerName)}<small>${num(c.pizzas)} físicas · ${fmt(commandEquivalent(c))} equivalentes ${specialTagsHtml(c)}</small></div>
-    <span class="badge ${statusClass(c)}">${statusText(c)}</span>
-  </div>`).join('') : `<div class="empty" style="padding:12px"><strong>Nenhuma comanda ainda</strong>Os últimos registros aparecerão aqui.</div>`;
-    }
+
     resetRegistration = function () {
       el.assemblerId.value = '';
       el.commandNumber.value = ''; el.pizzaQty.value = Math.max(0, num(settings().defaultPizzaQty)); el.commandNote.value = ''; el.initialOven.checked = false;
@@ -1404,7 +1396,7 @@
       el.volcanoRuleText.textContent = `Cada unidade vale ${fmt(settings().volcanoEquivalent)} pizzas`;
       el.esfihaRuleText.textContent = `${settings().esfihaGroup} esfirras = ${fmt(settings().esfihaEquivalent)} pizzas`;
       el.commandNumber.max = settings().commandMax;
-      refreshEquivalentPreview(); renderModalRecentCommands();
+      refreshEquivalentPreview();
       setTimeout(() => el.assemblerId.focus(), 100);
     };
 
