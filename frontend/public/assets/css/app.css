@@ -3411,3 +3411,19 @@
       border-top-right-radius: 12px !important;
       border-bottom-right-radius: 12px !important;
     }
+
+    @media (max-width: 1023px) {
+      #registerCommandModal {
+        display: none !important;
+      }
+      #registerCommandModal.show {
+        display: flex !important;
+        position: fixed !important;
+        inset: 0 !important;
+        z-index: 9999 !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: #ffffff !important;
+      }
+    }
+

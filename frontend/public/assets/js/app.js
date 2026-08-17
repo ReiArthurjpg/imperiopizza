@@ -68,6 +68,11 @@
           }
         }
       });
+      if (el.registerCommandModal) {
+        const op = currentOperation();
+        const kitchenOpen = op && op.status === 'production_open';
+        el.registerCommandModal.classList.toggle('hidden', name !== 'production' || !kitchenOpen);
+      }
       if (name === 'dashboard') { renderDashboard(); fetchTopMontadoresMensal(); }
       if (name === 'team') renderTeam(); 
       if (name === 'production') renderProduction(); 
@@ -707,12 +712,25 @@
       return true;
     }
 
-    function renderProduction() { renderHeader(); const op = currentOperation(); if (el.manageTeamBtn) el.manageTeamBtn.disabled = op?.status === 'completed'; if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Operação não iniciada", "Cadastre a equipe do dia e inicie a operação para liberar a tela de produção.", "Ir para equipe", "team", "chef-hat"); el.productionContent.classList.add('hidden'); el.closeKitchenBtn.disabled = true; el.reopenKitchenBtn.classList.add('hidden'); el.registerCommandModal.classList.remove('show'); if (el.manageTeamBtn) el.manageTeamBtn.classList.add('hidden'); el.closeKitchenBtn.classList.add('hidden'); return } if (op.status === 'completed') { el.productionGate.innerHTML = gateCard("Operação finalizada", "Consulte os relatórios do dia para ver o histórico e resultados.", "Abrir relatórios", "reports", "bar-chart-2"); el.productionContent.classList.add('hidden'); el.closeKitchenBtn.disabled = true; el.reopenKitchenBtn.classList.add('hidden'); el.registerCommandModal.classList.remove('show'); if (el.manageTeamBtn) el.manageTeamBtn.classList.add('hidden'); el.closeKitchenBtn.classList.add('hidden'); return } el.productionGate.innerHTML = ''; el.productionContent.classList.remove('hidden'); const kitchenOpen = op.status === 'production_open'; if (el.manageTeamBtn) el.manageTeamBtn.classList.remove('hidden'); el.closeKitchenBtn.disabled = !kitchenOpen; el.closeKitchenBtn.classList.toggle('hidden', !kitchenOpen); el.reopenKitchenBtn.classList.toggle('hidden', op.status !== 'kitchen_closed'); el.openRegisterCommandBtn.disabled = !kitchenOpen; el.addCommandBtn.disabled = !kitchenOpen; el.assemblerId.disabled = !kitchenOpen; el.commandNumber.disabled = !kitchenOpen; el.pizzaQty.disabled = !kitchenOpen; el.commandNote.disabled = !kitchenOpen; el.initialOven.disabled = !kitchenOpen; if (!kitchenOpen) el.registerCommandModal.classList.remove('show'); renderProductionSub(op); renderAssemblerFilter(op); renderCommandSuggestions(op); renderProductionRecent(op); renderProductionTable(op) }
+    function renderProduction() { 
+      renderHeader(); 
+      const op = currentOperation(); 
+      if (el.manageTeamBtn) el.manageTeamBtn.disabled = op?.status === 'completed';
+      
+      const activePage = document.querySelector('.page.active')?.id.replace('page-', '') || 'dashboard';
+      const kitchenOpen = op && op.status === 'production_open';
+      if (el.registerCommandModal) {
+        if (activePage === 'production' && kitchenOpen) {
+          el.registerCommandModal.classList.remove('hidden');
+        } else {
+          el.registerCommandModal.classList.add('hidden');
+        }
+      } if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Operação não iniciada", "Cadastre a equipe do dia e inicie a operação para liberar a tela de produção.", "Ir para equipe", "team", "chef-hat"); el.productionContent.classList.add('hidden'); el.closeKitchenBtn.disabled = true; el.reopenKitchenBtn.classList.add('hidden'); el.registerCommandModal?.classList.add('translate-x-full'); if (el.manageTeamBtn) el.manageTeamBtn.classList.add('hidden'); el.closeKitchenBtn.classList.add('hidden'); return } if (op.status === 'completed') { el.productionGate.innerHTML = gateCard("Operação finalizada", "Consulte os relatórios do dia para ver o histórico e resultados.", "Abrir relatórios", "reports", "bar-chart-2"); el.productionContent.classList.add('hidden'); el.closeKitchenBtn.disabled = true; el.reopenKitchenBtn.classList.add('hidden'); el.registerCommandModal?.classList.add('translate-x-full'); if (el.manageTeamBtn) el.manageTeamBtn.classList.add('hidden'); el.closeKitchenBtn.classList.add('hidden'); return } el.productionGate.innerHTML = ''; el.productionContent.classList.remove('hidden'); if (el.manageTeamBtn) el.manageTeamBtn.classList.remove('hidden'); el.closeKitchenBtn.disabled = !kitchenOpen; el.closeKitchenBtn.classList.toggle('hidden', !kitchenOpen); el.reopenKitchenBtn.classList.toggle('hidden', op.status !== 'kitchen_closed'); el.openRegisterCommandBtn.disabled = !kitchenOpen; el.addCommandBtn.disabled = !kitchenOpen; el.assemblerId.disabled = !kitchenOpen; el.commandNumber.disabled = !kitchenOpen; el.pizzaQty.disabled = !kitchenOpen; el.commandNote.disabled = !kitchenOpen; el.initialOven.disabled = !kitchenOpen; if (!kitchenOpen) el.registerCommandModal?.classList.add('translate-x-full'); renderProductionSub(op); renderAssemblerFilter(op); renderCommandSuggestions(op); renderProductionRecent(op); renderProductionTable(op) }
     function renderProductionSub(op) { const s = stats(op); const pills = [['list-ordered', 'Comandas', s.commands, ''], ['flame', 'No forno', s.oven, s.oven > 0 ? 'text-orange-600' : ''], ['truck', 'No despacho', s.dispatchPending + s.released, ''], ['alert-triangle', 'Erros', s.errors, s.errors > 0 ? 'text-red-600' : '']]; el.productionSubtotals.innerHTML = pills.map(([icon, label, val, cls]) => `<div class="flex items-center gap-2"><i data-lucide="${icon}" class="w-4 h-4 text-[#737373] shrink-0"></i><span class="text-xs text-[#737373]">${label}</span><span class="text-sm font-bold ${cls || 'text-[#171717]'}">${val}</span></div>`).join('<span class="text-[#E7E7E7]">/</span>'); setTimeout(() => { if (typeof lucide !== 'undefined') lucide.createIcons(); }, 10) }
 
     function renderProductionRecent(op) { const recent = [...op.commands].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 4), pending = op.commands.filter(c => c.status === 'cozinha' || c.status === 'forno').length; if (el.updatePendingBadge) el.updatePendingBadge.textContent = pending; const statusChipClass = c => c.status === 'forno' ? 'bg-orange-100 text-orange-700' : c.status === 'cozinha' ? 'bg-blue-50 text-blue-700' : 'bg-green-50 text-green-700'; if (el.productionRecent) el.productionRecent.innerHTML = recent.length ? recent.map(c => `<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${statusChipClass(c)} whitespace-nowrap">#${String(c.number).padStart(3,'0')} · ${esc(c.assemblerName.split(' ')[0])} · ${c.pizzas}🍕</span>`).join('') : `<span class="text-xs text-[#737373] italic">Aguardando primeira comanda…</span>` }
-    function openRegisterCommand() { const op = currentOperation(); if (!op || op.status !== 'production_open') return toast('A cozinha não está aberta.', 'warn'); el.assemblerId.innerHTML = '<option value="">Selecione o montador</option>' + assemblers(op).map(p => `<option value="${p.personId}">${esc(p.name)}</option>`).join(''); resetRegistration(); renderCommandSuggestions(op); const body = el.registerCommandModal.querySelector('.register-modal-body'); if (body) body.scrollTop = 0; el.registerCommandModal.classList.add('show'); setTimeout(() => el.assemblerId.focus(), 120) }
-    function openCommandUpdates() { const op = currentOperation(); if (!op || !op.commands.length) return toast('Ainda não existem comandas registradas.', 'warn'); el.registerCommandModal.classList.remove('show'); el.prodStatus.value = op.commands.some(c => c.status === 'forno') ? 'forno' : ''; renderProductionTable(op); setTimeout(() => el.commandHistoryPanel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80) }
+    function openRegisterCommand() { const op = currentOperation(); if (!op || op.status !== 'production_open') return toast('A cozinha não está aberta.', 'warn'); el.assemblerId.innerHTML = '<option value="">Selecione o montador</option>' + assemblers(op).map(p => `<option value="${p.personId}">${esc(p.name)}</option>`).join(''); resetRegistration(); renderCommandSuggestions(op); const body = el.registerCommandModal.querySelector('.register-modal-body'); if (body) body.scrollTop = 0; el.registerCommandModal.classList.remove('translate-x-full'); setTimeout(() => el.assemblerId.focus(), 120) }
+    function openCommandUpdates() { const op = currentOperation(); if (!op || !op.commands.length) return toast('Ainda não existem comandas registradas.', 'warn'); el.registerCommandModal?.classList.add('translate-x-full'); el.prodStatus.value = op.commands.some(c => c.status === 'forno') ? 'forno' : ''; renderProductionTable(op); setTimeout(() => el.commandHistoryPanel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80) }
 
     function assemblers(op) { return (op?.team || []).filter(p => p.role === 'Montagem') }
     function assemblerInitials(name) { return String(name || '').trim().split(/\s+/).slice(0, 2).map(x => x.charAt(0).toUpperCase()).join('') || 'M' }
@@ -1079,6 +1097,12 @@
     document.querySelectorAll('[data-qty]').forEach(b => b.addEventListener('click', () => { let q = Number(el.pizzaQty.value) || 1; q = b.dataset.qty === 'plus' ? Math.min(50, q + 1) : Math.max(1, q - 1); el.pizzaQty.value = q }));
     el.commandSuggestions.addEventListener('click', e => { const b = e.target.closest('[data-num]'); if (b) { el.commandNumber.value = b.dataset.num; el.commandNumber.focus() } });
     el.addCommandBtn.addEventListener('click', addCommand);
+    if (document.getElementById('clearCommandBtn')) {
+      document.getElementById('clearCommandBtn').addEventListener('click', () => {
+        if (typeof resetRegistration === 'function') resetRegistration();
+        if (typeof renderCommandSuggestions === 'function') renderCommandSuggestions(currentOperation());
+      });
+    }
     el.commandNumber.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addCommand() } });
     [el.prodSearch, el.prodStatus, el.prodAssembler].forEach(x => x.addEventListener(x.tagName === 'INPUT' ? 'input' : 'change', () => renderProductionTable(currentOperation())));
     if (el.clearProdFilters) el.clearProdFilters.addEventListener('click', () => { el.prodSearch.value = ''; el.prodStatus.value = ''; el.prodAssembler.value = ''; renderProductionTable(currentOperation()) });
@@ -1092,10 +1116,24 @@
     el.reopenKitchenBtn.addEventListener('click', () => { const op = currentOperation(); if (!op || op.status !== 'kitchen_closed') return; if (!confirm('Reabrir a cozinha para novos registros?')) return; op.status = 'production_open'; op.kitchenClosedAt = null; save(); renderAll(); toast('Cozinha reaberta.', 'warn') });
 
     // modais
-    document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => $(b.dataset.close + 'Modal').classList.remove('show')));
+    document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => {
+      const modalName = b.dataset.close + 'Modal';
+      const modal = $(modalName);
+      if (modal) {
+        modal.classList.remove('show');
+        if (modalName === 'registerCommandModal') {
+          modal.classList.add('translate-x-full');
+        }
+      }
+    }));
     [el.registerCommandModal, el.assemblerPickerModal, el.editModal, el.errorModal, el.editPersonModal, el.confirmDeleteModal].forEach(m => {
       if (m) {
-        m.addEventListener('click', e => { if (e.target === m) m.classList.remove('show') });
+        m.addEventListener('click', e => { 
+          if (e.target === m) {
+            m.classList.remove('show');
+            if (m.id === 'registerCommandModal') m.classList.add('translate-x-full');
+          }
+        });
       }
     });
 
