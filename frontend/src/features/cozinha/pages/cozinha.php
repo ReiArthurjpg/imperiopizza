@@ -8,10 +8,7 @@
       </p>
     </div>
     <div class="flex items-center gap-3 shrink-0 mt-1 flex-wrap">
-      <button id="manageTeamBtn" class="px-4 py-3 bg-[#E7E9EB] text-[#171717] text-xs font-semibold rounded-lg hover:bg-[#d8dadc] active:scale-[0.98] transition-all duration-150 shadow-sm flex items-center gap-1.5">
-        <i data-lucide="users" class="w-3.5 h-3.5"></i>
-        Acionar equipe
-      </button>
+
       <button id="reopenKitchenBtn" class="hidden px-4 py-3 bg-amber-100 text-amber-800 text-xs font-semibold rounded-lg hover:bg-amber-200 active:scale-[0.98] transition-all duration-150 shadow-sm flex items-center gap-1.5">
         <i data-lucide="power" class="w-3.5 h-3.5"></i>
         Reabrir cozinha
@@ -41,9 +38,9 @@
           <p class="text-xs text-[#737373] mt-0.5">No forno aparecem primeiro · clique na ação principal para avançar.</p>
         </div>
         <button id="openRegisterCommandBtn" type="button"
-          class="px-4 py-3 bg-[#B5120B] text-white text-xs font-semibold rounded-lg hover:bg-[#9a0f09] active:scale-[0.98] transition-all duration-150 shadow-sm flex items-center gap-1.5">
+          class="px-4 py-3 bg-[#1F6FB2] text-white text-xs font-semibold rounded-lg hover:bg-[#1a5e98] active:scale-[0.98] transition-all duration-150 shadow-sm flex items-center gap-1.5">
           <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
-          Nova comanda
+          Adicionar comanda
         </button>
       </div>
 
