@@ -151,7 +151,10 @@
           <div class="field"><label for="editSweetQty">Doces</label><input id="editSweetQty" type="number" min="0"
               max="50" value="0"></div>
         </div>
-        <div class="field"><label for="editAssembler">Montador</label><select id="editAssembler" required></select>
+        <div class="field"><label for="editAssembler">Montador</label><select id="editAssembler" required></select></div>
+        <div class="field" id="editSweetAssemblerField" style="display:none;">
+          <label for="editSweetAssembler">Montador (Doces)</label>
+          <select id="editSweetAssembler"></select>
         </div>
         <div class="field"><label for="editStatus">Status</label><select id="editStatus">
             <option value="cozinha">Na cozinha</option>
