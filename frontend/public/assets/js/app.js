@@ -1559,22 +1559,43 @@
           </td>
         </tr>`).join('');
 
-      const cardsHtml = cs.map(c => `<article class="mobile-command-card" style="margin:0;">
-        <div class="mobile-command-top">
-          <div>
-            <div class="mobile-command-number">#${String(c.number).padStart(3, '0')}</div>
-            <div class="mobile-command-meta">Registro ${formatTime(c.createdAt)} · ${esc(c.assemblerName)}</div>
+      const cardsHtml = cs.map(c => `<article class="bg-white rounded-[16px] border border-gray-100/60 shadow-sm hover:shadow-md transition-all flex flex-col p-5 gap-4">
+        <!-- Header -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="flex flex-col items-center justify-center w-12 h-12 bg-blue-50/50 border border-blue-100/50 rounded-[12px]">
+              <span class="text-[9px] font-bold text-[#1F6FB2]/60 uppercase tracking-wider leading-none mb-0.5">CMD</span>
+              <span class="text-[16px] font-black tracking-tighter text-[#1F6FB2] leading-none">${String(c.number).padStart(3, '0')}</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-[14px] font-bold text-gray-900 leading-none">${esc(c.assemblerName)}</span>
+              <span class="text-[11px] font-medium text-gray-400 mt-1">${formatTime(c.createdAt)}</span>
+            </div>
           </div>
-          <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-semibold border ${tableStatusBadge(c)}">${statusText(c)}</span>
+          <span class="inline-flex items-center text-center px-2 py-1 rounded-[6px] text-[10px] font-extrabold tracking-wider uppercase whitespace-nowrap border ${tableStatusBadge(c)}">${statusText(c)}</span>
         </div>
-        <div class="mobile-command-main">
-          <div><strong>${esc(c.assemblerName)}</strong><small>${c.error?.active ? `Erro: ${esc(c.error.type)}` : 'Sem erros'}${specialTagsHtml(c)}</small></div>
-          <div class="mobile-pizza-count">${fmt(commandEquivalent(c))}<small>equiv.</small></div>
+
+        <!-- Body -->
+        <div class="flex items-center justify-between py-3 border-y border-gray-50">
+          <div class="flex flex-col">
+            <span class="text-[13px] font-medium text-gray-500">Pizzas equivalentes</span>
+            <div class="flex items-center gap-2 mt-1">
+              <span class="text-[18px] font-black text-gray-900 leading-none">${fmt(commandEquivalent(c))}</span>
+              ${specialTagsHtml(c)}
+            </div>
+          </div>
+          ${c.error?.active ? `<div class="flex items-center px-2.5 py-1 rounded-[6px] border border-red-200 bg-red-50 text-[#B5120B]"><svg class="w-3 h-3 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg><span class="text-[11px] font-bold uppercase tracking-wide">Erro: ${esc(c.error.type)}</span></div>` : `<span class="text-[11px] font-medium text-gray-400">Sem erros</span>`}
         </div>
-        <div class="mobile-command-actions">
-          ${prodFlowActions(c)}
-          <button class="px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-200 rounded-md hover:bg-gray-50 transition-colors shadow-sm" data-cmd-action="edit" data-id="${c.id}">Editar</button>
-          <button class="px-3 py-1.5 text-xs font-medium text-[#B5120B] bg-white border border-red-100 rounded-md hover:bg-red-50 transition-colors shadow-sm" data-cmd-action="error" data-id="${c.id}">${c.error?.active ? 'Editar erro' : 'Erro'}</button>
+
+        <!-- Footer Actions -->
+        <div class="flex flex-wrap items-center gap-2 mt-auto">
+          ${prodFlowActions(c).replace(/px-4 py-2/g, 'px-3 py-1.5').replace(/ml-2/g, '')}
+          <button class="inline-flex items-center px-3 py-1.5 text-[13px] font-semibold text-amber-600 bg-amber-50 border border-amber-200 rounded-lg hover:bg-amber-100 hover:text-amber-700 transition-colors shadow-sm whitespace-nowrap" data-cmd-action="edit" data-id="${c.id}" title="Editar">
+            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>Editar
+          </button>
+          <button class="inline-flex items-center px-3 py-1.5 text-[13px] font-semibold ${c.error?.active ? 'text-white bg-[#B5120B] border-[#B5120B] hover:bg-red-800' : 'text-[#B5120B] bg-red-50 border-red-100 hover:bg-red-100'} rounded-lg transition-colors shadow-sm whitespace-nowrap border" data-cmd-action="error" data-id="${c.id}" title="${c.error?.active ? 'Editar erro' : 'Reportar erro'}">
+            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>${c.error?.active ? 'Editar erro' : 'Erro'}
+          </button>
         </div>
       </article>`).join('');
 
