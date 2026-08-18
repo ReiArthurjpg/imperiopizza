@@ -1,7 +1,7 @@
 <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 sm:px-6 z-10 shrink-0">
   <div class="flex items-center gap-4">
     <!-- Hamburger button for mobile menu -->
-    <button id="toggleMobileMenuBtn" class="lg:hidden p-2 -ml-2 text-gray-500 hover:bg-gray-100 rounded-lg">
+    <button id="toggleMobileMenuBtn" class="hidden p-2 -ml-2 text-gray-500 hover:bg-gray-100 rounded-lg">
       <i data-lucide="menu" class="w-5 h-5"></i>
     </button>
     <h1 class="text-lg font-semibold text-[#171717] hidden sm:block">Visão Geral da Operação</h1>

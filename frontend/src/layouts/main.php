@@ -56,6 +56,9 @@
   <!-- Modais Globais -->
   <?php require_once __DIR__ . '/../components/modals.php'; ?>
   
+  <!-- Navegação Mobile -->
+  <?php require_once __DIR__ . '/../components/mobile_nav.php'; ?>
+  
   <!-- Navegação Mobile (Representa o backdrop do menu lateral) -->
   <div id="mobileSidebarOverlay" class="fixed inset-0 bg-black/20 z-40 hidden backdrop-blur-sm transition-opacity"></div>
 
