@@ -68,6 +68,16 @@
           }
         }
       });
+      document.querySelectorAll('.mobile-nav .nav-btn, .more-menu-item').forEach(b => {
+        b.classList.toggle('active', b.dataset.page === name || (name === 'dispatch' && b.dataset.page === 'dispatch') || (name === 'reports' && b.dataset.page === 'reports'));
+      });
+      
+      // Update 'Mais' button active state if one of its children is active
+      const moreBtn = document.getElementById('moreMenuBtn');
+      if (moreBtn) {
+        moreBtn.classList.toggle('active', ['dispatch', 'reports'].includes(name));
+      }
+      
       // Removed registerCommandModal toggle
 
       if (name === 'dashboard') { renderDashboard(); fetchTopMontadoresMensal(); }
@@ -81,7 +91,7 @@
     function stats(op) { const cs = op?.commands || []; return { commands: cs.length, pizzas: cs.reduce((a, c) => a + (Number(c.pizzas) || 1), 0), kitchen: cs.filter(c => c.status === 'cozinha').length, oven: cs.filter(c => c.status === 'forno' || c.status === 'pronto').length, dispatchPending: cs.filter(c => c.status === 'despacho' && c.dispatch?.status !== 'liberado').length, released: cs.filter(c => c.status === 'despacho' && c.dispatch?.status === 'liberado').length, errors: cs.filter(c => c.error?.active).length } }
     function pendingToFinish(op) { return (op?.commands || []).filter(c => c.status !== 'despacho' || c.dispatch?.status !== 'liberado').length }
     function empty(title, text) { return `<div class="empty"><strong>${esc(title)}</strong>${esc(text)}</div>` }
-    function teamHtml(team, scrollClass = 'max-h-[170px] overflow-y-auto pr-2 custom-scrollbar') { 
+    function teamHtml(team, scrollClass = 'max-h-[300px] overflow-y-auto pr-2 custom-scrollbar') { 
       if (!team?.length) return empty('Equipe não definida', 'Selecione os profissionais do dia.'); 
       return `<div class="space-y-3 ${scrollClass}">${team.map(member => `
         <div class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 transition-colors -mx-2">
@@ -99,7 +109,7 @@
           </div>
         </div>`).join('')}</div>`;
     }
-    function ranking(op) { const m = {}; (op?.team || []).filter(p => p.role === 'Montagem').forEach(p => m[p.personId] = { personId: p.personId, name: p.name, commands: 0, pizzas: 0, errors: 0 }); (op?.commands || []).forEach(c => { m[c.assemblerId] ||= { personId: c.assemblerId, name: c.assemblerName, commands: 0, pizzas: 0, errors: 0 }; const sq = Number(c.special?.sweet) || 0; if (c.sweetAssemblerId && sq > 0) { m[c.assemblerId].commands++; m[c.assemblerId].pizzas += (Number(c.pizzas) || 1); if (c.error?.active) m[c.assemblerId].errors++; m[c.sweetAssemblerId] ||= { personId: c.sweetAssemblerId, name: c.sweetAssemblerName, commands: 0, pizzas: 0, errors: 0 }; m[c.sweetAssemblerId].commands++; m[c.sweetAssemblerId].pizzas += sq; if (c.error?.active) m[c.sweetAssemblerId].errors++; } else { m[c.assemblerId].commands++; m[c.assemblerId].pizzas += Number(c.pizzas) || 1; if (c.error?.active) m[c.assemblerId].errors++; } }); return Object.values(m).sort((a, b) => b.pizzas - a.pizzas || b.commands - a.commands || a.name.localeCompare(b.name, 'pt-BR')) }
+    function ranking(op) { const m = {}; (op?.team || []).filter(p => p.role.includes('Montagem')).forEach(p => m[p.personId] = { personId: p.personId, name: p.name, commands: 0, pizzas: 0, errors: 0 }); (op?.commands || []).forEach(c => { m[c.assemblerId] ||= { personId: c.assemblerId, name: c.assemblerName, commands: 0, pizzas: 0, errors: 0 }; const sq = Number(c.special?.sweet) || 0; if (c.sweetAssemblerId && sq > 0) { m[c.assemblerId].commands++; m[c.assemblerId].pizzas += (Number(c.pizzas) || 1); if (c.error?.active) m[c.assemblerId].errors++; m[c.sweetAssemblerId] ||= { personId: c.sweetAssemblerId, name: c.sweetAssemblerName, commands: 0, pizzas: 0, errors: 0 }; m[c.sweetAssemblerId].commands++; m[c.sweetAssemblerId].pizzas += sq; if (c.error?.active) m[c.sweetAssemblerId].errors++; } else { m[c.assemblerId].commands++; m[c.assemblerId].pizzas += Number(c.pizzas) || 1; if (c.error?.active) m[c.assemblerId].errors++; } }); return Object.values(m).sort((a, b) => b.pizzas - a.pizzas || b.commands - a.commands || a.name.localeCompare(b.name, 'pt-BR')) }
     function rankHtml(op) { const r = ranking(op), total = stats(op).pizzas; if (!r.length) return empty('Sem resultado de montagem', 'O ranking aparece após o registro das comandas.'); return `<div class="rank-table">${r.map((x, i) => `<div class="rank-row"><div class="rank-pos">${i + 1}º</div><div class="rank-name"><strong>${esc(x.name)}</strong><small>${total ? ((x.pizzas / total) * 100).toFixed(1) : '0.0'}% das pizzas</small></div><div class="rank-metric"><strong>${x.pizzas}</strong><small>pizzas</small></div><div class="rank-metric"><strong>${x.commands}</strong><small>comandas</small></div><div class="rank-metric"><strong>${x.errors}</strong><small>erros</small></div></div>`).join('')}</div>` }
 
     function dashboardTop5Html(op) {
@@ -193,17 +203,42 @@
       ];
       
       container.innerHTML = pipelineSteps.map((step, idx) => `
-        <div class="flex-1 min-w-[120px] bg-gray-50 rounded-lg p-4 border border-gray-100 flex flex-col items-center justify-center text-center relative group hover:bg-white hover:border-gray-200 hover:shadow-sm transition-all cursor-pointer">
-          <div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 rounded-r-md bg-gray-300 ${step.color} border-l-4 group-hover:h-12 transition-all"></div>
-          <span class="text-2xl font-bold text-[#171717] mb-1">${step.count}</span>
-          <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">${step.stage}</span>
+        <div class="shrink-0 w-full sm:w-[130px] md:flex-1 bg-gray-50 rounded-lg p-6 sm:p-4 border border-gray-100 flex flex-col items-center justify-center text-center relative group hover:bg-white hover:border-gray-200 hover:shadow-sm transition-all cursor-pointer snap-start min-h-[140px] sm:min-h-0">
+          <div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-12 sm:h-8 rounded-r-md bg-gray-300 ${step.color} border-l-4 group-hover:h-16 sm:group-hover:h-12 transition-all"></div>
+          <span class="text-4xl sm:text-2xl font-bold text-[#171717] mb-2 sm:mb-1">${step.count}</span>
+          <span class="text-sm sm:text-xs font-medium text-gray-500 uppercase tracking-wider">${step.stage}</span>
         </div>
         ${idx < pipelineSteps.length - 1 ? `
-          <div class="hidden md:flex text-gray-300">
+          <div class="hidden md:flex text-gray-300 shrink-0">
             <i data-lucide="chevron-right" class="w-5 h-5"></i>
           </div>
         ` : ''}
       `).join('');
+
+      // Auto-scroll para mobile
+      if (window.pipelineScrollInterval) clearInterval(window.pipelineScrollInterval);
+      if (window.innerWidth < 768) {
+        let scrollPos = 0;
+        window.pipelineScrollInterval = setInterval(() => {
+          if (!container || !document.body.contains(container)) {
+            clearInterval(window.pipelineScrollInterval);
+            return;
+          }
+          const maxScroll = container.scrollWidth - container.clientWidth;
+          if (maxScroll <= 0) return;
+          
+          // Rolar a largura exata de um card (que agora é a largura do container) + gap (12px)
+          scrollPos += container.clientWidth + 12; 
+          if (scrollPos > maxScroll + 10) scrollPos = 0;
+          
+          container.scrollTo({ left: scrollPos, behavior: 'smooth' });
+        }, 2500);
+
+        // Pausa se o usuário tocar
+        container.addEventListener('touchstart', () => {
+          clearInterval(window.pipelineScrollInterval);
+        }, { once: true });
+      }
     }
 
 
@@ -315,9 +350,9 @@
       renderPipeline(op);
       
       if (!op) {
-        el.dashboardBanner.innerHTML = `<div class="flex items-center justify-between p-4 rounded-xl border bg-gray-50 border-gray-200 w-full">
-          <div class="flex items-center gap-3">
-            <div class="relative flex h-3 w-3">
+        el.dashboardBanner.innerHTML = `<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-xl border bg-gray-50 border-gray-200 w-full">
+          <div class="flex items-start sm:items-center gap-3">
+            <div class="relative flex h-3 w-3 mt-1 sm:mt-0 shrink-0">
               <span class="relative inline-flex rounded-full h-3 w-3 bg-gray-400"></span>
             </div>
             <div>
@@ -325,9 +360,9 @@
               <p class="text-xs text-gray-500 mt-0.5">Cadastre a equipe e abra a produção para começar.</p>
             </div>
           </div>
-          <div class="flex gap-2">
-            <button class="px-4 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors" data-go="team">Organizar Equipe</button>
-            <button class="px-4 py-2 text-xs font-medium text-white bg-[#B5120B] rounded-lg hover:bg-[#9a0f09] shadow-sm transition-colors" data-go="team">Abrir Produção</button>
+          <div class="flex w-full sm:w-auto gap-2">
+            <button class="flex-1 sm:flex-none justify-center px-4 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors" data-go="team">Organizar Equipe</button>
+            <button class="flex-1 sm:flex-none justify-center px-4 py-2 text-xs font-medium text-white bg-[#B5120B] rounded-lg hover:bg-[#9a0f09] shadow-sm transition-colors" data-go="team">Abrir Produção</button>
           </div>
         </div>`;
         el.dashboardTeam.innerHTML = empty('Equipe não cadastrada', 'Abra a página Equipe.');
@@ -345,9 +380,9 @@
       if (op.status === 'completed') desc = `Dia finalizado às ${formatTime(op.completedAt)} • ${s.pizzas} pizzas`;
       
       const isActive = op.status === 'production_open';
-      el.dashboardBanner.innerHTML = `<div class="flex items-center justify-between p-4 rounded-xl border ${isActive ? 'bg-[#E7F8F0] border-[#A7F3D0]' : 'bg-gray-50 border-gray-200'} w-full">
-        <div class="flex items-center gap-3">
-          <div class="relative flex h-3 w-3">
+      el.dashboardBanner.innerHTML = `<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-xl border ${isActive ? 'bg-[#E7F8F0] border-[#A7F3D0]' : 'bg-gray-50 border-gray-200'} w-full">
+        <div class="flex items-start sm:items-center gap-3">
+          <div class="relative flex h-3 w-3 mt-1 sm:mt-0 shrink-0">
             ${isActive ? '<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>' : ''}
             <span class="relative inline-flex rounded-full h-3 w-3 ${isActive ? 'bg-emerald-500' : 'bg-gray-400'}"></span>
           </div>
@@ -357,9 +392,9 @@
           </div>
         </div>
         ${op.status === 'draft' ? `
-          <div class="flex gap-2">
-            <button class="px-4 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors" data-go="team">Organizar Equipe</button>
-            <button class="px-4 py-2 text-xs font-medium text-white bg-[#B5120B] rounded-lg hover:bg-[#9a0f09] shadow-sm transition-colors" id="startOperationBtn">Abrir Produção</button>
+          <div class="flex w-full sm:w-auto gap-2">
+            <button class="flex-1 sm:flex-none justify-center px-4 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors" data-go="team">Organizar Equipe</button>
+            <button class="flex-1 sm:flex-none justify-center px-4 py-2 text-xs font-medium text-white bg-[#B5120B] rounded-lg hover:bg-[#9a0f09] shadow-sm transition-colors" id="startOperationBtn">Abrir Produção</button>
           </div>
         ` : ''}
       </div>`;
@@ -723,7 +758,7 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
     function openRegisterCommand() { const op = currentOperation(); if (!op || op.status !== 'production_open') return toast('A cozinha não está aberta.', 'warn'); el.assemblerId.innerHTML = '<option value="">Selecione o montador</option>' + assemblers(op).map(p => `<option value="${p.personId}">${esc(p.name)}</option>`).join(''); resetRegistration(); renderCommandSuggestions(op); const body = el.registerCommandModal.querySelector('.register-modal-body'); if (body) body.scrollTop = 0; el.registerCommandModal.classList.add('show'); setTimeout(() => el.assemblerId.focus(), 120) }
     function openCommandUpdates() { const op = currentOperation(); if (!op || !op.commands.length) return toast('Ainda não existem comandas registradas.', 'warn'); el.registerCommandModal?.classList.remove('show'); el.prodStatus.value = op.commands.some(c => c.status === 'forno' || c.status === 'pronto') ? 'forno' : ''; renderProductionTable(op); setTimeout(() => el.commandHistoryPanel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80) }
 
-    function assemblers(op) { return (op?.team || []).filter(p => p.role === 'Montagem') }
+    function assemblers(op) { return (op?.team || []).filter(p => p.role.includes('Montagem')) }
     function formatAssemblers(c) { return c.sweetAssemblerName && c.sweetAssemblerName !== c.assemblerName ? esc(c.assemblerName) + " / " + esc(c.sweetAssemblerName) : esc(c.assemblerName); }
     function assemblerInitials(name) { return String(name || '').trim().split(/\s+/).slice(0, 2).map(x => x.charAt(0).toUpperCase()).join('') || 'M' }
     function commandNumberSets(op) { const nums = new Set(op.commands.map(c => c.number)); if (!nums.size) return { missing: [], next: [1, 2, 3, 4, 5, 6, 7, 8] }; const arr = [...nums].sort((a, b) => a - b), min = arr[0], max = arr[arr.length - 1], missing = []; for (let n = Math.max(1, min); n <= max && missing.length < 10; n++)if (!nums.has(n)) missing.push(n); const next = []; for (let n = max + 1; n <= 1000 && next.length < 8; n++)if (!nums.has(n)) next.push(n); return { missing, next } }
@@ -1068,7 +1103,7 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
       }
     });
 
-    el.saveTeamBtn.addEventListener('click', () => saveTeam(true)); el.startOperationBtn.addEventListener('click', () => { const op = ensureOperation(); if (op.status !== 'draft') return toast('A operação já foi iniciada.', 'warn'); saveTeam(false); if (!op.team.length) return toast('Selecione a equipe do dia.', 'error'); if (!op.team.some(p => p.role === 'Montagem')) return toast('Inclua ao menos um montador.', 'error'); op.status = 'production_open'; op.startedAt = new Date().toISOString(); save(); fetch('/api/operacao/iniciar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ operacao_id: op.id, startedAt: op.startedAt }) }); showPage('production'); toast('Operação iniciada.') });
+    el.saveTeamBtn.addEventListener('click', () => saveTeam(true)); el.startOperationBtn.addEventListener('click', () => { const op = ensureOperation(); if (op.status !== 'draft') return toast('A operação já foi iniciada.', 'warn'); saveTeam(false); if (!op.team.length) return toast('Selecione a equipe do dia.', 'error'); if (!op.team.some(p => p.role.includes('Montagem'))) return toast('Inclua ao menos um montador.', 'error'); op.status = 'production_open'; op.startedAt = new Date().toISOString(); save(); fetch('/api/operacao/iniciar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ operacao_id: op.id, startedAt: op.startedAt }) }); showPage('production'); toast('Operação iniciada.') });
     // Filtros da lista de profissionais (busca por nome + setor)
     document.addEventListener('input', e => { if (e.target.id === 'teamPersonSearch') renderPeopleList(); });
     document.addEventListener('change', e => { if (e.target.id === 'teamSectorFilter') renderPeopleList(); });
@@ -1353,7 +1388,21 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
     // relatórios
     el.historyList.addEventListener('click', e => { const x = e.target.closest('[data-report-op]'); if (x) { selectedReportOperationId = x.dataset.reportOp; renderReports() } }); el.reportCards.addEventListener('click', e => { const b = e.target.closest('[data-report-action]'); if (!b) return; const op = getOperation(selectedReportOperationId); if (!op) return; const a = b.dataset.reportAction; if (a === 'download-attendance') downloadHtml(`lista_presenca_${op.date}.html`, attendanceReport(op)); if (a === 'print-attendance') printHtml(attendanceReport(op)); if (a === 'download-production') downloadHtml(`resultado_montagem_${op.date}.html`, productionReport(op)); if (a === 'print-production') printHtml(productionReport(op)) }); el.backupBtn.addEventListener('click', () => { const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' }), url = URL.createObjectURL(blob), a = document.createElement('a'); a.href = url; a.download = `backup_imperial_${today()}.json`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); toast('Backup baixado.') }); el.restoreBtn.addEventListener('click', () => el.restoreFile.click()); el.restoreFile.addEventListener('change', async e => { const f = e.target.files[0]; if (!f) return; try { const d = JSON.parse(await f.text()); if (!Array.isArray(d.people) || !Array.isArray(d.operations)) throw new Error(); if (!confirm('Restaurar este backup e substituir os dados atuais?')) return; state.people = d.people; state.operations = d.operations; save(); selectedReportOperationId = null; renderAll(); toast('Backup restaurado.') } catch (err) { toast('Backup inválido.', 'error') } finally { e.target.value = '' } });
 
-    function renderAll() { renderHeader(); const page = document.querySelector('.page.active')?.id.replace('page-', '') || 'dashboard'; showPage(page) }
+    function renderAll() { 
+      renderHeader(); 
+      let page = 'dashboard';
+      const path = window.location.pathname;
+      if (path.includes('/equipe')) page = 'team';
+      else if (path.includes('/cozinha')) page = 'production';
+      else if (path.includes('/estoque')) page = 'stock';
+      else if (path.includes('/comandas')) page = 'dispatch';
+      else if (path.includes('/relatorios')) page = 'reports';
+      else {
+        const activeEl = document.querySelector('.page.active');
+        if (activeEl) page = activeEl.id.replace('page-', '');
+      }
+      showPage(page);
+    }
     if (el.globalDate) el.globalDate.value = today();
     if (el.globalStartDate) el.globalStartDate.value = today();
     if (el.globalEndDate) el.globalEndDate.value = today();
@@ -1487,7 +1536,7 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
 
     ranking = function (op) {
       const m = {};
-      (op?.team || []).filter(p => p.role === 'Montagem').forEach(p => m[p.personId] = { personId: p.personId, name: p.name, commands: 0, pizzas: 0, physical: 0, errors: 0 });
+      (op?.team || []).filter(p => p.role.includes('Montagem')).forEach(p => m[p.personId] = { personId: p.personId, name: p.name, commands: 0, pizzas: 0, physical: 0, errors: 0 });
       (op?.commands || []).forEach(c => {
         m[c.assemblerId] ||= { personId: c.assemblerId, name: c.assemblerName, commands: 0, pizzas: 0, physical: 0, errors: 0 };
         m[c.assemblerId].commands++;
@@ -1668,25 +1717,28 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
       const s = stats(op);
       
       const kpis = [
-        { label: 'Comandas', value: s.commands, icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>' },
-        { label: 'Pizzas', value: fmt(s.pizzas), icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 11V4.234a2 2 0 012-1.986l.283.028a2 2 0 011.666 1.638L16.275 11H11zM11 13v6.766a2 2 0 002 1.986l.283-.028a2 2 0 001.666-1.638L16.275 13H11zM9 11H3.725a2 2 0 00-1.666 1.638l-.283.028A2 2 0 003.762 14.65L9 14.65V11zM9 13H3.725a2 2 0 01-1.666-1.638l-.283-.028A2 2 0 013.762 9.35L9 9.35V13z"></path></svg>' },
-        { label: 'No forno', value: s.oven, icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z"></path></svg>' },
-        { label: 'Vulcão', value: fmt(s.volcano), icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>' },
-        { label: 'Esfirras', value: fmt(s.esfihas, 0), icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>' },
-        { label: 'Doces', value: fmt(s.sweet), icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>' },
-        { label: 'Erros', value: s.errors, icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>' }
+        { label: 'Comandas', value: s.commands, bgStyle: 'bg-blue-50', textStyle: 'text-blue-500', hoverBg: 'group-hover:bg-blue-100', glow: 'bg-blue-100', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>' },
+        { label: 'Pizzas', value: fmt(s.pizzas), bgStyle: 'bg-emerald-50', textStyle: 'text-emerald-500', hoverBg: 'group-hover:bg-emerald-100', glow: 'bg-emerald-100', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 11V4.234a2 2 0 012-1.986l.283.028a2 2 0 011.666 1.638L16.275 11H11zM11 13v6.766a2 2 0 002 1.986l.283-.028a2 2 0 001.666-1.638L16.275 13H11zM9 11H3.725a2 2 0 00-1.666 1.638l-.283.028A2 2 0 003.762 14.65L9 14.65V11zM9 13H3.725a2 2 0 01-1.666-1.638l-.283-.028A2 2 0 013.762 9.35L9 9.35V13z"></path></svg>' },
+        { label: 'No forno', value: s.oven, bgStyle: 'bg-orange-50', textStyle: 'text-orange-500', hoverBg: 'group-hover:bg-orange-100', glow: 'bg-orange-100', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z"></path></svg>' },
+        { label: 'Vulcão', value: fmt(s.volcano), bgStyle: 'bg-purple-50', textStyle: 'text-purple-500', hoverBg: 'group-hover:bg-purple-100', glow: 'bg-purple-100', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>' },
+        { label: 'Esfirras', value: fmt(s.esfihas, 0), bgStyle: 'bg-amber-50', textStyle: 'text-amber-500', hoverBg: 'group-hover:bg-amber-100', glow: 'bg-amber-100', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>' },
+        { label: 'Doces', value: fmt(s.sweet), bgStyle: 'bg-pink-50', textStyle: 'text-pink-500', hoverBg: 'group-hover:bg-pink-100', glow: 'bg-pink-100', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>' },
+        { label: 'Erros', value: s.errors, bgStyle: 'bg-red-50', textStyle: 'text-red-500', hoverBg: 'group-hover:bg-red-100', glow: 'bg-red-100', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>' }
       ];
 
       el.productionSubtotals.innerHTML = kpis.map(k => `
-        <div class="group bg-white border border-[#E5E7EB] rounded-xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.02)] transition-all duration-200 hover:shadow-[0_4px_12px_rgba(0,0,0,0.04)] hover:border-[#D1D5DB] flex flex-col justify-between min-h-[96px]">
-          <div class="flex items-center justify-between mb-3">
-            <span class="text-[13px] font-medium text-[#6B7280] tracking-tight">${k.label}</span>
-            <div class="w-5 h-5 text-[#9CA3AF] transition-colors duration-200 group-hover:text-[#4F46E5]">
-              ${k.icon}
+        <div class="relative overflow-hidden group bg-white border border-[#E5E7EB] rounded-2xl p-4 sm:p-5 shadow-sm transition-all duration-300 hover:shadow-md flex flex-col justify-between min-h-[105px]">
+          <div class="absolute -right-6 -top-6 w-24 h-24 ${k.glow} rounded-full blur-2xl opacity-40 group-hover:opacity-80 transition-opacity"></div>
+          <div class="relative z-10 flex items-center justify-between mb-2">
+            <span class="text-[13px] font-semibold text-[#6B7280] tracking-tight uppercase">${k.label}</span>
+            <div class="w-8 h-8 flex items-center justify-center rounded-lg ${k.bgStyle} ${k.textStyle} transition-colors duration-300 ${k.hoverBg}">
+              <div class="w-4 h-4 flex items-center justify-center">
+                ${k.icon}
+              </div>
             </div>
           </div>
-          <div class="flex items-end justify-between">
-            <span class="text-[28px] font-bold text-[#111827] tracking-tight leading-none">${k.value}</span>
+          <div class="relative z-10 flex items-baseline">
+            <span class="text-3xl leading-none font-extrabold text-[#111827] tracking-tight">${k.value}</span>
           </div>
         </div>
       `).join('');
@@ -2246,7 +2298,17 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
 
     /* Re-renderização final usando as novas regras. */
     renderAll = function () {
-      const page = document.querySelector('.page.active')?.id.replace('page-', '') || 'dashboard';
+      let page = 'dashboard';
+      const path = window.location.pathname;
+      if (path.includes('/equipe')) page = 'team';
+      else if (path.includes('/cozinha')) page = 'production';
+      else if (path.includes('/estoque')) page = 'stock';
+      else if (path.includes('/comandas')) page = 'dispatch';
+      else if (path.includes('/relatorios')) page = 'reports';
+      else {
+        const activeEl = document.querySelector('.page.active');
+        if (activeEl) page = activeEl.id.replace('page-', '');
+      }
       if (typeof showPage === 'function') {
          showPage(page);
       }

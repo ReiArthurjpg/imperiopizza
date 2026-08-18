@@ -64,9 +64,14 @@
           <span id="dashboardPipelineBadge" class="px-2.5 py-0.5 rounded-full text-xs font-medium border bg-[#FDECEB] text-[#B5120B] border-[#FCA5A5]">Fluxo Atual</span>
         </div>
         
-        <div id="pipelineContainer" class="flex flex-col md:flex-row items-center justify-between gap-2 overflow-x-auto pb-2">
+        <div id="pipelineContainer" class="flex items-center gap-3 overflow-x-auto pb-4 snap-x snap-mandatory" style="scrollbar-width: none; -ms-overflow-style: none;">
           <!-- Será populado pelo JS para mostrar o fluxo real -->
         </div>
+        <style>
+          #pipelineContainer::-webkit-scrollbar {
+            display: none;
+          }
+        </style>
       </div>
 
       <!-- Movimento Recente -->

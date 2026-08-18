@@ -1,20 +1,20 @@
 <section id="page-production" class="page">
   <!-- PAGE HEADER -->
-  <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
     <div>
       <h2 class="text-2xl font-bold text-[#171717]">Produção</h2>
       <p class="text-sm text-[#737373] mt-1">
         Registre novas comandas e acompanhe as etapas da produção em tempo real.
       </p>
     </div>
-    <div class="flex items-center gap-3 shrink-0 mt-1 flex-wrap">
-
-      <button id="reopenKitchenBtn" class="hidden px-4 py-3 bg-amber-100 text-amber-800 text-xs font-semibold rounded-lg hover:bg-amber-200 active:scale-[0.98] transition-all duration-150 shadow-sm flex items-center gap-1.5">
-        <i data-lucide="power" class="w-3.5 h-3.5"></i>
+    
+    <div class="shrink-0 w-full sm:w-auto">
+      <button id="reopenKitchenBtn" class="hidden w-full sm:w-auto px-4 py-2.5 bg-amber-100 text-amber-800 text-sm font-semibold rounded-lg hover:bg-amber-200 active:scale-[0.98] transition-all duration-150 shadow-[0_2px_8px_rgba(251,191,36,0.25)] flex justify-center items-center gap-2 border border-transparent">
+        <i data-lucide="power" class="w-4 h-4"></i>
         Reabrir cozinha
       </button>
-      <button id="closeKitchenBtn" class="px-4 py-3 bg-[#B5120B] text-white text-xs font-semibold rounded-lg hover:bg-[#9a0f09] active:scale-[0.98] transition-all duration-150 shadow-sm flex items-center gap-1.5">
-        <i data-lucide="power-off" class="w-3.5 h-3.5"></i>
+      <button id="closeKitchenBtn" class="w-full sm:w-auto px-4 py-2.5 bg-[#B5120B] text-white text-sm font-semibold rounded-lg hover:bg-[#9a0f09] active:scale-[0.98] transition-all duration-150 shadow-[0_2px_8px_rgba(181,18,11,0.25)] flex justify-center items-center gap-2 border border-transparent">
+        <i data-lucide="power-off" class="w-4 h-4"></i>
         Encerrar cozinha
       </button>
     </div>
@@ -45,13 +45,13 @@
 
     <!-- CONTROLS & FILTERS -->
     <div class="bg-white rounded-xl border border-[#E7E7E7] shadow-[0_4px_12px_rgba(0,0,0,0.02)] mb-4">
-      <div class="flex items-center justify-between p-5 border-b border-[#E7E7E7] flex-wrap gap-4">
-        <div>
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between p-5 border-b border-[#E7E7E7] gap-4">
+        <div class="w-full text-center sm:text-left sm:w-auto">
           <h3 class="text-base font-semibold text-[#171717]">Comandas da operação</h3>
           <p class="text-xs text-[#737373] mt-0.5">No forno aparecem primeiro · clique na ação principal para avançar.</p>
         </div>
-        <div class="flex items-center gap-3">
-          <div class="flex items-center bg-[#F3F4F6] p-1 rounded-lg border border-[#E7E7E7]">
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto shrink-0">
+          <div class="hidden sm:flex items-center bg-[#F3F4F6] p-1 rounded-lg border border-[#E7E7E7]">
             <button type="button" id="viewListBtn" class="p-1.5 bg-white shadow-sm rounded-md text-[#1F6FB2] transition-colors" title="Ver em lista">
               <i data-lucide="list" class="w-4 h-4"></i>
             </button>
@@ -61,8 +61,8 @@
           </div>
 
           <button id="openRegisterCommandBtn" type="button"
-            class="px-4 py-3 bg-[#1F6FB2] text-white text-xs font-semibold rounded-lg hover:bg-[#1a5e98] active:scale-[0.98] transition-all duration-150 shadow-sm flex items-center gap-1.5">
-            <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+            class="w-full sm:w-auto justify-center px-4 py-3 bg-[#1F6FB2] text-white text-sm font-semibold rounded-lg hover:bg-[#1a5e98] active:scale-[0.98] transition-all duration-150 shadow-[0_2px_8px_rgba(31,111,178,0.25)] border border-transparent flex items-center gap-2">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i>
             Adicionar comanda
           </button>
         </div>
@@ -91,15 +91,15 @@
 
     <!-- HISTORY / TABLE -->
     <div id="commandHistoryPanel">
-      <div id="productionTableContainer" class="overflow-x-auto w-full custom-scrollbar pb-4">
+      <div id="productionTableContainer" class="max-sm:!hidden overflow-x-auto w-full custom-scrollbar pb-4">
         <table class="w-full text-left min-w-[600px] table-spaced">
           <tbody id="productionBody"></tbody>
         </table>
       </div>
       
-      <div id="productionGridContainer" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pb-4"></div>
+      <div id="productionGridContainer" class="max-sm:!grid hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pb-4"></div>
 
-      <div id="productionMobileList" class="mobile-command-list p-4"></div>
+      <div id="productionMobileList" class="!hidden"></div>
 
       <div id="productionEmpty" class="hidden p-10 text-center flex flex-col items-center justify-center">
         <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3">

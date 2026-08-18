@@ -34,7 +34,7 @@
 <body class="bg-[#F7F7F5] overflow-hidden">
 
   <!-- Main flex layout representing Sidebar and Main content side-by-side -->
-  <div class="flex h-screen w-screen overflow-hidden font-sans selection:bg-[#B5120B] selection:text-white">
+  <div class="flex h-[100dvh] w-screen overflow-hidden font-sans selection:bg-[#B5120B] selection:text-white">
     
     <!-- Sidebar component -->
     <?php require_once __DIR__ . '/../components/sidebar.php'; ?>
@@ -46,8 +46,8 @@
       <?php require_once __DIR__ . '/../components/header.php'; ?>
 
       <!-- Main Scrollable Content -->
-      <div class="flex-1 overflow-auto p-4 sm:p-6 lg:p-8">
-        <div class="max-w-7xl mx-auto">
+      <div id="mainScrollContainer" class="flex-1 overflow-auto p-4 pb-32 sm:p-6 sm:pb-32 lg:p-8 lg:pb-8">
+        <div class="max-w-7xl mx-auto min-h-full">
           <?= $content ?>
         </div>
       </div>
@@ -55,6 +55,9 @@
 
   <!-- Modais Globais -->
   <?php require_once __DIR__ . '/../components/modals.php'; ?>
+  
+  <!-- Navegação Mobile -->
+  <?php require_once __DIR__ . '/../components/mobile_nav.php'; ?>
   
   <!-- Navegação Mobile (Representa o backdrop do menu lateral) -->
   <div id="mobileSidebarOverlay" class="fixed inset-0 bg-black/20 z-40 hidden backdrop-blur-sm transition-opacity"></div>
