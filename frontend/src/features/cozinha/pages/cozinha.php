@@ -91,15 +91,15 @@
 
     <!-- HISTORY / TABLE -->
     <div id="commandHistoryPanel">
-      <div id="productionTableContainer" class="overflow-x-auto w-full custom-scrollbar pb-4">
+      <div id="productionTableContainer" class="max-sm:!hidden overflow-x-auto w-full custom-scrollbar pb-4">
         <table class="w-full text-left min-w-[600px] table-spaced">
           <tbody id="productionBody"></tbody>
         </table>
       </div>
       
-      <div id="productionGridContainer" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pb-4"></div>
+      <div id="productionGridContainer" class="max-sm:!grid hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pb-4"></div>
 
-      <div id="productionMobileList" class="mobile-command-list p-4"></div>
+      <div id="productionMobileList" class="!hidden"></div>
 
       <div id="productionEmpty" class="hidden p-10 text-center flex flex-col items-center justify-center">
         <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3">
