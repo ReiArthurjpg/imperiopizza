@@ -2,7 +2,7 @@
     const SECTORS = ['Montagem', 'Massa', 'Cozinha', 'Forno', 'Despacho', 'Atendimento', 'Estoque', 'Liderança', 'Outros'];
     let state = { people: [], operations: [] }; let selectedReportOperationId = null; let productionViewMode = 'list';
     const $ = id => document.getElementById(id);
-    const el = { globalDate: $('globalDate'), globalStartDate: $('globalStartDate'), globalEndDate: $('globalEndDate'), phasePill: $('phasePill'), dashboardBanner: $('dashboardBanner'), dashCommands: $('dashCommands'), dashPizzas: $('dashPizzas'), dashKitchen: $('dashKitchen'), dashOven: $('dashOven'), dashDispatch: $('dashDispatch'), dashErrors: $('dashErrors'), dashboardTeam: $('dashboardTeam'), dashboardRank: $('dashboardRank'), dashboardLive: $('dashboardLive'), personForm: $('personForm'), personName: $('personName'), personRole: $('personRole'), editPersonModal: $('editPersonModal'), editPersonForm: $('editPersonForm'), editPersonId: $('editPersonId'), editPersonName: $('editPersonName'), editPersonRole: $('editPersonRole'), peopleChecklist: $('peopleChecklist'), dayTeamGroups: $('dayTeamGroups'), teamOperationNotice: $('teamOperationNotice'), saveTeamBtn: $('saveTeamBtn'), startOperationBtn: $('startOperationBtn'), manageTeamBtn: $('manageTeamBtn'), manageTeamDispatchBtn: $('manageTeamDispatchBtn'), productionGate: $('productionGate'), productionContent: $('productionContent'), productionSubtotals: $('productionSubtotals'), openRegisterCommandBtn: $('openRegisterCommandBtn'), openUpdateCommandsBtn: $('openUpdateCommandsBtn'), updatePendingBadge: $('updatePendingBadge'), productionRecent: $('productionRecent'), commandHistoryPanel: $('commandHistoryPanel'), registerCommandModal: $('registerCommandModal'), closeAndUpdateBtn: $('closeAndUpdateBtn'), assemblerSearch: $('assemblerSearch'), assemblerId: $('assemblerId'), assemblerSuggestions: $('assemblerSuggestions'), assemblerPickerBtn: $('assemblerPickerBtn'), assemblerPickerValue: $('assemblerPickerValue'), assemblerPickerModal: $('assemblerPickerModal'), assemblerPickerSearch: $('assemblerPickerSearch'), assemblerPickerList: $('assemblerPickerList'), pickerManageTeamBtn: $('pickerManageTeamBtn'), commandNumber: $('commandNumber'), pizzaQty: $('pizzaQty'), commandSuggestions: $('commandSuggestions'), commandNote: $('commandNote'), initialOven: $('initialOven'), addCommandBtn: $('addCommandBtn'), prodSearch: $('prodSearch'), prodStatus: $('prodStatus'), prodAssembler: $('prodAssembler'), clearProdFilters: $('clearProdFilters'), productionTableContainer: $('productionTableContainer'), productionGridContainer: $('productionGridContainer'), viewListBtn: $('viewListBtn'), viewGridBtn: $('viewGridBtn'), productionBody: $('productionBody'), productionMobileList: $('productionMobileList'), productionEmpty: $('productionEmpty'), closeKitchenBtn: $('closeKitchenBtn'), reopenKitchenBtn: $('reopenKitchenBtn'), dispatchGate: $('dispatchGate'), dispatchContent: $('dispatchContent'), dispatchSubtotals: $('dispatchSubtotals'), dispatchSearch: $('dispatchSearch'), dispatchFilter: $('dispatchFilter'), clearDispatchFilters: $('clearDispatchFilters'), dispatchGrid: $('dispatchGrid'), dispatchEmpty: $('dispatchEmpty'), finishDayBtn: $('finishDayBtn'), historyList: $('historyList'), reportOverview: $('reportOverview'), reportCards: $('reportCards'), backupBtn: $('backupBtn'), restoreBtn: $('restoreBtn'), restoreFile: $('restoreFile'), editModal: $('editModal'), editForm: $('editForm'), editId: $('editId'), editNumber: $('editNumber'), editQty: $('editQty'), editAssembler: $('editAssembler'), editStatus: $('editStatus'), editNote: $('editNote'), deleteCommandBtn: $('deleteCommandBtn'), errorModal: $('errorModal'), errorForm: $('errorForm'), errorId: $('errorId'), errorType: $('errorType'), errorNote: $('errorNote'), clearErrorBtn: $('clearErrorBtn'), toast: $('toast'), confirmDeleteModal: $('confirmDeleteModal') };
+    const el = { globalDate: $('globalDate'), globalStartDate: $('globalStartDate'), globalEndDate: $('globalEndDate'), phasePill: $('phasePill'), dashboardBanner: $('dashboardBanner'), dashCommands: $('dashCommands'), dashPizzas: $('dashPizzas'), dashKitchen: $('dashKitchen'), dashOven: $('dashOven'), dashDispatch: $('dashDispatch'), dashErrors: $('dashErrors'), dashboardTeam: $('dashboardTeam'), dashboardRank: $('dashboardRank'), dashboardLive: $('dashboardLive'), personForm: $('personForm'), personName: $('personName'), personRole: $('personRole'), editPersonModal: $('editPersonModal'), editPersonForm: $('editPersonForm'), editPersonId: $('editPersonId'), editPersonName: $('editPersonName'), editPersonRole: $('editPersonRole'), peopleChecklist: $('peopleChecklist'), dayTeamGroups: $('dayTeamGroups'), teamOperationNotice: $('teamOperationNotice'), saveTeamBtn: $('saveTeamBtn'), startOperationBtn: $('startOperationBtn'), manageTeamBtn: $('manageTeamBtn'), manageTeamDispatchBtn: $('manageTeamDispatchBtn'), productionGate: $('productionGate'), productionContent: $('productionContent'), productionSubtotals: $('productionSubtotals'), openRegisterCommandBtn: $('openRegisterCommandBtn'), openUpdateCommandsBtn: $('openUpdateCommandsBtn'), updatePendingBadge: $('updatePendingBadge'), productionRecent: $('productionRecent'), commandHistoryPanel: $('commandHistoryPanel'), registerCommandModal: $('registerCommandModal'), assemblerSearch: $('assemblerSearch'), assemblerId: $('assemblerId'), assemblerSuggestions: $('assemblerSuggestions'), assemblerPickerBtn: $('assemblerPickerBtn'), assemblerPickerValue: $('assemblerPickerValue'), assemblerPickerModal: $('assemblerPickerModal'), assemblerPickerSearch: $('assemblerPickerSearch'), assemblerPickerList: $('assemblerPickerList'), pickerManageTeamBtn: $('pickerManageTeamBtn'), commandNumber: $('commandNumber'), pizzaQty: $('pizzaQty'), commandSuggestions: $('commandSuggestions'), commandNote: $('commandNote'), initialOven: $('initialOven'), addCommandBtn: $('addCommandBtn'), prodSearch: $('prodSearch'), prodStatus: $('prodStatus'), prodAssembler: $('prodAssembler'), clearProdFilters: $('clearProdFilters'), productionTableContainer: $('productionTableContainer'), productionGridContainer: $('productionGridContainer'), viewListBtn: $('viewListBtn'), viewGridBtn: $('viewGridBtn'), productionBody: $('productionBody'), productionMobileList: $('productionMobileList'), productionEmpty: $('productionEmpty'), closeKitchenBtn: $('closeKitchenBtn'), reopenKitchenBtn: $('reopenKitchenBtn'), dispatchGate: $('dispatchGate'), dispatchContent: $('dispatchContent'), dispatchSubtotals: $('dispatchSubtotals'), dispatchSearch: $('dispatchSearch'), dispatchFilter: $('dispatchFilter'), clearDispatchFilters: $('clearDispatchFilters'), dispatchGrid: $('dispatchGrid'), dispatchEmpty: $('dispatchEmpty'), finishDayBtn: $('finishDayBtn'), historyList: $('historyList'), reportOverview: $('reportOverview'), reportCards: $('reportCards'), backupBtn: $('backupBtn'), restoreBtn: $('restoreBtn'), restoreFile: $('restoreFile'), editModal: $('editModal'), editForm: $('editForm'), editId: $('editId'), editNumber: $('editNumber'), editQty: $('editQty'), editAssembler: $('editAssembler'), editStatus: $('editStatus'), editNote: $('editNote'), deleteCommandBtn: $('deleteCommandBtn'), errorModal: $('errorModal'), errorForm: $('errorForm'), errorId: $('errorId'), errorType: $('errorType'), errorNote: $('errorNote'), clearErrorBtn: $('clearErrorBtn'), toast: $('toast'), confirmDeleteModal: $('confirmDeleteModal'), sweetAssemblerModal: $('sweetAssemblerModal'), sweetAssemblerForm: $('sweetAssemblerForm'), sweetAssemblerCmdId: $('sweetAssemblerCmdId'), sweetAssemblerCmdNumber: $('sweetAssemblerCmdNumber'), sweetAssemblerCmdQty: $('sweetAssemblerCmdQty'), sweetAssemblerCmdSweetQty: $('sweetAssemblerCmdSweetQty'), sweetAssemblerCmdMainName: $('sweetAssemblerCmdMainName'), sweetAssemblerSelect: $('sweetAssemblerSelect'), overnightCloseModal: $('overnightCloseModal'), closeOvernightModalBtn: $('closeOvernightModalBtn'), cancelOvernightBtn: $('cancelOvernightBtn'), confirmOvernightCloseBtn: $('confirmOvernightCloseBtn') };
 
     function save() {
       fetch('/api/sync', {
@@ -68,6 +68,8 @@
           }
         }
       });
+      // Removed registerCommandModal toggle
+
       if (name === 'dashboard') { renderDashboard(); fetchTopMontadoresMensal(); }
       if (name === 'team') renderTeam(); 
       if (name === 'production') renderProduction(); 
@@ -76,7 +78,7 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
     function renderHeader() { const op = currentOperation(); if (el.phasePill) { el.phasePill.textContent = phaseLabel(op); el.phasePill.className = 'phase-pill'; if (op?.status === 'production_open') el.phasePill.classList.add('open'); if (op?.status === 'kitchen_closed') el.phasePill.classList.add('kitchen-closed'); if (op?.status === 'completed') el.phasePill.classList.add('done') } }
-    function stats(op) { const cs = op?.commands || []; return { commands: cs.length, pizzas: cs.reduce((a, c) => a + (Number(c.pizzas) || 1), 0), kitchen: cs.filter(c => c.status === 'cozinha').length, oven: cs.filter(c => c.status === 'forno').length, dispatchPending: cs.filter(c => c.status === 'despacho' && c.dispatch?.status !== 'liberado').length, released: cs.filter(c => c.status === 'despacho' && c.dispatch?.status === 'liberado').length, errors: cs.filter(c => c.error?.active).length } }
+    function stats(op) { const cs = op?.commands || []; return { commands: cs.length, pizzas: cs.reduce((a, c) => a + (Number(c.pizzas) || 1), 0), kitchen: cs.filter(c => c.status === 'cozinha').length, oven: cs.filter(c => c.status === 'forno' || c.status === 'pronto').length, dispatchPending: cs.filter(c => c.status === 'despacho' && c.dispatch?.status !== 'liberado').length, released: cs.filter(c => c.status === 'despacho' && c.dispatch?.status === 'liberado').length, errors: cs.filter(c => c.error?.active).length } }
     function pendingToFinish(op) { return (op?.commands || []).filter(c => c.status !== 'despacho' || c.dispatch?.status !== 'liberado').length }
     function empty(title, text) { return `<div class="empty"><strong>${esc(title)}</strong>${esc(text)}</div>` }
     function teamHtml(team, scrollClass = 'max-h-[170px] overflow-y-auto pr-2 custom-scrollbar') { 
@@ -97,7 +99,7 @@
           </div>
         </div>`).join('')}</div>`;
     }
-    function ranking(op) { const m = {}; (op?.team || []).filter(p => p.role === 'Montagem').forEach(p => m[p.personId] = { personId: p.personId, name: p.name, commands: 0, pizzas: 0, errors: 0 }); (op?.commands || []).forEach(c => { m[c.assemblerId] ||= { personId: c.assemblerId, name: c.assemblerName, commands: 0, pizzas: 0, errors: 0 }; m[c.assemblerId].commands++; m[c.assemblerId].pizzas += Number(c.pizzas) || 1; if (c.error?.active) m[c.assemblerId].errors++ }); return Object.values(m).sort((a, b) => b.pizzas - a.pizzas || b.commands - a.commands || a.name.localeCompare(b.name, 'pt-BR')) }
+    function ranking(op) { const m = {}; (op?.team || []).filter(p => p.role === 'Montagem').forEach(p => m[p.personId] = { personId: p.personId, name: p.name, commands: 0, pizzas: 0, errors: 0 }); (op?.commands || []).forEach(c => { m[c.assemblerId] ||= { personId: c.assemblerId, name: c.assemblerName, commands: 0, pizzas: 0, errors: 0 }; const sq = Number(c.special?.sweet) || 0; if (c.sweetAssemblerId && sq > 0) { m[c.assemblerId].commands++; m[c.assemblerId].pizzas += (Number(c.pizzas) || 1); if (c.error?.active) m[c.assemblerId].errors++; m[c.sweetAssemblerId] ||= { personId: c.sweetAssemblerId, name: c.sweetAssemblerName, commands: 0, pizzas: 0, errors: 0 }; m[c.sweetAssemblerId].commands++; m[c.sweetAssemblerId].pizzas += sq; if (c.error?.active) m[c.sweetAssemblerId].errors++; } else { m[c.assemblerId].commands++; m[c.assemblerId].pizzas += Number(c.pizzas) || 1; if (c.error?.active) m[c.assemblerId].errors++; } }); return Object.values(m).sort((a, b) => b.pizzas - a.pizzas || b.commands - a.commands || a.name.localeCompare(b.name, 'pt-BR')) }
     function rankHtml(op) { const r = ranking(op), total = stats(op).pizzas; if (!r.length) return empty('Sem resultado de montagem', 'O ranking aparece após o registro das comandas.'); return `<div class="rank-table">${r.map((x, i) => `<div class="rank-row"><div class="rank-pos">${i + 1}º</div><div class="rank-name"><strong>${esc(x.name)}</strong><small>${total ? ((x.pizzas / total) * 100).toFixed(1) : '0.0'}% das pizzas</small></div><div class="rank-metric"><strong>${x.pizzas}</strong><small>pizzas</small></div><div class="rank-metric"><strong>${x.commands}</strong><small>comandas</small></div><div class="rank-metric"><strong>${x.errors}</strong><small>erros</small></div></div>`).join('')}</div>` }
 
     function dashboardTop5Html(op) {
@@ -707,41 +709,63 @@
       return true;
     }
 
-    function renderProduction() { renderHeader(); const op = currentOperation(); if (el.manageTeamBtn) el.manageTeamBtn.disabled = op?.status === 'completed'; if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Operação não iniciada", "Cadastre a equipe do dia e inicie a operação para liberar a tela de produção.", "Ir para equipe", "team", "chef-hat"); el.productionContent.classList.add('hidden'); el.closeKitchenBtn.disabled = true; el.reopenKitchenBtn.classList.add('hidden'); el.registerCommandModal.classList.remove('show'); if (el.manageTeamBtn) el.manageTeamBtn.classList.add('hidden'); el.closeKitchenBtn.classList.add('hidden'); return } if (op.status === 'completed') { el.productionGate.innerHTML = gateCard("Operação finalizada", "Consulte os relatórios do dia para ver o histórico e resultados.", "Abrir relatórios", "reports", "bar-chart-2"); el.productionContent.classList.add('hidden'); el.closeKitchenBtn.disabled = true; el.reopenKitchenBtn.classList.add('hidden'); el.registerCommandModal.classList.remove('show'); if (el.manageTeamBtn) el.manageTeamBtn.classList.add('hidden'); el.closeKitchenBtn.classList.add('hidden'); return } el.productionGate.innerHTML = ''; el.productionContent.classList.remove('hidden'); const kitchenOpen = op.status === 'production_open'; if (el.manageTeamBtn) el.manageTeamBtn.classList.remove('hidden'); el.closeKitchenBtn.disabled = !kitchenOpen; el.closeKitchenBtn.classList.toggle('hidden', !kitchenOpen); el.reopenKitchenBtn.classList.toggle('hidden', op.status !== 'kitchen_closed'); el.openRegisterCommandBtn.disabled = !kitchenOpen; el.addCommandBtn.disabled = !kitchenOpen; el.assemblerId.disabled = !kitchenOpen; el.commandNumber.disabled = !kitchenOpen; el.pizzaQty.disabled = !kitchenOpen; el.commandNote.disabled = !kitchenOpen; el.initialOven.disabled = !kitchenOpen; if (!kitchenOpen) el.registerCommandModal.classList.remove('show'); renderProductionSub(op); renderAssemblerFilter(op); renderCommandSuggestions(op); renderProductionRecent(op); renderProductionTable(op) }
+    function renderProduction() { 
+      renderHeader(); 
+      const op = currentOperation(); 
+      if (el.manageTeamBtn) el.manageTeamBtn.disabled = op?.status === 'completed';
+      
+      const activePage = document.querySelector('.page.active')?.id.replace('page-', '') || 'dashboard';
+      const kitchenOpen = op && op.status === 'production_open';
+if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Operação não iniciada", "Cadastre a equipe do dia e inicie a operação para liberar a tela de produção.", "Ir para equipe", "team", "chef-hat"); el.productionContent.classList.add('hidden'); el.closeKitchenBtn.disabled = true; el.reopenKitchenBtn.classList.add('hidden'); if (el.manageTeamBtn) el.manageTeamBtn.classList.add('hidden'); el.closeKitchenBtn.classList.add('hidden'); return } if (op.status === 'completed') { el.productionGate.innerHTML = gateCard("Operação finalizada", "Consulte os relatórios do dia para ver o histórico e resultados.", "Abrir relatórios", "reports", "bar-chart-2"); el.productionContent.classList.add('hidden'); el.closeKitchenBtn.disabled = true; el.reopenKitchenBtn.classList.add('hidden'); if (el.manageTeamBtn) el.manageTeamBtn.classList.add('hidden'); el.closeKitchenBtn.classList.add('hidden'); return } el.productionGate.innerHTML = ''; el.productionContent.classList.remove('hidden'); if (el.manageTeamBtn) el.manageTeamBtn.classList.remove('hidden'); el.closeKitchenBtn.disabled = !kitchenOpen; el.closeKitchenBtn.classList.toggle('hidden', !kitchenOpen); el.reopenKitchenBtn.classList.toggle('hidden', op.status !== 'kitchen_closed'); el.openRegisterCommandBtn.disabled = !kitchenOpen; el.addCommandBtn.disabled = !kitchenOpen; el.assemblerId.disabled = !kitchenOpen; el.commandNumber.disabled = !kitchenOpen; el.pizzaQty.disabled = !kitchenOpen; el.commandNote.disabled = !kitchenOpen; el.initialOven.disabled = !kitchenOpen; renderProductionSub(op); renderAssemblerFilter(op); renderCommandSuggestions(op); renderProductionRecent(op); renderProductionTable(op); if (typeof renderSweetPendingPanel === 'function') renderSweetPendingPanel(); }
     function renderProductionSub(op) { const s = stats(op); const pills = [['list-ordered', 'Comandas', s.commands, ''], ['flame', 'No forno', s.oven, s.oven > 0 ? 'text-orange-600' : ''], ['truck', 'No despacho', s.dispatchPending + s.released, ''], ['alert-triangle', 'Erros', s.errors, s.errors > 0 ? 'text-red-600' : '']]; el.productionSubtotals.innerHTML = pills.map(([icon, label, val, cls]) => `<div class="flex items-center gap-2"><i data-lucide="${icon}" class="w-4 h-4 text-[#737373] shrink-0"></i><span class="text-xs text-[#737373]">${label}</span><span class="text-sm font-bold ${cls || 'text-[#171717]'}">${val}</span></div>`).join('<span class="text-[#E7E7E7]">/</span>'); setTimeout(() => { if (typeof lucide !== 'undefined') lucide.createIcons(); }, 10) }
 
-    function renderProductionRecent(op) { const recent = [...op.commands].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 4), pending = op.commands.filter(c => c.status === 'cozinha' || c.status === 'forno').length; if (el.updatePendingBadge) el.updatePendingBadge.textContent = pending; const statusChipClass = c => c.status === 'forno' ? 'bg-orange-100 text-orange-700' : c.status === 'cozinha' ? 'bg-blue-50 text-blue-700' : 'bg-green-50 text-green-700'; if (el.productionRecent) el.productionRecent.innerHTML = recent.length ? recent.map(c => `<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${statusChipClass(c)} whitespace-nowrap">#${String(c.number).padStart(3,'0')} · ${esc(c.assemblerName.split(' ')[0])} · ${c.pizzas}🍕</span>`).join('') : `<span class="text-xs text-[#737373] italic">Aguardando primeira comanda…</span>` }
+    function renderProductionRecent(op) { const recent = [...op.commands].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 4), pending = op.commands.filter(c => c.status === 'cozinha' || c.status === 'forno' || c.status === 'pronto').length; if (el.updatePendingBadge) el.updatePendingBadge.textContent = pending; const statusChipClass = c => (c.status === 'forno' || c.status === 'pronto') ? 'bg-orange-100 text-orange-700' : c.status === 'cozinha' ? 'bg-blue-50 text-blue-700' : 'bg-green-50 text-green-700'; if (el.productionRecent) el.productionRecent.innerHTML = recent.length ? recent.map(c => `<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${statusChipClass(c)} whitespace-nowrap">#${String(c.number).padStart(3,'0')} · ${formatAssemblers(c)} · ${c.pizzas}🍕</span>`).join('') : `<span class="text-xs text-[#737373] italic">Aguardando primeira comanda…</span>` }
     function openRegisterCommand() { const op = currentOperation(); if (!op || op.status !== 'production_open') return toast('A cozinha não está aberta.', 'warn'); el.assemblerId.innerHTML = '<option value="">Selecione o montador</option>' + assemblers(op).map(p => `<option value="${p.personId}">${esc(p.name)}</option>`).join(''); resetRegistration(); renderCommandSuggestions(op); const body = el.registerCommandModal.querySelector('.register-modal-body'); if (body) body.scrollTop = 0; el.registerCommandModal.classList.add('show'); setTimeout(() => el.assemblerId.focus(), 120) }
-    function openCommandUpdates() { const op = currentOperation(); if (!op || !op.commands.length) return toast('Ainda não existem comandas registradas.', 'warn'); el.registerCommandModal.classList.remove('show'); el.prodStatus.value = op.commands.some(c => c.status === 'forno') ? 'forno' : ''; renderProductionTable(op); setTimeout(() => el.commandHistoryPanel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80) }
+    function openCommandUpdates() { const op = currentOperation(); if (!op || !op.commands.length) return toast('Ainda não existem comandas registradas.', 'warn'); el.registerCommandModal?.classList.remove('show'); el.prodStatus.value = op.commands.some(c => c.status === 'forno' || c.status === 'pronto') ? 'forno' : ''; renderProductionTable(op); setTimeout(() => el.commandHistoryPanel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80) }
 
     function assemblers(op) { return (op?.team || []).filter(p => p.role === 'Montagem') }
+    function formatAssemblers(c) { return c.sweetAssemblerName && c.sweetAssemblerName !== c.assemblerName ? esc(c.assemblerName) + " / " + esc(c.sweetAssemblerName) : esc(c.assemblerName); }
     function assemblerInitials(name) { return String(name || '').trim().split(/\s+/).slice(0, 2).map(x => x.charAt(0).toUpperCase()).join('') || 'M' }
     function commandNumberSets(op) { const nums = new Set(op.commands.map(c => c.number)); if (!nums.size) return { missing: [], next: [1, 2, 3, 4, 5, 6, 7, 8] }; const arr = [...nums].sort((a, b) => a - b), min = arr[0], max = arr[arr.length - 1], missing = []; for (let n = Math.max(1, min); n <= max && missing.length < 10; n++)if (!nums.has(n)) missing.push(n); const next = []; for (let n = max + 1; n <= 1000 && next.length < 8; n++)if (!nums.has(n)) next.push(n); return { missing, next } }
     function renderCommandSuggestions(op) { const sets = commandNumberSets(op); el.commandSuggestions.innerHTML = `<h4>${sets.missing.length ? 'Comandas próximas que faltam' : 'Próximas comandas disponíveis'}</h4>${sets.missing.length ? `<div class="num-chips" style="margin-bottom:9px">${sets.missing.map(n => `<button class="num-chip missing" data-num="${n}">${n}</button>`).join('')}</div><h4>Sequência seguinte</h4>` : ''}<div class="num-chips">${sets.next.length ? sets.next.map(n => `<button class="num-chip" data-num="${n}">${n}</button>`).join('') : '<span class="chip">Limite de 1000 atingido</span>'}</div>` }
-    function renderAssemblerFilter(op) { const v = el.prodAssembler.value; el.prodAssembler.innerHTML = '<option value="">Todos os montadores</option>' + assemblers(op).map(p => `<option value="${p.personId}">${esc(p.name)}</option>`).join(''); el.prodAssembler.value = v }
-    function filteredCommands(op) { const q = norm(el.prodSearch.value), st = el.prodStatus.value, a = el.prodAssembler.value, priority = { forno: 0, cozinha: 1, despacho: 2 }; return [...op.commands].filter(c => (!q || norm(`${c.number} ${c.assemblerName} ${c.note || ''} ${c.error?.type || ''}`).includes(q)) && (!st || c.status === st) && (!a || c.assemblerId === a)).sort((x, y) => (priority[x.status] ?? 9) - (priority[y.status] ?? 9) || y.createdAt.localeCompare(x.createdAt)) }
-    function statusText(c) { if (c.status === 'cozinha') return 'Na cozinha'; if (c.status === 'forno') return 'No forno'; return c.dispatch?.status === 'liberado' ? 'Liberada pelo despacho' : 'Saiu para o despacho' }
-    function statusClass(c) { if (c.status === 'cozinha') return 'b-kitchen'; if (c.status === 'forno') return 'b-oven'; return c.dispatch?.status === 'liberado' ? 'b-released' : 'b-dispatch' }
+    function renderAssemblerFilter(op) { 
+        const v = el.prodAssembler.value; 
+        const html = '<option value="">Todos os montadores</option>' + assemblers(op).map(p => `<option value="${p.personId}">${esc(p.name)}</option>`).join('');
+        el.prodAssembler.innerHTML = html; 
+        el.prodAssembler.value = v;
+
+        if (el.assemblerId) {
+            const v2 = el.assemblerId.value;
+            el.assemblerId.innerHTML = '<option value="">Selecione o montador</option>' + assemblers(op).map(p => `<option value="${p.personId}">${esc(p.name)}</option>`).join('');
+            el.assemblerId.value = v2;
+        }
+    }
+    function filteredCommands(op) { const q = norm(el.prodSearch.value), st = el.prodStatus.value, a = el.prodAssembler.value, priority = { forno: 0, pronto: 1, cozinha: 2, despacho: 3 }; return [...op.commands].filter(c => (!q || norm(`${c.number} ${c.assemblerName} ${c.sweetAssemblerName || ''} ${c.note || ''} ${c.error?.type || ''}`).includes(q)) && (!st || c.status === st || (st === 'forno' && c.status === 'pronto')) && (!a || c.assemblerId === a || c.sweetAssemblerId === a)).sort((x, y) => (priority[x.status] ?? 9) - (priority[y.status] ?? 9) || y.createdAt.localeCompare(x.createdAt)) }
+    function statusText(c) { if (c.status === 'cozinha') return 'Na cozinha'; if (c.status === 'forno') return 'No forno'; if (c.status === 'pronto') return 'Aguardando atendimento'; return c.dispatch?.status === 'liberado' ? 'Liberada pelo despacho' : 'Saiu para o despacho' }
+    function statusClass(c) { if (c.status === 'cozinha') return 'b-kitchen'; if (c.status === 'forno') return 'b-oven'; if (c.status === 'pronto') return 'b-dispatch'; return c.dispatch?.status === 'liberado' ? 'b-released' : 'b-dispatch' }
     function updateProductionViewMode() { if (productionViewMode === 'list') { if (el.viewListBtn) { el.viewListBtn.classList.add('bg-white', 'shadow-sm', 'text-[#B5120B]'); el.viewListBtn.classList.remove('text-[#9CA3AF]', 'hover:text-[#4B5563]', 'hover:bg-[#E5E7EB]'); } if (el.viewGridBtn) { el.viewGridBtn.classList.remove('bg-white', 'shadow-sm', 'text-[#B5120B]'); el.viewGridBtn.classList.add('text-[#9CA3AF]', 'hover:text-[#4B5563]', 'hover:bg-[#E5E7EB]'); } if (el.productionTableContainer) el.productionTableContainer.classList.remove('hidden'); if (el.productionGridContainer) el.productionGridContainer.classList.add('hidden'); if (el.productionMobileList) el.productionMobileList.classList.remove('hidden'); } else { if (el.viewGridBtn) { el.viewGridBtn.classList.add('bg-white', 'shadow-sm', 'text-[#B5120B]'); el.viewGridBtn.classList.remove('text-[#9CA3AF]', 'hover:text-[#4B5563]', 'hover:bg-[#E5E7EB]'); } if (el.viewListBtn) { el.viewListBtn.classList.remove('bg-white', 'shadow-sm', 'text-[#B5120B]'); el.viewListBtn.classList.add('text-[#9CA3AF]', 'hover:text-[#4B5563]', 'hover:bg-[#E5E7EB]'); } if (el.productionTableContainer) el.productionTableContainer.classList.add('hidden'); if (el.productionGridContainer) el.productionGridContainer.classList.remove('hidden'); if (el.productionMobileList) el.productionMobileList.classList.add('hidden'); } }
     function renderProductionTable(op) {
+      if (typeof window.renderProductionTableOverride === 'function') return window.renderProductionTableOverride(op);
       const cs = filteredCommands(op);
       
       const actionHtml = c => {
         if (c.status === 'cozinha') return `<button class="px-3 py-1.5 text-xs font-semibold text-white bg-[#1F6FB2] rounded-md hover:bg-[#1a5e98] transition-colors shadow-sm" data-cmd-action="next" data-id="${c.id}">Enviar ao forno</button>`;
-        if (c.status === 'forno') return `<button class="px-3 py-1.5 text-xs font-semibold text-white bg-[#2f9e64] rounded-md hover:bg-[#257f4f] transition-colors shadow-sm" data-cmd-action="next" data-id="${c.id}">Saiu do forno</button><button class="px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-200 rounded-md hover:bg-gray-50 transition-colors shadow-sm" data-cmd-action="back" data-id="${c.id}">Voltar</button>`;
-        return `<button class="px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-200 rounded-md hover:bg-gray-50 transition-colors shadow-sm" data-cmd-action="back" data-id="${c.id}">Voltar ao forno</button>`
+        if (c.status === 'forno') return `<button class="px-3 py-1.5 text-xs font-semibold text-white bg-[#1F6FB2] rounded-md hover:bg-[#1a5e98] transition-colors shadow-sm" data-cmd-action="next" data-id="${c.id}">Enviar para o atendimento</button><button class="px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-200 rounded-md hover:bg-gray-50 transition-colors shadow-sm ml-2" data-cmd-action="back" data-id="${c.id}">Voltar</button>`;
+        if (c.status === 'pronto') return `<button class="px-3 py-1.5 text-xs font-semibold text-white bg-[#B5120B] rounded-md hover:bg-[#910e08] transition-colors shadow-sm" data-dispatch-intake="${c.id}">Abrir no atendimento</button><button class="px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-200 rounded-md hover:bg-gray-50 transition-colors shadow-sm ml-2" data-cmd-action="back" data-id="${c.id}">Voltar</button>`;
+        return `<button class="px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-200 rounded-md hover:bg-gray-50 transition-colors shadow-sm" data-cmd-action="back" data-id="${c.id}">Voltar ao atendimento</button>`
       };
 
       const tableStatusBadge = c => {
         if (c.status === 'cozinha') return 'bg-blue-50 text-[#1F6FB2] border-blue-100';
         if (c.status === 'forno') return 'bg-orange-50 text-orange-600 border-orange-100';
+        if (c.status === 'pronto') return 'bg-purple-50 text-purple-600 border-purple-100';
         return c.dispatch?.status === 'liberado' ? 'bg-green-50 text-green-600 border-green-100' : 'bg-purple-50 text-purple-600 border-purple-100';
       };
 
       el.productionBody.innerHTML = cs.map(c => `
         <tr class="border-b border-gray-50 hover:bg-gray-50/50 transition-colors group">
           <td class="py-3 pr-2"><span class="text-sm font-bold text-gray-900">#${String(c.number).padStart(3, '0')}</span></td>
-          <td class="py-3 px-2"><span class="text-sm font-medium text-gray-700">${esc(c.assemblerName)}</span></td>
+          <td class="py-3 px-2"><span class="text-sm font-medium text-gray-700">${formatAssemblers(c)}</span></td>
           <td class="py-3 px-2 text-center"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 text-xs font-semibold text-gray-700">${c.pizzas}</span></td>
           <td class="py-3 px-2">
             <div class="flex flex-col gap-1 items-start">
@@ -762,12 +786,12 @@
         <div class="mobile-command-top">
           <div>
             <div class="mobile-command-number">#${String(c.number).padStart(3, '0')}</div>
-            <div class="mobile-command-meta">Registrada ${formatTime(c.createdAt)} · ${esc(c.assemblerName)}</div>
+            <div class="mobile-command-meta">Registrada ${formatTime(c.createdAt)} · ${formatAssemblers(c)}</div>
           </div>
           <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-semibold border ${tableStatusBadge(c)}">${statusText(c)}</span>
         </div>
         <div class="mobile-command-main">
-          <div><strong>${esc(c.assemblerName)}</strong><small>${c.error?.active ? `Erro: ${esc(c.error.type)}` : 'Sem erros'}</small></div>
+          <div><strong>${formatAssemblers(c)}</strong><small>${c.error?.active ? `Erro: ${esc(c.error.type)}` : 'Sem erros'}</small></div>
           <div class="mobile-pizza-count">${c.pizzas}<small>pizza${Number(c.pizzas) === 1 ? '' : 's'}</small></div>
         </div>
         <div class="mobile-command-actions">
@@ -804,9 +828,10 @@
       const now = new Date().toISOString();
       if (dir === 'next') {
         if (c.status === 'cozinha') { c.status = 'forno'; c.statusTimes.forno = now; }
-        else if (c.status === 'forno') { c.status = 'despacho'; c.statusTimes.despacho = now; c.dispatch.status = 'aguardando'; }
+        else if (c.status === 'forno') { c.status = 'pronto'; c.statusTimes.pronto = now; }
       } else {
-        if (c.status === 'despacho') { c.status = 'forno'; c.dispatch.status = 'aguardando'; c.dispatch.checkedAt = null; c.dispatch.releasedAt = null; }
+        if (c.status === 'despacho') { c.status = 'pronto'; c.dispatch.status = 'aguardando'; c.dispatch.checkedAt = null; c.dispatch.releasedAt = null; }
+        else if (c.status === 'pronto') c.status = 'forno';
         else if (c.status === 'forno') c.status = 'cozinha';
       }
       c.updatedAt = now;
@@ -818,7 +843,7 @@
     function openError(c) { el.errorId.value = c.id; el.errorType.value = c.error?.active ? c.error.type : ''; el.errorNote.value = c.error?.active ? c.error.note : ''; el.clearErrorBtn.disabled = !c.error?.active; el.errorModal.classList.add('show') }
 
     function renderDispatch() { renderHeader(); const op = currentOperation(); el.manageTeamDispatchBtn.disabled = op?.status === 'completed'; if (!op || op.status === 'draft' || op.status === 'production_open') { el.dispatchGate.innerHTML = gateCard(op?.status === 'production_open' ? 'Despacho disponível durante a operação' : 'Operação não iniciada', op?.status === 'production_open' ? 'As comandas enviadas pela cozinha já aparecem abaixo.' : 'Inicie a operação para usar o despacho.', op?.status === 'production_open' ? 'Abrir produção' : 'Ir para equipe', op?.status === 'production_open' ? 'production' : 'team', op?.status === 'production_open' ? 'chef-hat' : 'users'); if (!op || op.status === 'draft') { el.dispatchContent.classList.add('hidden'); el.finishDayBtn.disabled = true; el.manageTeamDispatchBtn.classList.add('hidden'); el.finishDayBtn.classList.add('hidden'); return } } else el.dispatchGate.innerHTML = ''; el.manageTeamDispatchBtn.classList.remove('hidden'); el.finishDayBtn.classList.remove('hidden'); if (op?.status === 'completed') { el.dispatchGate.innerHTML = gateCard("Operação finalizada", "Todos os registros estão disponíveis nos relatórios.", "Abrir relatórios", "reports", "bar-chart-2"); el.manageTeamDispatchBtn.classList.add('hidden'); el.finishDayBtn.classList.add('hidden'); } el.dispatchContent.classList.toggle('hidden', !op || op.status === 'draft'); if (!op) return; const all = op.commands.filter(c => c.status === 'despacho'), w = all.filter(c => c.dispatch.status === 'aguardando').length, ch = all.filter(c => c.dispatch.status === 'conferido').length, r = all.filter(c => c.dispatch.status === 'liberado').length; el.dispatchSubtotals.innerHTML = [['Recebidas', all.length], ['Aguardando', w], ['Conferidas', ch], ['Liberadas', r], ['Faltam zerar', pendingToFinish(op)]].map(([l, v]) => `<div class="subtotal-item"><small>${l}</small><strong>${v}</strong></div>`).join(''); const q = norm(el.dispatchSearch.value), f = el.dispatchFilter.value, cs = all.filter(c => (!q || norm(`${c.number} ${c.assemblerName}`).includes(q)) && (!f || c.dispatch.status === f)).sort((a, b) => ({ aguardando: 0, conferido: 1, liberado: 2 }[a.dispatch.status] - { aguardando: 0, conferido: 1, liberado: 2 }[b.dispatch.status]) || b.statusTimes.despacho.localeCompare(a.statusTimes.despacho)); el.dispatchGrid.innerHTML = cs.map(dispatchCard).join(''); el.dispatchEmpty.classList.toggle('hidden', cs.length > 0); el.finishDayBtn.disabled = op.status !== 'kitchen_closed' || pendingToFinish(op) > 0; el.finishDayBtn.textContent = op.status === 'completed' ? 'Dia finalizado' : pendingToFinish(op) > 0 ? `Faltam ${pendingToFinish(op)} pedidos` : 'Finalizar o dia' }
-    function dispatchCard(c) { const d = c.dispatch, cls = d.status === 'liberado' ? 'b-released' : d.status === 'conferido' ? 'b-dispatch' : 'b-oven', label = d.status === 'liberado' ? 'Liberado' : d.status === 'conferido' ? 'Conferido' : 'Aguardando'; return `<article class="dispatch-card ${d.status === 'liberado' ? 'released' : ''}" data-dispatch-card="${c.id}"><div class="dispatch-head"><div><h4>Comanda #${String(c.number).padStart(3, '0')}</h4><p>${c.pizzas} pizza${c.pizzas > 1 ? 's' : ''} · montador ${esc(c.assemblerName)} · ${formatTime(c.statusTimes.despacho)}</p></div><span class="badge ${cls}">${label}</span></div><div class="dispatch-options"><label class="option"><input type="checkbox" data-d-field="beverage" ${d.beverage ? 'checked' : ''}> Tem bebida</label><label class="option"><input type="checkbox" data-d-field="change" ${d.change ? 'checked' : ''}> Precisa de troco</label><label class="option"><input type="checkbox" data-d-field="ketchup" ${d.ketchup ? 'checked' : ''}> Ketchup</label><label class="option"><input type="checkbox" data-d-field="mayonnaise" ${d.mayonnaise ? 'checked' : ''}> Maionese</label></div><div class="inline"><div class="field"><label>Troco</label><input data-d-field="changeAmount" type="text" value="${esc(d.changeAmount || '')}" placeholder="Ex.: para R$ 100" ${d.change ? '' : 'disabled'}></div><div class="field"><label>Observação</label><input data-d-field="note" type="text" value="${esc(d.note || '')}" placeholder="Opcional"></div></div><div class="actions end mobile-stack"><button class="btn btn-soft btn-small" data-d-action="save" data-id="${c.id}">Salvar</button><button class="btn btn-orange btn-small" data-d-action="check" data-id="${c.id}">Conferido</button><button class="btn btn-green btn-small" data-d-action="release" data-id="${c.id}">Liberar pedido</button></div></article>` }
+    function dispatchCard(c) { const d = c.dispatch, cls = d.status === 'liberado' ? 'b-released' : d.status === 'conferido' ? 'b-dispatch' : 'b-oven', label = d.status === 'liberado' ? 'Liberado' : d.status === 'conferido' ? 'Conferido' : 'Aguardando'; return `<article class="dispatch-card ${d.status === 'liberado' ? 'released' : ''}" data-dispatch-card="${c.id}"><div class="dispatch-head"><div><h4>Comanda #${String(c.number).padStart(3, '0')}</h4><p>${c.pizzas} pizza${c.pizzas > 1 ? 's' : ''} · montador ${formatAssemblers(c)} · ${formatTime(c.statusTimes.despacho)}</p></div><span class="badge ${cls}">${label}</span></div><div class="dispatch-options"><label class="option"><input type="checkbox" data-d-field="beverage" ${d.beverage ? 'checked' : ''}> Tem bebida</label><label class="option"><input type="checkbox" data-d-field="change" ${d.change ? 'checked' : ''}> Precisa de troco</label><label class="option"><input type="checkbox" data-d-field="ketchup" ${d.ketchup ? 'checked' : ''}> Ketchup</label><label class="option"><input type="checkbox" data-d-field="mayonnaise" ${d.mayonnaise ? 'checked' : ''}> Maionese</label></div><div class="inline"><div class="field"><label>Troco</label><input data-d-field="changeAmount" type="text" value="${esc(d.changeAmount || '')}" placeholder="Ex.: para R$ 100" ${d.change ? '' : 'disabled'}></div><div class="field"><label>Observação</label><input data-d-field="note" type="text" value="${esc(d.note || '')}" placeholder="Opcional"></div></div><div class="actions end mobile-stack"><button class="btn btn-soft btn-small" data-d-action="save" data-id="${c.id}">Salvar</button><button class="btn btn-orange btn-small" data-d-action="check" data-id="${c.id}">Conferido</button><button class="btn btn-green btn-small" data-d-action="release" data-id="${c.id}">Liberar pedido</button></div></article>` }
     function collectDispatch(card, c) { const get = n => { const x = card.querySelector(`[data-d-field="${n}"]`); return x?.type === 'checkbox' ? x.checked : (x?.value || '').trim() }; c.dispatch.beverage = get('beverage'); c.dispatch.change = get('change'); c.dispatch.changeAmount = c.dispatch.change ? get('changeAmount') : ''; c.dispatch.ketchup = get('ketchup'); c.dispatch.mayonnaise = get('mayonnaise'); c.dispatch.note = get('note'); c.updatedAt = new Date().toISOString() }
 
     function renderReports() { renderHeader(); const ops = [...state.operations].sort((a, b) => b.date.localeCompare(a.date)); if (!ops.length) { el.historyList.innerHTML = empty('Nenhuma operação', 'Crie a equipe do primeiro dia.'); el.reportOverview.innerHTML = empty('Sem dados', 'Os relatórios aparecerão aqui.'); el.reportCards.innerHTML = ''; return } if (!selectedReportOperationId || !getOperation(selectedReportOperationId)) selectedReportOperationId = ops[0].id; el.historyList.innerHTML = ops.map(o => { const s = stats(o); return `<div class="history-item ${o.id === selectedReportOperationId ? 'selected' : ''}" data-report-op="${o.id}"><h4>${formatDate(o.date)}</h4><p>${phaseLabel(o)} · ${o.team.length} pessoas</p><div class="metric-chips"><span class="metric-chip">${s.pizzas} pizzas</span><span class="metric-chip">${s.errors} erros</span><span class="metric-chip">${s.released} liberadas</span></div></div>` }).join(''); renderReportDetail(getOperation(selectedReportOperationId)) }
@@ -829,7 +854,7 @@
 
 <\/body><\/html>`}
     function attendanceReport(op) { const rows = [...op.team].sort((a, b) => a.role.localeCompare(b.role, 'pt-BR') || a.name.localeCompare(b.name, 'pt-BR')).map((p, i) => `<tr><td>${i + 1}</td><td>${esc(p.name)}</td><td>${esc(p.role)}</td><td class="signature"></td></tr>`).join(''); return reportShell('Lista de Presença da Operação', op, `<p><strong>Total da equipe:</strong> ${op.team.length} ${op.team.length === 1 ? 'pessoa' : 'pessoas'}.</p><table><thead><tr><th style="width:45px">Nº</th><th>Nome</th><th>Setor</th><th>Assinatura</th></tr></thead><tbody>${rows}</tbody></table>`) }
-    function productionReport(op) { const r = ranking(op), s = stats(op), rows = r.map((x, i) => `<tr><td class="rank">${i + 1}º</td><td>${esc(x.name)}</td><td>${x.pizzas}</td><td>${x.commands}</td><td>${s.pizzas ? ((x.pizzas / s.pizzas) * 100).toFixed(1) : '0.0'}%</td><td>${x.errors}</td></tr>`).join(''); const errors = op.commands.filter(c => c.error?.active).map(c => `<tr><td>#${String(c.number).padStart(3, '0')}</td><td>${esc(c.assemblerName)}</td><td>${esc(c.error.type)}</td><td>${esc(c.error.note || '—')}</td></tr>`).join(''); return reportShell('Resultado da Montagem', op, `<p><strong>Total:</strong> ${s.commands} comandas · ${s.pizzas} pizzas · ${s.errors} ocorrências.</p><table><thead><tr><th>Rank</th><th>Montador</th><th>Pizzas</th><th>Comandas</th><th>Participação</th><th>Erros</th></tr></thead><tbody>${rows}</tbody></table><h2 style="margin-top:22px">Ocorrências</h2>${errors ? `<table><thead><tr><th>Comanda</th><th>Montador</th><th>Tipo</th><th>Descrição</th></tr></thead><tbody>${errors}</tbody></table>` : '<p>Nenhuma ocorrência registrada.</p>'}`) }
+    function productionReport(op) { const r = ranking(op), s = stats(op), rows = r.map((x, i) => `<tr><td class="rank">${i + 1}º</td><td>${esc(x.name)}</td><td>${x.pizzas}</td><td>${x.commands}</td><td>${s.pizzas ? ((x.pizzas / s.pizzas) * 100).toFixed(1) : '0.0'}%</td><td>${x.errors}</td></tr>`).join(''); const errors = op.commands.filter(c => c.error?.active).map(c => `<tr><td>#${String(c.number).padStart(3, '0')}</td><td>${formatAssemblers(c)}</td><td>${esc(c.error.type)}</td><td>${esc(c.error.note || '—')}</td></tr>`).join(''); return reportShell('Resultado da Montagem', op, `<p><strong>Total:</strong> ${s.commands} comandas · ${s.pizzas} pizzas · ${s.errors} ocorrências.</p><table><thead><tr><th>Rank</th><th>Montador</th><th>Pizzas</th><th>Comandas</th><th>Participação</th><th>Erros</th></tr></thead><tbody>${rows}</tbody></table><h2 style="margin-top:22px">Ocorrências</h2>${errors ? `<table><thead><tr><th>Comanda</th><th>Montador</th><th>Tipo</th><th>Descrição</th></tr></thead><tbody>${errors}</tbody></table>` : '<p>Nenhuma ocorrência registrada.</p>'}`) }
     function downloadHtml(name, html) { const blob = new Blob([html], { type: 'text/html;charset=utf-8' }), url = URL.createObjectURL(blob), a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1200) }
     function printHtml(html) { const w = window.open('', '_blank'); if (!w) return toast('Permita pop-ups para imprimir o relatório.', 'warn'); w.document.open(); w.document.write(html); w.document.close(); w.focus(); setTimeout(() => w.print(), 350) }
     function backup() { downloadHtml(`backup_imperial_${today()}.json`, JSON.stringify(state, null, 2)) }
@@ -1074,29 +1099,178 @@
 
     el.openRegisterCommandBtn.addEventListener('click', openRegisterCommand);
     if (el.openUpdateCommandsBtn) el.openUpdateCommandsBtn.addEventListener('click', openCommandUpdates);
-    el.closeAndUpdateBtn.addEventListener('click', openCommandUpdates);
     if (el.manageTeamBtn) el.manageTeamBtn.addEventListener('click', () => showPage('team'));
     el.manageTeamDispatchBtn.addEventListener('click', () => showPage('team'));
     document.querySelectorAll('[data-qty]').forEach(b => b.addEventListener('click', () => { let q = Number(el.pizzaQty.value) || 1; q = b.dataset.qty === 'plus' ? Math.min(50, q + 1) : Math.max(1, q - 1); el.pizzaQty.value = q }));
     el.commandSuggestions.addEventListener('click', e => { const b = e.target.closest('[data-num]'); if (b) { el.commandNumber.value = b.dataset.num; el.commandNumber.focus() } });
     el.addCommandBtn.addEventListener('click', addCommand);
+    if (document.getElementById('clearCommandBtn')) {
+      document.getElementById('clearCommandBtn').addEventListener('click', () => {
+        if (typeof resetRegistration === 'function') resetRegistration();
+        if (typeof renderCommandSuggestions === 'function') renderCommandSuggestions(currentOperation());
+      });
+    }
     el.commandNumber.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addCommand() } });
-    [el.prodSearch, el.prodStatus, el.prodAssembler].forEach(x => x.addEventListener(x.tagName === 'INPUT' ? 'input' : 'change', () => renderProductionTable(currentOperation())));
-    if (el.clearProdFilters) el.clearProdFilters.addEventListener('click', () => { el.prodSearch.value = ''; el.prodStatus.value = ''; el.prodAssembler.value = ''; renderProductionTable(currentOperation()) });
-    function handleCommandAction(e) { const b = e.target.closest('[data-cmd-action]'); if (!b) return; const op = currentOperation(), c = getCommand(op, b.dataset.id); if (!c) return; if (b.dataset.cmdAction === 'next' || b.dataset.cmdAction === 'back') move(c, b.dataset.cmdAction); if (b.dataset.cmdAction === 'edit') openEdit(c); if (b.dataset.cmdAction === 'error') openError(c) }
+    [el.prodSearch, el.prodStatus, el.prodAssembler].forEach(x => x.addEventListener(x.tagName === 'INPUT' ? 'input' : 'change', () => { window.currentProductionPage = 1; (window.renderProductionTableOverride || renderProductionTable)(currentOperation()); }));
+    if (el.clearProdFilters) el.clearProdFilters.addEventListener('click', () => { el.prodSearch.value = ''; el.prodStatus.value = ''; el.prodAssembler.value = ''; window.currentProductionPage = 1; (window.renderProductionTableOverride || renderProductionTable)(currentOperation()) });
+    function handleCommandAction(e) { const b = e.target.closest('[data-cmd-action]'); if (!b) return; const op = currentOperation(), c = getCommand(op, b.dataset.id); if (!c) return; if (b.dataset.cmdAction === 'next' || b.dataset.cmdAction === 'back') move(c, b.dataset.cmdAction); if (b.dataset.cmdAction === 'edit') openEdit(c); if (b.dataset.cmdAction === 'error') openError(c); if (b.dataset.cmdAction === 'sweet-asm') openSweetAssembler(c); }
     el.productionBody.addEventListener('click', handleCommandAction);
     el.productionMobileList.addEventListener('click', handleCommandAction);
     if (el.productionGridContainer) el.productionGridContainer.addEventListener('click', handleCommandAction);
+    const sweetPanel = $('sweetPendingPanel');
+    if (sweetPanel) sweetPanel.addEventListener('click', handleCommandAction);
     if (el.viewListBtn) el.viewListBtn.addEventListener('click', () => { productionViewMode = 'list'; updateProductionViewMode(); });
     if (el.viewGridBtn) el.viewGridBtn.addEventListener('click', () => { productionViewMode = 'grid'; updateProductionViewMode(); });
-    el.closeKitchenBtn.addEventListener('click', () => { const op = currentOperation(); if (!op || op.status !== 'production_open') return; if (!confirm('Encerrar a cozinha? Novas comandas ficarão bloqueadas, mas o despacho continuará ativo.')) return; op.status = 'kitchen_closed'; op.kitchenClosedAt = new Date().toISOString(); save(); el.registerCommandModal.classList.remove('show'); renderAll(); showPage('reports'); toast('Cozinha encerrada. Os relatórios da montagem já estão disponíveis.') });
+    let pendingCloseAction = null;
+
+    function renderOvernightTeamList(op) {
+      const container = $('overnightTeamList');
+      if (!container) return;
+      const team = op?.team || [];
+      if (!team.length) {
+        container.innerHTML = '<p class="text-xs text-gray-400 italic p-2 text-center">Nenhum profissional cadastrado na equipe de hoje.</p>';
+        return;
+      }
+      container.innerHTML = team.map(p => `
+        <label class="flex items-center justify-between p-2.5 rounded-xl border border-gray-200 bg-gray-50/50 hover:bg-indigo-50/40 hover:border-indigo-300 transition-all cursor-pointer select-none">
+          <div class="flex items-center gap-3">
+            <input type="checkbox" name="overnightTeamMember" value="${p.personId}" checked class="w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500 cursor-pointer">
+            <div>
+              <span class="text-sm font-bold text-gray-800 block leading-tight">${esc(p.name)}</span>
+              <span class="text-[11px] text-gray-500 font-medium">${esc(p.role)}</span>
+            </div>
+          </div>
+          <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 shrink-0">Online</span>
+        </label>
+      `).join('');
+    }
+
+    function openOvernightCloseModal(actionType) {
+      const op = currentOperation();
+      if (!op) return;
+      pendingCloseAction = actionType;
+      const titleEl = $('overnightModalTitle');
+      if (titleEl) titleEl.textContent = actionType === 'kitchen' ? 'Encerrar Cozinha' : 'Finalizar Operação do Dia';
+      document.querySelectorAll('input[name="overnightWork"]').forEach(r => r.checked = false);
+      const teamSec = $('overnightTeamSection');
+      if (teamSec) teamSec.classList.add('hidden');
+      updateOvernightConfirmButton();
+      if (el.overnightCloseModal) el.overnightCloseModal.classList.add('show');
+    }
+
+    function closeOvernightCloseModal() {
+      pendingCloseAction = null;
+      if (el.overnightCloseModal) el.overnightCloseModal.classList.remove('show');
+    }
+
+    function updateOvernightConfirmButton() {
+      const selected = document.querySelector('input[name="overnightWork"]:checked');
+      const btn = el.confirmOvernightCloseBtn;
+      const teamSec = $('overnightTeamSection');
+      if (!btn) return;
+      if (selected) {
+        btn.disabled = false;
+        btn.classList.remove('bg-gray-300', 'cursor-not-allowed');
+        if (selected.value === 'yes') {
+          btn.className = 'px-5 py-2.5 text-[13px] font-bold text-white bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] transition-all rounded-xl cursor-pointer shadow-sm';
+          btn.textContent = 'Confirmar (Com Madrugada)';
+          if (teamSec) {
+            teamSec.classList.remove('hidden');
+            renderOvernightTeamList(currentOperation());
+          }
+        } else {
+          btn.className = 'px-5 py-2.5 text-[13px] font-bold text-white bg-[#B5120B] hover:bg-[#9a0f09] active:scale-[0.98] transition-all rounded-xl cursor-pointer shadow-sm';
+          btn.textContent = 'Confirmar (Sem Madrugada)';
+          if (teamSec) teamSec.classList.add('hidden');
+        }
+      } else {
+        btn.disabled = true;
+        btn.className = 'px-5 py-2.5 text-[13px] font-bold text-white bg-gray-300 rounded-xl cursor-not-allowed transition-all shadow-xs';
+        btn.textContent = 'Selecione uma opção';
+        if (teamSec) teamSec.classList.add('hidden');
+      }
+    }
+
+    if (el.closeKitchenBtn) {
+      el.closeKitchenBtn.addEventListener('click', () => {
+        const op = currentOperation();
+        if (!op || op.status !== 'production_open') return;
+        openOvernightCloseModal('kitchen');
+      });
+    }
+
+    if (el.closeOvernightModalBtn) el.closeOvernightModalBtn.addEventListener('click', closeOvernightCloseModal);
+    if (el.cancelOvernightBtn) el.cancelOvernightBtn.addEventListener('click', closeOvernightCloseModal);
+    document.querySelectorAll('input[name="overnightWork"]').forEach(radio => radio.addEventListener('change', updateOvernightConfirmButton));
+
+    const selectAllBtn = $('overnightSelectAllBtn');
+    if (selectAllBtn) {
+      selectAllBtn.addEventListener('click', () => {
+        const checkboxes = document.querySelectorAll('input[name="overnightTeamMember"]');
+        const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+        checkboxes.forEach(cb => cb.checked = !allChecked);
+        selectAllBtn.textContent = allChecked ? 'Marcar todos' : 'Desmarcar todos';
+      });
+    }
+
+    if (el.confirmOvernightCloseBtn) {
+      el.confirmOvernightCloseBtn.addEventListener('click', () => {
+        const selected = document.querySelector('input[name="overnightWork"]:checked');
+        if (!selected) return toast('Selecione se vai trabalhar de madrugada.', 'error');
+        const op = currentOperation();
+        if (!op) return;
+
+        const isOvernight = (selected.value === 'yes');
+        op.overnightWork = isOvernight;
+
+        if (isOvernight) {
+          const checkedMembers = Array.from(document.querySelectorAll('input[name="overnightTeamMember"]:checked')).map(cb => cb.value);
+          if (!checkedMembers.length) return toast('Selecione ao menos um profissional para a madrugada.', 'warn');
+          
+          const overnightTeam = (op.team || []).filter(p => checkedMembers.includes(p.personId));
+          op.overnightTeam = overnightTeam;
+          op.team = overnightTeam; // Atualiza a equipe para apenas os que vão trabalhar na madrugada
+        }
+
+        if (pendingCloseAction === 'kitchen') {
+          op.status = 'kitchen_closed';
+          op.kitchenClosedAt = new Date().toISOString();
+          save();
+          if (el.registerCommandModal) el.registerCommandModal.classList.remove('show');
+          closeOvernightCloseModal();
+          renderAll();
+          showPage('reports');
+          toast(`Cozinha encerrada (${isOvernight ? `Com madrugada - ${op.overnightTeam?.length || 0} profissionais` : 'Sem madrugada'}).`);
+        } else if (pendingCloseAction === 'day') {
+          op.status = 'completed';
+          op.completedAt = new Date().toISOString();
+          save();
+          selectedReportOperationId = op.id;
+          closeOvernightCloseModal();
+          renderAll();
+          showPage('reports');
+          toast(`Operação do dia finalizada (${isOvernight ? `Com madrugada - ${op.overnightTeam?.length || 0} profissionais` : 'Sem madrugada'}).`);
+        }
+      });
+    }
+
     el.reopenKitchenBtn.addEventListener('click', () => { const op = currentOperation(); if (!op || op.status !== 'kitchen_closed') return; if (!confirm('Reabrir a cozinha para novos registros?')) return; op.status = 'production_open'; op.kitchenClosedAt = null; save(); renderAll(); toast('Cozinha reaberta.', 'warn') });
 
     // modais
-    document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => $(b.dataset.close + 'Modal').classList.remove('show')));
-    [el.registerCommandModal, el.assemblerPickerModal, el.editModal, el.errorModal, el.editPersonModal, el.confirmDeleteModal].forEach(m => {
+    document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => {
+      const modalName = b.dataset.close + 'Modal';
+      const modal = $(modalName);
+      if (modal) {
+        modal.classList.remove('show');
+      }
+    }));
+    [el.registerCommandModal, el.assemblerPickerModal, el.editModal, el.errorModal, el.editPersonModal, el.confirmDeleteModal, el.sweetAssemblerModal].forEach(m => {
       if (m) {
-        m.addEventListener('click', e => { if (e.target === m) m.classList.remove('show') });
+        m.addEventListener('click', e => { 
+          if (e.target === m) {
+            m.classList.remove('show');
+          }
+        });
       }
     });
 
@@ -1155,9 +1329,27 @@
           if (window.lucide) lucide.createIcons();
         }
       });
-    } el.editForm.addEventListener('submit', e => { e.preventDefault(); const op = currentOperation(), c = getCommand(op, el.editId.value), n = Number(el.editNumber.value), q = Number(el.editQty.value); if (!c) return; if (!Number.isInteger(n) || n < 1 || n > 1000) return toast('Número inválido.', 'error'); if (op.commands.some(x => x.id !== c.id && x.number === n)) return toast('Essa comanda já existe.', 'warn'); if (!Number.isInteger(q) || q < 1 || q > 50) return toast('Quantidade inválida.', 'error'); const a = assemblers(op).find(p => p.personId === el.editAssembler.value); c.number = n; c.pizzas = q; c.assemblerId = a.personId; c.assemblerName = a.name; c.note = el.editNote.value.trim(); const st = el.editStatus.value, now = new Date().toISOString(); if (st !== c.status) { c.status = st; if (st === 'forno') c.statusTimes.forno ||= now; if (st === 'despacho') c.statusTimes.despacho ||= now; if (st !== 'despacho') { c.dispatch.status = 'aguardando'; c.dispatch.checkedAt = null; c.dispatch.releasedAt = null } } c.updatedAt = now; save(); el.editModal.classList.remove('show'); renderProduction(); renderDispatch(); renderDashboard(); toast('Comanda atualizada.') }); el.deleteCommandBtn.addEventListener('click', () => { const op = currentOperation(), c = getCommand(op, el.editId.value); if (c && confirm(`Excluir a comanda ${c.number}?`)) { op.commands = op.commands.filter(x => x.id !== c.id); save(); el.editModal.classList.remove('show'); renderProduction(); renderDispatch(); renderDashboard(); toast('Comanda excluída.', 'warn') } }); el.errorForm.addEventListener('submit', e => { e.preventDefault(); const c = getCommand(currentOperation(), el.errorId.value); if (!c || !el.errorType.value) return toast('Selecione o tipo de erro.', 'error'); c.error = { active: true, type: el.errorType.value, note: el.errorNote.value.trim(), createdAt: new Date().toISOString() }; save(); el.errorModal.classList.remove('show'); renderProduction(); renderDashboard(); toast('Erro registrado.', 'warn') }); el.clearErrorBtn.addEventListener('click', () => { const c = getCommand(currentOperation(), el.errorId.value); if (c) { c.error = { active: false, type: '', note: '', createdAt: null }; save(); el.errorModal.classList.remove('show'); renderProduction(); renderDashboard(); toast('Sinalização retirada.') } });
+    } el.editForm.addEventListener('submit', e => { e.preventDefault(); const op = currentOperation(), c = getCommand(op, el.editId.value), n = Number(el.editNumber.value), q = Number(el.editQty.value); if (!c) return; if (!Number.isInteger(n) || n < 1 || n > 1000) return toast('Número inválido.', 'error'); if (op.commands.some(x => x.id !== c.id && x.number === n)) return toast('Essa comanda já existe.', 'warn'); if (!Number.isInteger(q) || q < 1 || q > 50) return toast('Quantidade inválida.', 'error'); const a = assemblers(op).find(p => p.personId === el.editAssembler.value); c.number = n; c.pizzas = q; c.assemblerId = a.personId; c.assemblerName = a.name; c.note = el.editNote.value.trim(); const st = el.editStatus.value, now = new Date().toISOString(); if (st !== c.status) { c.status = st; if (st === 'forno') c.statusTimes.forno ||= now; if (st === 'pronto') c.statusTimes.pronto ||= now; if (st === 'despacho') c.statusTimes.despacho ||= now; if (st !== 'despacho') { c.dispatch.status = 'aguardando'; c.dispatch.checkedAt = null; c.dispatch.releasedAt = null } } c.updatedAt = now; save(); el.editModal.classList.remove('show'); renderProduction(); renderDispatch(); renderDashboard(); if(typeof renderSweetPendingPanel==='function') renderSweetPendingPanel(); toast('Comanda atualizada.') }); el.deleteCommandBtn.addEventListener('click', () => { const op = currentOperation(), c = getCommand(op, el.editId.value); if (c && confirm(`Excluir a comanda ${c.number}?`)) { op.commands = op.commands.filter(x => x.id !== c.id); save(); el.editModal.classList.remove('show'); renderProduction(); renderDispatch(); renderDashboard(); toast('Comanda excluída.', 'warn') } }); el.errorForm.addEventListener('submit', e => { e.preventDefault(); const c = getCommand(currentOperation(), el.errorId.value); if (!c || !el.errorType.value) return toast('Selecione o tipo de erro.', 'error'); c.error = { active: true, type: el.errorType.value, note: el.errorNote.value.trim(), createdAt: new Date().toISOString() }; save(); el.errorModal.classList.remove('show'); renderProduction(); renderDashboard(); toast('Erro registrado.', 'warn') }); el.clearErrorBtn.addEventListener('click', () => { const c = getCommand(currentOperation(), el.errorId.value); if (c) { c.error = { active: false, type: '', note: '', createdAt: null }; save(); el.errorModal.classList.remove('show'); renderProduction(); renderDashboard(); toast('Sinalização retirada.') } });
+
+    el.sweetAssemblerForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const op = currentOperation();
+      const c = getCommand(op, el.sweetAssemblerCmdId.value);
+      if (!c) return;
+      const sa = assemblers(op).find(p => p.personId === el.sweetAssemblerSelect.value);
+      c.sweetAssemblerId = sa ? sa.personId : null;
+      c.sweetAssemblerName = sa ? sa.name : null;
+      c.updatedAt = new Date().toISOString();
+      save();
+      el.sweetAssemblerModal.classList.remove('show');
+      renderProduction();
+      renderDispatch();
+      renderDashboard();
+      if (typeof renderSweetPendingPanel === 'function') renderSweetPendingPanel();
+      toast('Montador de doces registrado.');
+    });
     // despacho
-    [el.dispatchSearch, el.dispatchFilter].forEach(x => x.addEventListener(x.tagName === 'INPUT' ? 'input' : 'change', renderDispatch)); el.clearDispatchFilters.addEventListener('click', () => { el.dispatchSearch.value = ''; el.dispatchFilter.value = ''; renderDispatch() }); el.dispatchGrid.addEventListener('change', e => { if (e.target.dataset.dField === 'change') { const card = e.target.closest('[data-dispatch-card]'), amt = card.querySelector('[data-d-field="changeAmount"]'); amt.disabled = !e.target.checked; if (!e.target.checked) amt.value = '' } }); el.dispatchGrid.addEventListener('click', e => { const b = e.target.closest('[data-d-action]'); if (!b) return; const op = currentOperation(), c = getCommand(op, b.dataset.id), card = e.target.closest('[data-dispatch-card]'); if (!c || !card) return; collectDispatch(card, c); const now = new Date().toISOString(); if (b.dataset.dAction === 'check') { c.dispatch.status = 'conferido'; c.dispatch.checkedAt = now } if (b.dataset.dAction === 'release') { c.dispatch.status = 'liberado'; c.dispatch.checkedAt ||= now; c.dispatch.releasedAt = now } save(); renderDispatch(); renderDashboard(); toast(b.dataset.dAction === 'release' ? 'Pedido liberado.' : 'Conferência salva.') }); el.finishDayBtn.addEventListener('click', () => { const op = currentOperation(); if (!op || op.status !== 'kitchen_closed') return toast('Encerre a cozinha antes de finalizar o dia.', 'warn'); const p = pendingToFinish(op); if (p) return toast(`Ainda existem ${p} pedidos não finalizados.`, 'warn'); if (!confirm('Finalizar toda a operação do dia?')) return; op.status = 'completed'; op.completedAt = new Date().toISOString(); save(); selectedReportOperationId = op.id; renderAll(); showPage('reports'); toast('Operação do dia finalizada.') });
+    [el.dispatchSearch, el.dispatchFilter].forEach(x => x.addEventListener(x.tagName === 'INPUT' ? 'input' : 'change', renderDispatch)); el.clearDispatchFilters.addEventListener('click', () => { el.dispatchSearch.value = ''; el.dispatchFilter.value = ''; renderDispatch() }); el.dispatchGrid.addEventListener('change', e => { if (e.target.dataset.dField === 'change') { const card = e.target.closest('[data-dispatch-card]'), amt = card.querySelector('[data-d-field="changeAmount"]'); amt.disabled = !e.target.checked; if (!e.target.checked) amt.value = '' } }); el.dispatchGrid.addEventListener('click', e => { const b = e.target.closest('[data-d-action]'); if (!b) return; const op = currentOperation(), c = getCommand(op, b.dataset.id), card = e.target.closest('[data-dispatch-card]'); if (!c || !card) return; collectDispatch(card, c); const now = new Date().toISOString(); if (b.dataset.dAction === 'check') { c.dispatch.status = 'conferido'; c.dispatch.checkedAt = now } if (b.dataset.dAction === 'release') { c.dispatch.status = 'liberado'; c.dispatch.checkedAt ||= now; c.dispatch.releasedAt = now } save(); renderDispatch(); renderDashboard(); toast(b.dataset.dAction === 'release' ? 'Pedido liberado.' : 'Conferência salva.') }); el.finishDayBtn.addEventListener('click', () => { const op = currentOperation(); if (!op || op.status !== 'kitchen_closed') return toast('Encerre a cozinha antes de finalizar o dia.', 'warn'); const p = pendingToFinish(op); if (p) return toast(`Ainda existem ${p} pedidos não finalizados.`, 'warn'); openOvernightCloseModal('day'); });
     // relatórios
     el.historyList.addEventListener('click', e => { const x = e.target.closest('[data-report-op]'); if (x) { selectedReportOperationId = x.dataset.reportOp; renderReports() } }); el.reportCards.addEventListener('click', e => { const b = e.target.closest('[data-report-action]'); if (!b) return; const op = getOperation(selectedReportOperationId); if (!op) return; const a = b.dataset.reportAction; if (a === 'download-attendance') downloadHtml(`lista_presenca_${op.date}.html`, attendanceReport(op)); if (a === 'print-attendance') printHtml(attendanceReport(op)); if (a === 'download-production') downloadHtml(`resultado_montagem_${op.date}.html`, productionReport(op)); if (a === 'print-production') printHtml(productionReport(op)) }); el.backupBtn.addEventListener('click', () => { const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' }), url = URL.createObjectURL(blob), a = document.createElement('a'); a.href = url; a.download = `backup_imperial_${today()}.json`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); toast('Backup baixado.') }); el.restoreBtn.addEventListener('click', () => el.restoreFile.click()); el.restoreFile.addEventListener('change', async e => { const f = e.target.files[0]; if (!f) return; try { const d = JSON.parse(await f.text()); if (!Array.isArray(d.people) || !Array.isArray(d.operations)) throw new Error(); if (!confirm('Restaurar este backup e substituir os dados atuais?')) return; state.people = d.people; state.operations = d.operations; save(); selectedReportOperationId = null; renderAll(); toast('Backup restaurado.') } catch (err) { toast('Backup inválido.', 'error') } finally { e.target.value = '' } });
 
@@ -1285,7 +1477,7 @@
         esfihas: cs.reduce((a, c) => a + num(c.special?.esfiha), 0),
         sweet: cs.reduce((a, c) => a + num(c.special?.sweet), 0),
         kitchen: cs.filter(c => c.status === 'cozinha').length,
-        oven: cs.filter(c => c.status === 'forno').length,
+        oven: cs.filter(c => c.status === 'forno' || c.status === 'pronto').length,
         dispatchPending: cs.filter(c => c.status === 'despacho' && c.dispatch?.status !== 'entrega').length,
         released: cs.filter(dispatchDone).length,
         errors: cs.filter(c => c.error?.active).length
@@ -1334,7 +1526,7 @@
       if (!recent.length) return `<div class="dashboard-live-empty">${empty('Sem movimento ainda', 'As últimas comandas aparecerão aqui em tempo real.')}</div>`;
       return `<div class="live-sample">${recent.map(c => `<div class="live-item">
     <span class="live-dot"></span>
-    <div><strong>Comanda #${String(c.number).padStart(3, '0')} · ${esc(c.assemblerName)}</strong><small>${statusText(c)} · ${formatTime(c.updatedAt || c.createdAt)}${specialTagsHtml(c)}</small></div>
+    <div><strong>Comanda #${String(c.number).padStart(3, '0')} · ${formatAssemblers(c)}</strong><small>${statusText(c)} · ${formatTime(c.updatedAt || c.createdAt)}${specialTagsHtml(c)}</small></div>
     <span class="live-pizzas">${fmt(commandEquivalent(c))} equiv.</span>
   </div>`).join('')}</div>`;
     };
@@ -1342,6 +1534,7 @@
     statusText = function (c) {
       if (c.status === 'cozinha') return 'Na cozinha';
       if (c.status === 'forno') return 'No forno';
+      if (c.status === 'pronto') return 'Aguardando atendimento';
       if (c.dispatch?.status === 'entrega') return 'Saiu para entrega';
       if (c.dispatch?.status === 'conferido') return 'Conferido no atendimento';
       return 'No atendimento / despacho';
@@ -1349,6 +1542,7 @@
     statusClass = function (c) {
       if (c.status === 'cozinha') return 'b-kitchen';
       if (c.status === 'forno') return 'b-oven';
+      if (c.status === 'pronto') return 'b-dispatch';
       if (c.dispatch?.status === 'entrega') return 'b-released';
       return 'b-dispatch';
     };
@@ -1400,14 +1594,47 @@
       setTimeout(() => el.assemblerId.focus(), 100);
     };
 
+    renderSweetPendingPanel = function () {
+      const panel = $('sweetPendingPanel'), list = $('sweetPendingList');
+      if (!panel || !list) return;
+      const op = currentOperation();
+      const pending = op ? op.commands.filter(c => num(c.special?.sweet) > 0 && !c.sweetDelivered && !c.sweetAssemblerId) : [];
+      if (!pending.length) { panel.classList.add('hidden'); return; }
+      panel.classList.remove('hidden');
+      list.innerHTML = pending.map(c => `
+        <div class="flex items-center justify-between gap-3 bg-white border border-pink-100 rounded-lg px-3 py-2">
+          <div class="flex items-center gap-2 min-w-0 overflow-hidden">
+            <span class="text-[13px] font-bold text-gray-800 shrink-0">${String(c.number).padStart(3,'0')}</span>
+            <span class="text-[12px] text-gray-500 truncate">${esc(c.sweetAssemblerName || c.assemblerName)}</span>
+            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[11px] font-bold bg-pink-100 text-pink-700 shrink-0">${fmt(c.special.sweet,0)} doce${c.special.sweet>1?'s':''}</span>
+          </div>
+          <button type="button" data-cmd-action="sweet-asm" data-id="${c.id}"
+            class="inline-flex items-center px-3 py-1.5 text-[12px] font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors shrink-0">
+            <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14m7-7H5"/></svg>Registrar
+          </button>
+        </div>
+      `).join('');
+    };
+
+    markSweetDelivered = function (commandId) {
+      const op = currentOperation(); if (!op) return;
+      const c = op.commands.find(x => x.id === commandId); if (!c) return;
+      c.sweetDelivered = true; save();
+      renderSweetPendingPanel();
+      toast(`Comanda #${String(c.number).padStart(3,'0')} · doce marcada como entregue.`, 'success');
+    };
+    window.markSweetDelivered = function (id) { markSweetDelivered(id); };
+
     openRegisterCommand = function () {
       const op = currentOperation();
       if (!op || op.status !== 'production_open') return toast('A cozinha não está aberta.', 'warn');
       el.assemblerId.innerHTML = '<option value="">Selecione o montador</option>' + assemblers(op).map(p => `<option value="${p.personId}">${esc(p.name)}</option>`).join('');
-      resetRegistration(); renderCommandSuggestions(op);
+      resetRegistration(); renderCommandSuggestions(op); renderSweetPendingPanel();
       const body = el.registerCommandModal.querySelector('.register-modal-body'); if (body) body.scrollTop = 0;
       el.registerCommandModal.classList.add('show'); setTimeout(() => el.assemblerId.focus(), 120);
     };
+
+
 
     addCommand = function () {
       const op = currentOperation();
@@ -1428,11 +1655,12 @@
         id: uid(), number: n, pizzas: q, special: sp, assemblerId: a.personId, assemblerName: a.name, note: el.commandNote.value.trim(), status,
         createdAt: now, updatedAt: now, statusTimes: { cozinha: now, forno: status === 'forno' ? now : null, despacho: null },
         error: { active: false, type: '', note: '', createdAt: null },
+        sweetDelivered: false,
         dispatch: { status: 'aguardando', beverage: false, change: false, changeAmount: '', ketchup: false, mayonnaise: false, note: '', receivedAt: null, checkedAt: null, outForDeliveryAt: null }
       };
       op.commands.push(cmd); save();
       const equivalent = commandEquivalent(cmd);
-      resetRegistration(); renderCommandSuggestions(op); renderProduction(); renderDashboard();
+      resetRegistration(); renderCommandSuggestions(op); renderProduction(); renderDashboard(); renderSweetPendingPanel();
       toast(`Comanda ${n} registrada · ${fmt(equivalent)} pizza${equivalent === 1 ? '' : 's'} equivalente${equivalent === 1 ? '' : 's'}.`);
     };
 
@@ -1465,7 +1693,7 @@
     };
 
     renderProductionRecent = function (op) {
-      const pending = op.commands.filter(c => c.status === 'cozinha' || c.status === 'forno').length;
+      const pending = op.commands.filter(c => c.status === 'cozinha' || c.status === 'forno' || c.status === 'pronto').length;
       if (el.updatePendingBadge) el.updatePendingBadge.textContent = pending;
       
       if (!el.productionRecent) return;
@@ -1473,6 +1701,7 @@
       
       const sassChip = c => {
         if (c.status === 'forno') return 'bg-[#FFF7ED] text-[#C2410C] border-[#FFEDD5]';
+        if (c.status === 'pronto') return 'bg-purple-50 text-purple-700 border-purple-100';
         if (c.status === 'cozinha') return 'bg-[#EFF6FF] text-[#1D4ED8] border-[#DBEAFE]';
         return 'bg-[#F0FDF4] text-[#15803D] border-[#DCFCE7]';
       };
@@ -1481,7 +1710,7 @@
         <div class="flex items-center gap-2 px-2.5 py-1 rounded-[6px] border ${sassChip(c)} text-[12px] font-medium shadow-sm">
           <span class="font-semibold opacity-90">#${String(c.number).padStart(3,'0')}</span>
           <span class="opacity-30">|</span>
-          <span class="truncate max-w-[80px]">${esc(c.assemblerName.split(' ')[0])}</span>
+          <span class="truncate max-w-[80px]">${formatAssemblers(c)}</span>
           <span class="opacity-30">|</span>
           <span class="flex items-center gap-0.5">${fmt(commandEquivalent(c))} <span class="opacity-60 text-[10px]">🍕</span></span>
         </div>
@@ -1490,17 +1719,26 @@
 
     function prodFlowActions(c) {
       if (c.status === 'cozinha') return `<button class="inline-flex items-center px-4 py-2 text-[13px] font-bold text-white bg-orange-600 rounded-lg hover:bg-orange-700 transition-colors shadow-sm whitespace-nowrap" data-cmd-action="next" data-id="${c.id}"><svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 7 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z"></path></svg>Enviar ao forno</button>`;
-      if (c.status === 'forno') return `<button class="inline-flex items-center px-4 py-2 text-[13px] font-bold text-white bg-[#B5120B] rounded-lg hover:bg-[#910e08] transition-colors shadow-sm whitespace-nowrap" data-dispatch-intake="${c.id}"><svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>Abrir no atendimento</button><button class="inline-flex items-center px-4 py-2 text-[13px] font-semibold text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors shadow-sm whitespace-nowrap ml-2" data-cmd-action="back" data-id="${c.id}"><svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>Voltar</button>`;
+      if (c.status === 'forno') return `<button class="inline-flex items-center px-4 py-2 text-[13px] font-bold text-white bg-[#1F6FB2] rounded-lg hover:bg-[#1a5e98] transition-colors shadow-sm whitespace-nowrap" data-cmd-action="next" data-id="${c.id}"><svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>Enviar para o atendimento</button><button class="inline-flex items-center px-4 py-2 text-[13px] font-semibold text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors shadow-sm whitespace-nowrap ml-2" data-cmd-action="back" data-id="${c.id}"><svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>Voltar</button>`;
+      if (c.status === 'pronto') return `<button class="inline-flex items-center px-4 py-2 text-[13px] font-bold text-white bg-[#B5120B] rounded-lg hover:bg-[#910e08] transition-colors shadow-sm whitespace-nowrap" data-dispatch-intake="${c.id}"><svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>Abrir no atendimento</button><button class="inline-flex items-center px-4 py-2 text-[13px] font-semibold text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors shadow-sm whitespace-nowrap ml-2" data-cmd-action="back" data-id="${c.id}"><svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>Voltar</button>`;
       if (c.dispatch?.status === 'entrega') return `<button class="inline-flex items-center px-4 py-2 text-[13px] font-semibold text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors shadow-sm whitespace-nowrap" data-open-dispatch="${c.id}"><svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>Ver entrega</button>`;
-      return `<button class="inline-flex items-center px-4 py-2 text-[13px] font-bold text-white bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors shadow-sm whitespace-nowrap" data-open-dispatch="${c.id}"><svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>Abrir conferência</button><button class="inline-flex items-center px-4 py-2 text-[13px] font-semibold text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors shadow-sm whitespace-nowrap ml-2" data-cmd-action="back" data-id="${c.id}"><svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>Voltar ao forno</button>`;
+      return `<button class="inline-flex items-center px-4 py-2 text-[13px] font-bold text-white bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors shadow-sm whitespace-nowrap" data-open-dispatch="${c.id}"><svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>Abrir conferência</button><button class="inline-flex items-center px-4 py-2 text-[13px] font-semibold text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors shadow-sm whitespace-nowrap ml-2" data-cmd-action="back" data-id="${c.id}"><svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>Voltar ao atendimento</button>`;
     }
 
-    renderProductionTable = function (op) {
-      const cs = filteredCommands(op);
+    if (typeof window.currentProductionPage === 'undefined') window.currentProductionPage = 1;
+    const PROD_PAGE_SIZE = 12;
+
+    window.renderProductionTableOverride = renderProductionTable = function (op) {
+      const allCs = filteredCommands(op);
+      const totalPages = Math.max(1, Math.ceil(allCs.length / PROD_PAGE_SIZE));
+      if (window.currentProductionPage > totalPages) window.currentProductionPage = totalPages;
+      const pageStart = (window.currentProductionPage - 1) * PROD_PAGE_SIZE;
+      const cs = allCs.slice(pageStart, pageStart + PROD_PAGE_SIZE);
 
       const tableStatusBadge = c => {
         if (c.status === 'cozinha') return 'bg-blue-50 text-[#1F6FB2] border-blue-100/60';
         if (c.status === 'forno') return 'bg-orange-50 text-orange-600 border-orange-100/60';
+        if (c.status === 'pronto') return 'bg-purple-50 text-purple-600 border-purple-100/60';
         return c.dispatch?.status === 'liberado' ? 'bg-green-50 text-green-600 border-green-100/60' : 'bg-purple-50 text-purple-600 border-purple-100/60';
       };
 
@@ -1519,7 +1757,7 @@
               
               <div class="flex flex-col justify-center gap-1">
                 <div class="flex items-center gap-2">
-                  <span class="text-[15px] font-bold text-gray-900 tracking-tight leading-none">${esc(c.assemblerName)}</span>
+                  <span class="text-[15px] font-bold text-gray-900 tracking-tight leading-none">${formatAssemblers(c)}</span>
                   ${specialTagsHtml(c)}
                 </div>
                 <span class="text-[13px] font-medium text-gray-500 leading-none">
@@ -1552,7 +1790,7 @@
               <span class="text-[16px] font-black tracking-tighter text-[#1F6FB2] leading-none">${String(c.number).padStart(3, '0')}</span>
             </div>
             <div class="flex flex-col">
-              <span class="text-[14px] font-bold text-gray-900 leading-none">${esc(c.assemblerName)}</span>
+              <span class="text-[14px] font-bold text-gray-900 leading-none">${formatAssemblers(c)}</span>
               <span class="text-[11px] font-medium text-gray-400 mt-1">${formatTime(c.createdAt)}</span>
             </div>
           </div>
@@ -1585,17 +1823,67 @@
 
       if (el.productionMobileList) el.productionMobileList.innerHTML = cardsHtml;
       if (el.productionGridContainer) el.productionGridContainer.innerHTML = cardsHtml;
-      if (el.productionEmpty) el.productionEmpty.classList.toggle('hidden', cs.length > 0);
+      if (el.productionEmpty) el.productionEmpty.classList.toggle('hidden', allCs.length > 0);
       updateProductionViewMode();
+
+      // --- Pagination Controls ---
+      // totalPages already declared at top of function — do NOT redeclare with const
+      const paginationEl = document.getElementById('prodPagination');
+      if (!paginationEl) return;
+
+      if (allCs.length === 0) { paginationEl.innerHTML = ''; return; }
+
+      const cur = window.currentProductionPage;
+      const pageBtn = (n, label, disabled = false, active = false) =>
+        `<button data-prod-page="${n}" class="prod-page-btn min-w-[34px] h-[34px] px-2.5 text-[13px] font-semibold rounded-lg border transition-colors ${
+          active
+            ? 'bg-[#1F6FB2] text-white border-[#1F6FB2] shadow-sm'
+            : disabled
+              ? 'text-gray-300 border-gray-100 bg-white cursor-not-allowed'
+              : 'text-gray-600 border-gray-200 bg-white hover:bg-blue-50 hover:border-[#1F6FB2] hover:text-[#1F6FB2]'
+        }" ${disabled ? 'disabled' : ''}>${label}</button>`;
+
+      let pages = '';
+      pages += pageBtn(cur - 1, '&#8249;', cur === 1);
+      for (let i = 1; i <= totalPages; i++) {
+        if (totalPages <= 7 || i === 1 || i === totalPages || (i >= cur - 1 && i <= cur + 1)) {
+          pages += pageBtn(i, i, false, i === cur);
+        } else if (i === cur - 2 || i === cur + 2) {
+          pages += `<span class="text-gray-400 text-[13px] px-0.5">…</span>`;
+        }
+      }
+      pages += pageBtn(cur + 1, '&#8250;', cur === totalPages);
+
+      paginationEl.innerHTML = `
+        <div class="flex items-center justify-between px-5 py-3 border-t border-gray-100 bg-white rounded-b-xl">
+          <span class="text-[12px] text-gray-400 font-medium">
+            Mostrando ${pageStart + 1}–${Math.min(pageStart + PROD_PAGE_SIZE, allCs.length)} de ${allCs.length} comanda${allCs.length !== 1 ? 's' : ''}
+          </span>
+          <div class="flex items-center gap-1">${pages}</div>
+        </div>`;
+
+      paginationEl.querySelectorAll('.prod-page-btn:not([disabled])').forEach(btn => {
+        btn.addEventListener('click', () => {
+          window.currentProductionPage = Number(btn.dataset.prodPage);
+          (window.renderProductionTableOverride || renderProductionTable)(op);
+        });
+      });
     };
+
 
     move = function (c, dir) {
       const now = new Date().toISOString();
-      if (dir === 'next' && c.status === 'cozinha') { c.status = 'forno'; c.statusTimes.forno = now }
-      else if (dir === 'back') {
+      if (dir === 'next') {
+        if (c.status === 'cozinha') { c.status = 'forno'; c.statusTimes.forno = now; }
+        else if (c.status === 'forno') { c.status = 'pronto'; c.statusTimes.pronto = now; }
+      } else if (dir === 'back') {
         if (c.status === 'despacho') {
-          c.status = 'forno'; c.dispatch.status = 'aguardando'; c.dispatch.receivedAt = null; c.dispatch.checkedAt = null; c.dispatch.outForDeliveryAt = null; c.statusTimes.despacho = null;
-        } else if (c.status === 'forno') c.status = 'cozinha';
+          c.status = 'pronto'; c.dispatch.status = 'aguardando'; c.dispatch.receivedAt = null; c.dispatch.checkedAt = null; c.dispatch.outForDeliveryAt = null; c.statusTimes.despacho = null;
+        } else if (c.status === 'pronto') {
+          c.status = 'forno';
+        } else if (c.status === 'forno') {
+          c.status = 'cozinha';
+        }
       }
       c.updatedAt = now; save(); renderProduction(); renderDispatch(); renderDashboard();
     };
@@ -1607,7 +1895,28 @@
       el.editStatus.value = c.status; el.editNote.value = c.note || '';
       el.editNumber.max = settings().commandMax;
       el.editAssembler.innerHTML = assemblers(op).map(p => `<option value="${p.personId}" ${p.personId === c.assemblerId ? 'selected' : ''}>${esc(p.name)}</option>`).join('');
+      
+      const sweetAsm = $('editSweetAssembler');
+      const sweetFld = $('editSweetAssemblerField');
+      if (sweetAsm && sweetFld) {
+          sweetAsm.innerHTML = '<option value="">(Mesmo da salgada)</option>' + assemblers(op).map(p => `<option value="${p.personId}" ${p.personId === c.sweetAssemblerId ? 'selected' : ''}>${esc(p.name)}</option>`).join('');
+          const toggle = () => { sweetFld.style.display = num(el.editSweetQty.value) > 0 ? 'block' : 'none'; };
+          el.editSweetQty.addEventListener('input', toggle);
+          toggle();
+      }
+
       el.editModal.classList.add('show');
+    };
+
+    openSweetAssembler = function (c) {
+      const op = currentOperation();
+      el.sweetAssemblerCmdId.value = c.id;
+      el.sweetAssemblerCmdNumber.textContent = String(c.number).padStart(3, '0');
+      el.sweetAssemblerCmdQty.textContent = num(c.pizzas);
+      el.sweetAssemblerCmdSweetQty.textContent = num(c.special?.sweet);
+      el.sweetAssemblerCmdMainName.textContent = c.assemblerName || '-';
+      el.sweetAssemblerSelect.innerHTML = '<option value="">Selecione o montador</option>' + assemblers(op).map(p => `<option value="${p.personId}" ${p.personId === c.sweetAssemblerId ? 'selected' : ''}>${esc(p.name)}</option>`).join('');
+      el.sweetAssemblerModal.classList.add('show');
     };
 
     /* ---------- CONFIGURAÇÕES ---------- */
@@ -1699,7 +2008,7 @@
     }
 
     /* ---------- ATENDIMENTO / DESPACHO ---------- */
-    function ovenAvailable(op) { return (op?.commands || []).filter(c => c.status === 'forno') }
+    function ovenAvailable(op) { return (op?.commands || []).filter(c => c.status === 'pronto') }
     function dispatchQueue(op) { return (op?.commands || []).filter(c => c.status === 'despacho') }
     function resetDispatchFields() {
       el.dispatchBeverage.checked = false; el.dispatchChange.checked = false; el.dispatchChangeAmount.value = ''; el.dispatchChangeAmount.disabled = true;
@@ -1712,13 +2021,13 @@
     }
     function selectedDispatchHtml(c) {
       if (!c) return '';
-      return `<h4>Comanda #${String(c.number).padStart(3, '0')}</h4><p>${esc(c.assemblerName)} · ${fmt(commandEquivalent(c))} pizzas equivalentes · ${statusText(c)}</p>${specialTagsHtml(c)}`;
+      return `<h4>Comanda #${String(c.number).padStart(3, '0')}</h4><p>${formatAssemblers(c)} · ${fmt(commandEquivalent(c))} pizzas equivalentes · ${statusText(c)}</p>${specialTagsHtml(c)}`;
     }
     function renderOvenPicker(selectedId = '') {
       const op = currentOperation(), q = norm(el.ovenCommandSearch.value), list = ovenAvailable(op).filter(c => !q || norm(`${c.number} ${c.assemblerName}`).includes(q));
       el.ovenCommandList.innerHTML = list.length ? list.map(c => `<button type="button" class="oven-command-option ${c.id === selectedId ? 'selected' : ''}" data-oven-command="${c.id}">
     <strong>#${String(c.number).padStart(3, '0')}</strong>
-    <span>${esc(c.assemblerName)}<small>${num(c.pizzas)} físicas ${commandTags(c).length ? '· ' + commandTags(c).join(' · ') : ''}</small></span>
+    <span>${formatAssemblers(c)}<small>${num(c.pizzas)} físicas ${commandTags(c).length ? '· ' + commandTags(c).join(' · ') : ''}</small></span>
     <span class="oven-eq">${fmt(commandEquivalent(c))} equiv.</span>
   </button>`).join('') : empty('Nenhuma comanda no forno', 'Quando a cozinha marcar “entrou no forno”, ela aparecerá aqui.');
     }
@@ -1752,7 +2061,7 @@
       const d = c.dispatch || {}, cls = d.status === 'entrega' ? 'b-released' : d.status === 'conferido' ? 'b-dispatch' : 'b-oven',
         label = d.status === 'entrega' ? 'Saiu para entrega' : d.status === 'conferido' ? 'Conferido' : 'Recebido / aguardando';
       return `<article class="dispatch-card ${d.status === 'entrega' ? 'out-for-delivery' : ''}">
-    <div class="dispatch-head"><div><h4>Comanda #${String(c.number).padStart(3, '0')}</h4><p>${fmt(commandEquivalent(c))} equiv. · ${esc(c.assemblerName)} · recebida ${formatTime(d.receivedAt)}</p>${specialTagsHtml(c)}</div><span class="badge ${cls}">${label}</span></div>
+    <div class="dispatch-head"><div><h4>Comanda #${String(c.number).padStart(3, '0')}</h4><p>${fmt(commandEquivalent(c))} equiv. · ${formatAssemblers(c)} · recebida ${formatTime(d.receivedAt)}</p>${specialTagsHtml(c)}</div><span class="badge ${cls}">${label}</span></div>
     <div class="chips"><span class="chip">${d.beverage ? 'Bebida' : 'Sem bebida'}</span><span class="chip">${d.change ? 'Troco ' + esc(d.changeAmount || '') : 'Sem troco'}</span><span class="chip">${d.ketchup ? 'Ketchup' : 'Sem ketchup'}</span><span class="chip">${d.mayonnaise ? 'Maionese' : 'Sem maionese'}</span></div>
     ${d.status === 'entrega' ? `<div class="delivery-time">Saiu para o motoboy às ${formatTime(d.outForDeliveryAt)}</div>` : ''}
     <div class="actions end"><button class="btn btn-primary btn-small" data-open-dispatch="${c.id}">${d.status === 'entrega' ? 'Ver conferência' : 'Abrir conferência'}</button></div>
@@ -1818,7 +2127,7 @@
     };
     productionReport = function (op) {
       const r = ranking(op), s = stats(op), rows = r.map((x, i) => `<tr><td class="rank">${i + 1}º</td><td>${esc(x.name)}</td><td>${fmt(x.pizzas)}</td><td>${x.commands}</td><td>${s.pizzas ? ((x.pizzas / s.pizzas) * 100).toFixed(1) : '0.0'}%</td><td>${x.errors}</td></tr>`).join('');
-      const errors = op.commands.filter(c => c.error?.active).map(c => `<tr><td>#${String(c.number).padStart(3, '0')}</td><td>${esc(c.assemblerName)}</td><td>${esc(c.error.type)}</td><td>${esc(c.error.note || '—')}</td></tr>`).join('');
+      const errors = op.commands.filter(c => c.error?.active).map(c => `<tr><td>#${String(c.number).padStart(3, '0')}</td><td>${formatAssemblers(c)}</td><td>${esc(c.error.type)}</td><td>${esc(c.error.note || '—')}</td></tr>`).join('');
       return reportShell('Resultado da Montagem', op, `<p><strong>Total:</strong> ${s.commands} comandas · ${fmt(s.pizzas)} pizzas equivalentes · ${fmt(s.physicalPizzas)} pizzas físicas · ${fmt(s.volcano)} vulcão · ${fmt(s.sweet)} doces · ${fmt(s.esfihas, 0)} esfirras · ${s.errors} ocorrências.</p>
   <table><thead><tr><th>Rank</th><th>Montador</th><th>Pizzas equivalentes</th><th>Comandas</th><th>Participação</th><th>Erros</th></tr></thead><tbody>${rows}</tbody></table>
   <h2 style="margin-top:22px">Ocorrências</h2>${errors ? `<table><thead><tr><th>Comanda</th><th>Montador</th><th>Tipo</th><th>Descrição</th></tr></thead><tbody>${errors}</tbody></table>` : '<p>Nenhuma ocorrência registrada.</p>'}`);
@@ -1860,7 +2169,7 @@
     el.dispatchChange.addEventListener('change', () => { el.dispatchChangeAmount.disabled = !el.dispatchChange.checked; if (!el.dispatchChange.checked) el.dispatchChangeAmount.value = '' });
 
     el.receiveDispatchBtn.addEventListener('click', () => {
-      const op = currentOperation(), c = getCommand(op, el.dispatchCommandId.value); if (!c || c.status !== 'forno') return toast('Selecione uma comanda que esteja no forno.', 'warn');
+      const op = currentOperation(), c = getCommand(op, el.dispatchCommandId.value); if (!c || c.status !== 'pronto') return toast('Selecione uma comanda enviada para o atendimento.', 'warn');
       collectDispatchModal(c); const now = new Date().toISOString(); c.status = 'despacho'; c.statusTimes.despacho = now; c.dispatch.receivedAt = now; c.dispatch.status = 'aguardando';
       save(); el.dispatchCommandModal.classList.remove('show'); renderDispatch(); renderProduction(); renderDashboard(); toast(`Comanda ${c.number} recebida no atendimento.`);
     });
@@ -1913,6 +2222,11 @@
       if (sp.sweet > q) return toast('A quantidade de doces não pode ser maior que as pizzas físicas.', 'error');
       if (q === 0 && sp.esfiha === 0) return toast('Informe ao menos uma pizza ou esfirras.', 'error');
       const a = assemblers(op).find(p => p.personId === el.editAssembler.value); if (!a) return toast('Selecione o montador.', 'error');
+      
+      const sweetAsm = $('editSweetAssembler');
+      const sa = sweetAsm && sweetAsm.value ? assemblers(op).find(p => p.personId === sweetAsm.value) : null;
+      c.sweetAssemblerId = sa ? sa.personId : null;
+      c.sweetAssemblerName = sa ? sa.name : null;
 
       c.number = n; c.pizzas = q; c.special = sp; c.assemblerId = a.personId; c.assemblerName = a.name; c.note = el.editNote.value.trim();
       const st = el.editStatus.value, now = new Date().toISOString();
@@ -1927,7 +2241,7 @@
         }
       }
       c.updatedAt = now; save(); el.editModal.classList.remove('show');
-      renderProduction(); renderDispatch(); renderDashboard(); toast('Comanda atualizada.');
+      renderProduction(); renderDispatch(); renderDashboard(); if(typeof renderSweetPendingPanel==='function') renderSweetPendingPanel(); toast('Comanda atualizada.');
     }, true);
 
     /* Re-renderização final usando as novas regras. */

@@ -52,7 +52,6 @@
         </div>
       </div>
     </main>
-  </div>
 
   <!-- Modais Globais -->
   <?php require_once __DIR__ . '/../components/modals.php'; ?>

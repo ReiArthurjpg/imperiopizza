@@ -1,3 +1,167 @@
+  <!-- REGISTER COMMAND MODAL — Premium Redesign -->
+  <div id="registerCommandModal" class="modal-bg">
+    <div class="modal" style="max-width:540px; border-radius:20px; padding:0; overflow:hidden;">
+
+      <!-- Header -->
+      <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+        <div>
+          <h3 class="text-[15px] font-bold text-gray-900 leading-none">Registrar nova comanda</h3>
+          <p class="text-[12px] text-gray-400 mt-0.5">A janela fica aberta para registros em sequência.</p>
+        </div>
+        <button type="button" data-close-v4="registerCommand"
+          class="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="register-modal-body px-6 py-5 space-y-5 overflow-y-auto" style="max-height:70vh;">
+
+        <div class="space-y-1.5">
+          <label class="text-[12px] font-semibold text-gray-500 uppercase tracking-wider">Montador responsável</label>
+          <div class="relative">
+            <select id="assemblerId" class="w-full appearance-none px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 focus:bg-white focus:border-[#1F6FB2] focus:ring-2 focus:ring-[#1F6FB2]/20 transition-all text-[14px] font-semibold text-gray-700 outline-none cursor-pointer">
+              <option value="">Selecione o montador</option>
+            </select>
+            <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none">
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </div>
+          </div>
+          <div id="assemblerSuggestions" class="hidden"></div>
+        </div>
+
+        <!-- Number + Qty -->
+        <div class="grid grid-cols-2 gap-4">
+          <div class="space-y-1.5">
+            <label for="commandNumber" class="text-[12px] font-semibold text-gray-500 uppercase tracking-wider">Nº da comanda</label>
+            <input id="commandNumber" type="number" min="1" max="1000" inputmode="numeric" placeholder="Ex.: 7"
+              class="w-full px-4 py-3 text-[15px] font-bold text-gray-900 bg-gray-50 border border-gray-200 rounded-xl placeholder-gray-300 focus:outline-none focus:border-[#1F6FB2] focus:ring-2 focus:ring-blue-100 transition-all">
+          </div>
+          <div class="space-y-1.5">
+            <label class="text-[12px] font-semibold text-gray-500 uppercase tracking-wider">Qtd. de pizzas</label>
+            <div class="flex items-center gap-2">
+              <button type="button" data-qty="minus"
+                class="w-10 h-10 flex items-center justify-center bg-gray-100 border border-gray-200 text-gray-600 rounded-xl hover:bg-gray-200 transition-colors font-bold text-lg shrink-0">−</button>
+              <input id="pizzaQty" type="number" min="0" max="50" value="1" inputmode="numeric"
+                class="flex-1 px-2 py-3 text-[15px] font-bold text-gray-900 bg-gray-50 border border-gray-200 rounded-xl text-center focus:outline-none focus:border-[#1F6FB2] focus:ring-2 focus:ring-blue-100 transition-all min-w-0">
+              <button type="button" data-qty="plus"
+                class="w-10 h-10 flex items-center justify-center bg-gray-100 border border-gray-200 text-gray-600 rounded-xl hover:bg-gray-200 transition-colors font-bold text-lg shrink-0">+</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Command Suggestions -->
+        <div id="commandSuggestions" class="suggest-box"></div>
+
+        <!-- Note -->
+        <div class="space-y-1.5">
+          <label for="commandNote" class="text-[12px] font-semibold text-gray-500 uppercase tracking-wider">Observação <span class="font-normal normal-case text-gray-400">(opcional)</span></label>
+          <textarea id="commandNote" maxlength="220" placeholder="Ex.: sem cebola, prioridade, pizza dividida..."
+            class="w-full px-4 py-3 text-[13px] text-gray-700 bg-gray-50 border border-gray-200 rounded-xl placeholder-gray-300 focus:outline-none focus:border-[#1F6FB2] focus:ring-2 focus:ring-blue-100 transition-all resize-none"
+            rows="2"></textarea>
+        </div>
+
+        <!-- Initial Oven Toggle -->
+        <label class="flex items-center gap-3 p-4 rounded-xl border border-gray-200 bg-gray-50 cursor-pointer hover:bg-orange-50/50 hover:border-orange-200 transition-all group has-[:checked]:bg-orange-50 has-[:checked]:border-orange-200">
+          <input id="initialOven" type="checkbox" class="hidden">
+          <div class="w-9 h-9 flex items-center justify-center bg-white border border-gray-200 rounded-[10px] shadow-sm group-hover:border-orange-300 group-has-[:checked]:border-orange-400 group-has-[:checked]:bg-orange-50 transition-colors">
+            <svg class="w-5 h-5 text-gray-400 group-hover:text-orange-500 group-has-[:checked]:text-orange-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 7 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z"/>
+            </svg>
+          </div>
+          <div>
+            <p class="text-[13px] font-semibold text-gray-700 group-has-[:checked]:text-orange-700 transition-colors leading-none">A comanda já entrou no forno</p>
+            <p class="text-[11px] text-gray-400 mt-0.5">Marque se a pizza já está assando</p>
+          </div>
+        </label>
+
+        <!-- Special Products -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <h4 class="text-[13px] font-bold text-gray-800">Produtos especiais</h4>
+              <p class="text-[11px] text-gray-400 mt-0.5">Equivalência aplicada automaticamente ao ranking</p>
+            </div>
+            <span id="equivalentPreview" class="inline-flex items-center px-2.5 py-1 rounded-lg text-[12px] font-bold bg-blue-50 text-[#1F6FB2] border border-blue-100">1,0 equiv.</span>
+          </div>
+
+          <div class="grid grid-cols-1 gap-2.5">
+            <!-- Volcano -->
+            <label class="flex items-center gap-3 p-3.5 rounded-xl border border-gray-200 bg-gray-50 cursor-pointer hover:border-orange-200 hover:bg-orange-50/30 transition-all group has-[:checked]:border-orange-300 has-[:checked]:bg-orange-50">
+              <input id="volcanoCheck" type="checkbox" class="hidden">
+              <div class="w-8 h-8 flex items-center justify-center rounded-[8px] border border-gray-200 bg-white group-has-[:checked]:bg-orange-100 group-has-[:checked]:border-orange-300 transition-colors shrink-0">
+                <svg class="w-4 h-4 text-gray-400 group-has-[:checked]:text-orange-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-[13px] font-semibold text-gray-700 group-has-[:checked]:text-orange-700 transition-colors leading-none">Pizza vulcão</p>
+                <p id="volcanoRuleText" class="text-[11px] text-gray-400 mt-0.5">Cada unidade vale 2 pizzas</p>
+              </div>
+              <input id="volcanoQty" class="w-14 px-2 py-1.5 text-[13px] font-bold text-center bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all" type="number" min="0" max="50" value="1" inputmode="numeric" disabled>
+            </label>
+
+            <!-- Esfiha -->
+            <label class="flex items-center gap-3 p-3.5 rounded-xl border border-gray-200 bg-gray-50 cursor-pointer hover:border-amber-200 hover:bg-amber-50/30 transition-all group has-[:checked]:border-amber-300 has-[:checked]:bg-amber-50">
+              <input id="esfihaCheck" type="checkbox" class="hidden">
+              <div class="w-8 h-8 flex items-center justify-center rounded-[8px] border border-gray-200 bg-white group-has-[:checked]:bg-amber-100 group-has-[:checked]:border-amber-300 transition-colors shrink-0">
+                <svg class="w-4 h-4 text-gray-400 group-has-[:checked]:text-amber-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-[13px] font-semibold text-gray-700 group-has-[:checked]:text-amber-700 transition-colors leading-none">Esfirras</p>
+                <p id="esfihaRuleText" class="text-[11px] text-gray-400 mt-0.5">5 esfirras = 2 pizzas</p>
+              </div>
+              <input id="esfihaQty" class="w-14 px-2 py-1.5 text-[13px] font-bold text-center bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 transition-all" type="number" min="0" max="200" value="5" inputmode="numeric" disabled>
+            </label>
+
+            <!-- Sweet -->
+            <label class="flex items-center gap-3 p-3.5 rounded-xl border border-gray-200 bg-gray-50 cursor-pointer hover:border-pink-200 hover:bg-pink-50/30 transition-all group has-[:checked]:border-pink-300 has-[:checked]:bg-pink-50">
+              <input id="sweetCheck" type="checkbox" class="hidden">
+              <div class="w-8 h-8 flex items-center justify-center rounded-[8px] border border-gray-200 bg-white group-has-[:checked]:bg-pink-100 group-has-[:checked]:border-pink-300 transition-colors shrink-0">
+                <svg class="w-4 h-4 text-gray-400 group-has-[:checked]:text-pink-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-[13px] font-semibold text-gray-700 group-has-[:checked]:text-pink-700 transition-colors leading-none">Pizza doce</p>
+                <p class="text-[11px] text-gray-400 mt-0.5">Mapeia a produção de pizzas doces</p>
+              </div>
+              <input id="sweetQty" class="w-14 px-2 py-1.5 text-[13px] font-bold text-center bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-100 transition-all" type="number" min="0" max="50" value="1" inputmode="numeric" disabled>
+            </label>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer Actions -->
+      <div class="flex items-center justify-end gap-3 px-6 py-4 bg-gray-50/80 border-t border-gray-100">
+        <button type="button" data-close="registerCommand"
+          class="inline-flex items-center px-4 py-2.5 text-[13px] font-semibold text-gray-700 bg-gray-100 border border-transparent rounded-xl hover:bg-gray-200 transition-colors">
+          <svg class="w-4 h-4 mr-1.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" stroke-width="2"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 9l-6 6M9 9l6 6"/>
+          </svg>
+          Cancelar
+        </button>
+        <button id="addCommandBtn" type="button"
+          class="inline-flex items-center px-5 py-2.5 text-[13px] font-bold text-white bg-[#2f9e64] rounded-xl hover:bg-[#248150] active:scale-[0.98] transition-all shadow-sm">
+          <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 21v-8H7v8M7 3v5h8"/>
+          </svg>
+          Salvar comanda
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div id="settingsModal" class="modal-bg">
     <div class="modal settings-modal">
       <div class="modal-head">
@@ -127,169 +291,7 @@
     </div>
   </div>
 
-  <!-- REGISTER COMMAND MODAL — Premium Redesign -->
-  <div id="registerCommandModal" class="modal-bg">
-    <div class="modal" style="max-width:540px; border-radius:20px; padding:0; overflow:hidden;">
 
-      <!-- Header -->
-      <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100">
-        <div>
-          <h3 class="text-[15px] font-bold text-gray-900 leading-none">Registrar nova comanda</h3>
-          <p class="text-[12px] text-gray-400 mt-0.5">A janela fica aberta para registros em sequência.</p>
-        </div>
-        <button type="button" data-close="registerCommand"
-          class="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-          </svg>
-        </button>
-      </div>
-
-      <!-- Body -->
-      <div class="register-modal-body px-6 py-5 space-y-5 overflow-y-auto" style="max-height:70vh;">
-
-        <!-- Assembler Picker -->
-        <div class="space-y-1.5">
-          <label class="text-[12px] font-semibold text-gray-500 uppercase tracking-wider">Montador responsável</label>
-          <div class="relative">
-            <select id="assemblerId" class="w-full appearance-none px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 focus:bg-white focus:border-[#1F6FB2] focus:ring-2 focus:ring-[#1F6FB2]/20 transition-all text-[14px] font-semibold text-gray-700 outline-none cursor-pointer">
-              <option value="">Selecione o montador</option>
-            </select>
-            <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none">
-              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-              </svg>
-            </div>
-          </div>
-          <div id="assemblerSuggestions" class="hidden"></div>
-        </div>
-
-        <!-- Number + Qty -->
-        <div class="grid grid-cols-2 gap-4">
-          <div class="space-y-1.5">
-            <label for="commandNumber" class="text-[12px] font-semibold text-gray-500 uppercase tracking-wider">Nº da comanda</label>
-            <input id="commandNumber" type="number" min="1" max="1000" inputmode="numeric" placeholder="Ex.: 7"
-              class="w-full px-4 py-3 text-[15px] font-bold text-gray-900 bg-gray-50 border border-gray-200 rounded-xl placeholder-gray-300 focus:outline-none focus:border-[#1F6FB2] focus:ring-2 focus:ring-blue-100 transition-all">
-          </div>
-          <div class="space-y-1.5">
-            <label class="text-[12px] font-semibold text-gray-500 uppercase tracking-wider">Qtd. de pizzas</label>
-            <div class="flex items-center gap-2">
-              <button type="button" data-qty="minus"
-                class="w-10 h-10 flex items-center justify-center bg-gray-100 border border-gray-200 text-gray-600 rounded-xl hover:bg-gray-200 transition-colors font-bold text-lg shrink-0">−</button>
-              <input id="pizzaQty" type="number" min="0" max="50" value="1" inputmode="numeric"
-                class="flex-1 px-2 py-3 text-[15px] font-bold text-gray-900 bg-gray-50 border border-gray-200 rounded-xl text-center focus:outline-none focus:border-[#1F6FB2] focus:ring-2 focus:ring-blue-100 transition-all min-w-0">
-              <button type="button" data-qty="plus"
-                class="w-10 h-10 flex items-center justify-center bg-gray-100 border border-gray-200 text-gray-600 rounded-xl hover:bg-gray-200 transition-colors font-bold text-lg shrink-0">+</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Command Suggestions -->
-        <div id="commandSuggestions" class="suggest-box"></div>
-
-        <!-- Note -->
-        <div class="space-y-1.5">
-          <label for="commandNote" class="text-[12px] font-semibold text-gray-500 uppercase tracking-wider">Observação <span class="font-normal normal-case text-gray-400">(opcional)</span></label>
-          <textarea id="commandNote" maxlength="220" placeholder="Ex.: sem cebola, prioridade, pizza dividida..."
-            class="w-full px-4 py-3 text-[13px] text-gray-700 bg-gray-50 border border-gray-200 rounded-xl placeholder-gray-300 focus:outline-none focus:border-[#1F6FB2] focus:ring-2 focus:ring-blue-100 transition-all resize-none"
-            rows="2"></textarea>
-        </div>
-
-        <!-- Initial Oven Toggle -->
-        <label class="flex items-center gap-3 p-4 rounded-xl border border-gray-200 bg-gray-50 cursor-pointer hover:bg-orange-50/50 hover:border-orange-200 transition-all group has-[:checked]:bg-orange-50 has-[:checked]:border-orange-200">
-          <input id="initialOven" type="checkbox" class="hidden">
-          <div class="w-9 h-9 flex items-center justify-center bg-white border border-gray-200 rounded-[10px] shadow-sm group-hover:border-orange-300 group-has-[:checked]:border-orange-400 group-has-[:checked]:bg-orange-50 transition-colors">
-            <svg class="w-5 h-5 text-gray-400 group-hover:text-orange-500 group-has-[:checked]:text-orange-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 7 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z"/>
-            </svg>
-          </div>
-          <div>
-            <p class="text-[13px] font-semibold text-gray-700 group-has-[:checked]:text-orange-700 transition-colors leading-none">A comanda já entrou no forno</p>
-            <p class="text-[11px] text-gray-400 mt-0.5">Marque se a pizza já está assando</p>
-          </div>
-        </label>
-
-        <!-- Special Products -->
-        <div class="space-y-3">
-          <div class="flex items-center justify-between">
-            <div>
-              <h4 class="text-[13px] font-bold text-gray-800">Produtos especiais</h4>
-              <p class="text-[11px] text-gray-400 mt-0.5">Equivalência aplicada automaticamente ao ranking</p>
-            </div>
-            <span id="equivalentPreview" class="inline-flex items-center px-2.5 py-1 rounded-lg text-[12px] font-bold bg-blue-50 text-[#1F6FB2] border border-blue-100">1,0 equiv.</span>
-          </div>
-
-          <div class="grid grid-cols-1 gap-2.5">
-            <!-- Volcano -->
-            <label class="flex items-center gap-3 p-3.5 rounded-xl border border-gray-200 bg-gray-50 cursor-pointer hover:border-orange-200 hover:bg-orange-50/30 transition-all group has-[:checked]:border-orange-300 has-[:checked]:bg-orange-50">
-              <input id="volcanoCheck" type="checkbox" class="hidden">
-              <div class="w-8 h-8 flex items-center justify-center rounded-[8px] border border-gray-200 bg-white group-has-[:checked]:bg-orange-100 group-has-[:checked]:border-orange-300 transition-colors shrink-0">
-                <svg class="w-4 h-4 text-gray-400 group-has-[:checked]:text-orange-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                </svg>
-              </div>
-              <div class="flex-1 min-w-0">
-                <p class="text-[13px] font-semibold text-gray-700 group-has-[:checked]:text-orange-700 transition-colors leading-none">Pizza vulcão</p>
-                <p id="volcanoRuleText" class="text-[11px] text-gray-400 mt-0.5">Cada unidade vale 2 pizzas</p>
-              </div>
-              <input id="volcanoQty" class="w-14 px-2 py-1.5 text-[13px] font-bold text-center bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all" type="number" min="0" max="50" value="1" inputmode="numeric" disabled>
-            </label>
-
-            <!-- Esfiha -->
-            <label class="flex items-center gap-3 p-3.5 rounded-xl border border-gray-200 bg-gray-50 cursor-pointer hover:border-amber-200 hover:bg-amber-50/30 transition-all group has-[:checked]:border-amber-300 has-[:checked]:bg-amber-50">
-              <input id="esfihaCheck" type="checkbox" class="hidden">
-              <div class="w-8 h-8 flex items-center justify-center rounded-[8px] border border-gray-200 bg-white group-has-[:checked]:bg-amber-100 group-has-[:checked]:border-amber-300 transition-colors shrink-0">
-                <svg class="w-4 h-4 text-gray-400 group-has-[:checked]:text-amber-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
-                </svg>
-              </div>
-              <div class="flex-1 min-w-0">
-                <p class="text-[13px] font-semibold text-gray-700 group-has-[:checked]:text-amber-700 transition-colors leading-none">Esfirras</p>
-                <p id="esfihaRuleText" class="text-[11px] text-gray-400 mt-0.5">5 esfirras = 2 pizzas</p>
-              </div>
-              <input id="esfihaQty" class="w-14 px-2 py-1.5 text-[13px] font-bold text-center bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 transition-all" type="number" min="0" max="200" value="5" inputmode="numeric" disabled>
-            </label>
-
-            <!-- Sweet -->
-            <label class="flex items-center gap-3 p-3.5 rounded-xl border border-gray-200 bg-gray-50 cursor-pointer hover:border-pink-200 hover:bg-pink-50/30 transition-all group has-[:checked]:border-pink-300 has-[:checked]:bg-pink-50">
-              <input id="sweetCheck" type="checkbox" class="hidden">
-              <div class="w-8 h-8 flex items-center justify-center rounded-[8px] border border-gray-200 bg-white group-has-[:checked]:bg-pink-100 group-has-[:checked]:border-pink-300 transition-colors shrink-0">
-                <svg class="w-4 h-4 text-gray-400 group-has-[:checked]:text-pink-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                </svg>
-              </div>
-              <div class="flex-1 min-w-0">
-                <p class="text-[13px] font-semibold text-gray-700 group-has-[:checked]:text-pink-700 transition-colors leading-none">Pizza doce</p>
-                <p class="text-[11px] text-gray-400 mt-0.5">Mapeia a produção de pizzas doces</p>
-              </div>
-              <input id="sweetQty" class="w-14 px-2 py-1.5 text-[13px] font-bold text-center bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-100 transition-all" type="number" min="0" max="50" value="1" inputmode="numeric" disabled>
-            </label>
-          </div>
-        </div>
-
-
-      </div>
-
-      <!-- Footer Actions -->
-      <div class="flex items-center justify-between gap-3 px-6 py-4 bg-gray-50/80 border-t border-gray-100">
-        <button id="closeAndUpdateBtn" type="button"
-          class="inline-flex items-center px-4 py-2.5 text-[13px] font-semibold text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-100 transition-colors shadow-sm">
-          <svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-          </svg>
-          Fechar e atualizar
-        </button>
-        <button id="addCommandBtn" type="button"
-          class="inline-flex items-center px-5 py-2.5 text-[13px] font-bold text-white bg-[#1F6FB2] rounded-xl hover:bg-[#1a5e98] active:scale-[0.98] transition-all shadow-sm">
-          <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-          </svg>
-          Registrar comanda
-        </button>
-      </div>
-    </div>
-  </div>
 
 
 
@@ -313,11 +315,15 @@
           <div class="field"><label for="editSweetQty">Doces</label><input id="editSweetQty" type="number" min="0"
               max="50" value="0"></div>
         </div>
-        <div class="field"><label for="editAssembler">Montador</label><select id="editAssembler" required></select>
+        <div class="field"><label for="editAssembler">Montador</label><select id="editAssembler" required></select></div>
+        <div class="field" id="editSweetAssemblerField" style="display:none;">
+          <label for="editSweetAssembler">Montador (Doces)</label>
+          <select id="editSweetAssembler"></select>
         </div>
         <div class="field"><label for="editStatus">Status</label><select id="editStatus">
             <option value="cozinha">Na cozinha</option>
             <option value="forno">No forno</option>
+            <option value="pronto">Aguardando atendimento</option>
             <option value="despacho">Saiu para o despacho</option>
           </select></div>
         <div class="field"><label for="editNote">Observação</label><textarea id="editNote" maxlength="220"></textarea>
@@ -352,6 +358,195 @@
       </form>
     </div>
   </div>
+  <div id="sweetAssemblerModal" class="modal-bg">
+    <div class="modal" style="max-width:440px; border-radius:24px; padding:0; overflow:hidden; border: 1px solid rgba(0,0,0,0.06); shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);">
+      <!-- Header -->
+      <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100 bg-gradient-to-r from-blue-50/40 via-white to-pink-50/40">
+        <div>
+          <h3 class="text-[16px] font-bold text-gray-900 leading-snug">Adicionar 2º Montador</h3>
+          <p class="text-[12px] text-gray-500">Vincular montador responsável pelos doces</p>
+        </div>
+        <button type="button" data-close-v4="sweetAssembler"
+          class="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <form id="sweetAssemblerForm">
+        <div class="px-6 py-5 space-y-4">
+          <input id="sweetAssemblerCmdId" type="hidden">
+          
+          <!-- Summary Info Card -->
+          <div class="bg-gradient-to-br from-slate-50 via-gray-50 to-pink-50/30 rounded-2xl p-4 border border-pink-100/70 shadow-sm relative overflow-hidden space-y-3">
+            <!-- Top Row: Comanda # Badge + Sweet Pill -->
+            <div class="flex items-center justify-between pb-3 border-b border-gray-200/50">
+              <div class="flex items-center gap-2">
+                <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Comanda</span>
+                <span id="sweetAssemblerCmdNumber" class="text-base font-black text-gray-900 bg-white px-3 py-1 rounded-xl border border-gray-200 shadow-xs">-</span>
+              </div>
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-extrabold bg-pink-100 text-pink-700 border border-pink-200/60 shadow-2xs">
+                <svg class="w-3.5 h-3.5 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+                <span id="sweetAssemblerCmdSweetQty">0</span> doces
+              </span>
+            </div>
+
+            <!-- Details Grid -->
+            <div class="grid grid-cols-2 gap-2.5">
+              <div class="bg-white/90 p-3 rounded-xl border border-gray-100 shadow-2xs">
+                <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Total Pizzas</span>
+                <div class="flex items-center gap-1 text-sm font-bold text-gray-800">
+                  <span>🍕</span>
+                  <span id="sweetAssemblerCmdQty">0</span>
+                </div>
+              </div>
+              <div class="bg-white/90 p-3 rounded-xl border border-gray-100 shadow-2xs">
+                <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">1º Montador</span>
+                <span id="sweetAssemblerCmdMainName" class="text-sm font-bold text-gray-800 truncate block">-</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Select Field -->
+          <div class="space-y-1.5 pt-1">
+            <label class="flex items-center gap-1.5 text-[12px] font-bold text-gray-600 uppercase tracking-wider">
+              <svg class="w-4 h-4 text-[#1F6FB2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+              </svg>
+              Montador de Doces (2º Montador)
+            </label>
+            <div class="relative">
+              <select id="sweetAssemblerSelect" required class="w-full appearance-none px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 focus:bg-white focus:border-[#1F6FB2] focus:ring-2 focus:ring-[#1F6FB2]/20 transition-all text-[14px] font-semibold text-gray-800 outline-none cursor-pointer">
+                <option value="">Selecione o montador</option>
+              </select>
+              <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="flex items-center justify-end gap-3 px-6 py-4 bg-gray-50/80 border-t border-gray-100">
+          <button type="button" data-close-v4="sweetAssembler"
+            class="inline-flex items-center px-4 py-2.5 text-[13px] font-semibold text-gray-700 bg-gray-100 border border-transparent rounded-xl hover:bg-gray-200 transition-colors">
+            <svg class="w-4 h-4 mr-1.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10" stroke-width="2"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 9l-6 6M9 9l6 6"/>
+            </svg>
+            Cancelar
+          </button>
+          <button type="submit"
+            class="inline-flex items-center px-5 py-2.5 text-[13px] font-bold text-white bg-[#2f9e64] rounded-xl hover:bg-[#248150] active:scale-[0.98] transition-all shadow-sm cursor-pointer">
+            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 21v-8H7v8M7 3v5h8"/>
+            </svg>
+            Salvar comanda
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- OVERNIGHT CLOSE MANDATORY MODAL -->
+  <div id="overnightCloseModal" class="modal-bg">
+    <div class="modal" style="max-width:480px; border-radius:20px; padding:0; overflow:hidden;">
+      <!-- Header -->
+      <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100 bg-linear-to-r from-slate-900 to-indigo-950 text-white">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+            </svg>
+          </div>
+          <div>
+            <h3 id="overnightModalTitle" class="text-[16px] font-bold text-white leading-none">Encerrar Operação</h3>
+            <p class="text-[12px] text-indigo-200 mt-1">Confirmação obrigatória de turno</p>
+          </div>
+        </div>
+        <button type="button" id="closeOvernightModalBtn"
+          class="w-8 h-8 flex items-center justify-center rounded-full text-indigo-200 hover:text-white hover:bg-white/10 transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="px-6 py-5 space-y-4 bg-white">
+        <div class="p-3.5 bg-amber-50 border border-amber-200 rounded-xl flex items-start gap-3">
+          <svg class="w-5 h-5 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+          </svg>
+          <div class="text-[13px] text-amber-900 leading-snug">
+            <strong class="font-bold block mb-0.5">Resposta Obrigatória</strong>
+            Você precisa informar se a equipe vai continuar trabalhando de madrugada antes de encerrar.
+          </div>
+        </div>
+
+        <label class="block text-[12px] font-bold text-gray-600 uppercase tracking-wider">
+          A equipe vai continuar trabalhando de madrugada?
+        </label>
+
+        <!-- Selection Cards -->
+        <div class="grid grid-cols-1 gap-3">
+          <label id="overnightYesOption" class="overnight-option-card flex items-center gap-3.5 p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-indigo-500 hover:bg-indigo-50/40 transition-all">
+            <input type="radio" name="overnightWork" value="yes" class="w-4 h-4 text-indigo-600 focus:ring-indigo-500">
+            <div class="flex-1">
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-bold text-gray-900">🌙 Sim, vai continuar de madrugada</span>
+              </div>
+              <p class="text-[12px] text-gray-500 mt-0.5">A equipe prosseguirá montando pizzas na madrugada.</p>
+            </div>
+          </label>
+
+          <label id="overnightNoOption" class="overnight-option-card flex items-center gap-3.5 p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-red-500 hover:bg-red-50/40 transition-all">
+            <input type="radio" name="overnightWork" value="no" class="w-4 h-4 text-[#B5120B] focus:ring-[#B5120B]">
+            <div class="flex-1">
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-bold text-gray-900">🛑 Não, encerrar expediente</span>
+              </div>
+              <p class="text-[12px] text-gray-500 mt-0.5">Encerramento normal do turno sem produção na madrugada.</p>
+            </div>
+          </label>
+        </div>
+
+        <!-- Overnight Team Selection Container -->
+        <div id="overnightTeamSection" class="hidden mt-3 pt-3 border-t border-gray-100 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <label class="block text-[12px] font-bold text-gray-700 uppercase tracking-wider">
+              Profissionais que vão continuar:
+            </label>
+            <button type="button" id="overnightSelectAllBtn" class="text-[12px] font-semibold text-indigo-600 hover:text-indigo-800 transition-colors">
+              Marcar todos
+            </button>
+          </div>
+          <div id="overnightTeamList" class="max-h-[180px] overflow-y-auto space-y-2 pr-1 custom-scrollbar">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Actions -->
+      <div class="flex items-center justify-end gap-3 px-6 py-4 bg-gray-50 border-t border-gray-100">
+        <button type="button" id="cancelOvernightBtn"
+          class="px-4 py-2.5 text-[13px] font-semibold text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-100 transition-colors">
+          Cancelar
+        </button>
+        <button type="button" id="confirmOvernightCloseBtn" disabled
+          class="px-5 py-2.5 text-[13px] font-bold text-white bg-gray-300 rounded-xl cursor-not-allowed transition-all shadow-xs">
+          Selecione uma opção
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div id="toast" class="toast"></div>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>

@@ -27,6 +27,19 @@
     <!-- SUBTOTAIS (KPIs) -->
     <div id="productionSubtotals" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3"></div>
 
+    <!-- Sweet Pending Alert Panel -->
+    <div id="sweetPendingPanel" class="hidden">
+      <div class="rounded-xl border border-pink-200 bg-pink-50 p-4 shadow-[0_4px_12px_rgba(0,0,0,0.02)]">
+        <div class="flex items-center gap-2 mb-3">
+          <svg class="w-4 h-4 text-pink-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+          </svg>
+          <span class="text-[12px] font-bold text-pink-700 uppercase tracking-wide">Doces aguardando o 2ª montador</span>
+        </div>
+        <div id="sweetPendingList" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-h-[115px] overflow-y-auto pr-1"></div>
+      </div>
+    </div>
+
 
 
 
@@ -66,6 +79,7 @@
             <option value="">Todos os status</option>
             <option value="cozinha">Na cozinha</option>
             <option value="forno">No forno</option>
+            <option value="pronto">Aguardando atendimento</option>
             <option value="despacho">Saiu para o despacho</option>
           </select>
           <select id="prodAssembler" class="w-full px-3 py-2 text-sm border border-[#E7E7E7] rounded-lg text-[#737373] bg-white focus:outline-none focus:border-[#B5120B] focus:ring-2 focus:ring-[#FDECEB] transition-all duration-150">
@@ -94,6 +108,10 @@
         <strong class="text-base text-[#171717] mb-1">Nenhuma comanda encontrada</strong>
         <p class="text-sm text-[#737373]">Registre a primeira comanda ou ajuste os filtros.</p>
       </div>
+
+      <!-- Pagination -->
+      <div id="prodPagination"></div>
+
     </div>
   </div>
 </section>
