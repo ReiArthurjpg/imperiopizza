@@ -454,6 +454,84 @@
       </form>
     </div>
   </div>
+  <!-- OVERNIGHT CLOSE MANDATORY MODAL -->
+  <div id="overnightCloseModal" class="modal-bg">
+    <div class="modal" style="max-width:480px; border-radius:20px; padding:0; overflow:hidden;">
+      <!-- Header -->
+      <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100 bg-linear-to-r from-slate-900 to-indigo-950 text-white">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+            </svg>
+          </div>
+          <div>
+            <h3 id="overnightModalTitle" class="text-[16px] font-bold text-white leading-none">Encerrar Operação</h3>
+            <p class="text-[12px] text-indigo-200 mt-1">Confirmação obrigatória de turno</p>
+          </div>
+        </div>
+        <button type="button" id="closeOvernightModalBtn"
+          class="w-8 h-8 flex items-center justify-center rounded-full text-indigo-200 hover:text-white hover:bg-white/10 transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="px-6 py-5 space-y-4 bg-white">
+        <div class="p-3.5 bg-amber-50 border border-amber-200 rounded-xl flex items-start gap-3">
+          <svg class="w-5 h-5 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+          </svg>
+          <div class="text-[13px] text-amber-900 leading-snug">
+            <strong class="font-bold block mb-0.5">Resposta Obrigatória</strong>
+            Você precisa informar se a equipe vai continuar trabalhando de madrugada antes de encerrar.
+          </div>
+        </div>
+
+        <label class="block text-[12px] font-bold text-gray-600 uppercase tracking-wider">
+          A equipe vai continuar trabalhando de madrugada?
+        </label>
+
+        <!-- Selection Cards -->
+        <div class="grid grid-cols-1 gap-3">
+          <label id="overnightYesOption" class="overnight-option-card flex items-center gap-3.5 p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-indigo-500 hover:bg-indigo-50/40 transition-all">
+            <input type="radio" name="overnightWork" value="yes" class="w-4 h-4 text-indigo-600 focus:ring-indigo-500">
+            <div class="flex-1">
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-bold text-gray-900">🌙 Sim, vai continuar de madrugada</span>
+              </div>
+              <p class="text-[12px] text-gray-500 mt-0.5">A equipe prosseguirá montando pizzas na madrugada.</p>
+            </div>
+          </label>
+
+          <label id="overnightNoOption" class="overnight-option-card flex items-center gap-3.5 p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-red-500 hover:bg-red-50/40 transition-all">
+            <input type="radio" name="overnightWork" value="no" class="w-4 h-4 text-[#B5120B] focus:ring-[#B5120B]">
+            <div class="flex-1">
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-bold text-gray-900">🛑 Não, encerrar expediente</span>
+              </div>
+              <p class="text-[12px] text-gray-500 mt-0.5">Encerramento normal do turno sem produção na madrugada.</p>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Footer Actions -->
+      <div class="flex items-center justify-end gap-3 px-6 py-4 bg-gray-50 border-t border-gray-100">
+        <button type="button" id="cancelOvernightBtn"
+          class="px-4 py-2.5 text-[13px] font-semibold text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-100 transition-colors">
+          Cancelar
+        </button>
+        <button type="button" id="confirmOvernightCloseBtn" disabled
+          class="px-5 py-2.5 text-[13px] font-bold text-white bg-gray-300 rounded-xl cursor-not-allowed transition-all shadow-xs">
+          Selecione uma opção
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div id="toast" class="toast"></div>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>

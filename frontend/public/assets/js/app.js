@@ -2,7 +2,7 @@
     const SECTORS = ['Montagem', 'Massa', 'Cozinha', 'Forno', 'Despacho', 'Atendimento', 'Estoque', 'Liderança', 'Outros'];
     let state = { people: [], operations: [] }; let selectedReportOperationId = null; let productionViewMode = 'list';
     const $ = id => document.getElementById(id);
-    const el = { globalDate: $('globalDate'), globalStartDate: $('globalStartDate'), globalEndDate: $('globalEndDate'), phasePill: $('phasePill'), dashboardBanner: $('dashboardBanner'), dashCommands: $('dashCommands'), dashPizzas: $('dashPizzas'), dashKitchen: $('dashKitchen'), dashOven: $('dashOven'), dashDispatch: $('dashDispatch'), dashErrors: $('dashErrors'), dashboardTeam: $('dashboardTeam'), dashboardRank: $('dashboardRank'), dashboardLive: $('dashboardLive'), personForm: $('personForm'), personName: $('personName'), personRole: $('personRole'), editPersonModal: $('editPersonModal'), editPersonForm: $('editPersonForm'), editPersonId: $('editPersonId'), editPersonName: $('editPersonName'), editPersonRole: $('editPersonRole'), peopleChecklist: $('peopleChecklist'), dayTeamGroups: $('dayTeamGroups'), teamOperationNotice: $('teamOperationNotice'), saveTeamBtn: $('saveTeamBtn'), startOperationBtn: $('startOperationBtn'), manageTeamBtn: $('manageTeamBtn'), manageTeamDispatchBtn: $('manageTeamDispatchBtn'), productionGate: $('productionGate'), productionContent: $('productionContent'), productionSubtotals: $('productionSubtotals'), openRegisterCommandBtn: $('openRegisterCommandBtn'), openUpdateCommandsBtn: $('openUpdateCommandsBtn'), updatePendingBadge: $('updatePendingBadge'), productionRecent: $('productionRecent'), commandHistoryPanel: $('commandHistoryPanel'), registerCommandModal: $('registerCommandModal'), assemblerSearch: $('assemblerSearch'), assemblerId: $('assemblerId'), assemblerSuggestions: $('assemblerSuggestions'), assemblerPickerBtn: $('assemblerPickerBtn'), assemblerPickerValue: $('assemblerPickerValue'), assemblerPickerModal: $('assemblerPickerModal'), assemblerPickerSearch: $('assemblerPickerSearch'), assemblerPickerList: $('assemblerPickerList'), pickerManageTeamBtn: $('pickerManageTeamBtn'), commandNumber: $('commandNumber'), pizzaQty: $('pizzaQty'), commandSuggestions: $('commandSuggestions'), commandNote: $('commandNote'), initialOven: $('initialOven'), addCommandBtn: $('addCommandBtn'), prodSearch: $('prodSearch'), prodStatus: $('prodStatus'), prodAssembler: $('prodAssembler'), clearProdFilters: $('clearProdFilters'), productionTableContainer: $('productionTableContainer'), productionGridContainer: $('productionGridContainer'), viewListBtn: $('viewListBtn'), viewGridBtn: $('viewGridBtn'), productionBody: $('productionBody'), productionMobileList: $('productionMobileList'), productionEmpty: $('productionEmpty'), closeKitchenBtn: $('closeKitchenBtn'), reopenKitchenBtn: $('reopenKitchenBtn'), dispatchGate: $('dispatchGate'), dispatchContent: $('dispatchContent'), dispatchSubtotals: $('dispatchSubtotals'), dispatchSearch: $('dispatchSearch'), dispatchFilter: $('dispatchFilter'), clearDispatchFilters: $('clearDispatchFilters'), dispatchGrid: $('dispatchGrid'), dispatchEmpty: $('dispatchEmpty'), finishDayBtn: $('finishDayBtn'), historyList: $('historyList'), reportOverview: $('reportOverview'), reportCards: $('reportCards'), backupBtn: $('backupBtn'), restoreBtn: $('restoreBtn'), restoreFile: $('restoreFile'), editModal: $('editModal'), editForm: $('editForm'), editId: $('editId'), editNumber: $('editNumber'), editQty: $('editQty'), editAssembler: $('editAssembler'), editStatus: $('editStatus'), editNote: $('editNote'), deleteCommandBtn: $('deleteCommandBtn'), errorModal: $('errorModal'), errorForm: $('errorForm'), errorId: $('errorId'), errorType: $('errorType'), errorNote: $('errorNote'), clearErrorBtn: $('clearErrorBtn'), toast: $('toast'), confirmDeleteModal: $('confirmDeleteModal'), sweetAssemblerModal: $('sweetAssemblerModal'), sweetAssemblerForm: $('sweetAssemblerForm'), sweetAssemblerCmdId: $('sweetAssemblerCmdId'), sweetAssemblerCmdNumber: $('sweetAssemblerCmdNumber'), sweetAssemblerCmdQty: $('sweetAssemblerCmdQty'), sweetAssemblerCmdSweetQty: $('sweetAssemblerCmdSweetQty'), sweetAssemblerCmdMainName: $('sweetAssemblerCmdMainName'), sweetAssemblerSelect: $('sweetAssemblerSelect') };
+    const el = { globalDate: $('globalDate'), globalStartDate: $('globalStartDate'), globalEndDate: $('globalEndDate'), phasePill: $('phasePill'), dashboardBanner: $('dashboardBanner'), dashCommands: $('dashCommands'), dashPizzas: $('dashPizzas'), dashKitchen: $('dashKitchen'), dashOven: $('dashOven'), dashDispatch: $('dashDispatch'), dashErrors: $('dashErrors'), dashboardTeam: $('dashboardTeam'), dashboardRank: $('dashboardRank'), dashboardLive: $('dashboardLive'), personForm: $('personForm'), personName: $('personName'), personRole: $('personRole'), editPersonModal: $('editPersonModal'), editPersonForm: $('editPersonForm'), editPersonId: $('editPersonId'), editPersonName: $('editPersonName'), editPersonRole: $('editPersonRole'), peopleChecklist: $('peopleChecklist'), dayTeamGroups: $('dayTeamGroups'), teamOperationNotice: $('teamOperationNotice'), saveTeamBtn: $('saveTeamBtn'), startOperationBtn: $('startOperationBtn'), manageTeamBtn: $('manageTeamBtn'), manageTeamDispatchBtn: $('manageTeamDispatchBtn'), productionGate: $('productionGate'), productionContent: $('productionContent'), productionSubtotals: $('productionSubtotals'), openRegisterCommandBtn: $('openRegisterCommandBtn'), openUpdateCommandsBtn: $('openUpdateCommandsBtn'), updatePendingBadge: $('updatePendingBadge'), productionRecent: $('productionRecent'), commandHistoryPanel: $('commandHistoryPanel'), registerCommandModal: $('registerCommandModal'), assemblerSearch: $('assemblerSearch'), assemblerId: $('assemblerId'), assemblerSuggestions: $('assemblerSuggestions'), assemblerPickerBtn: $('assemblerPickerBtn'), assemblerPickerValue: $('assemblerPickerValue'), assemblerPickerModal: $('assemblerPickerModal'), assemblerPickerSearch: $('assemblerPickerSearch'), assemblerPickerList: $('assemblerPickerList'), pickerManageTeamBtn: $('pickerManageTeamBtn'), commandNumber: $('commandNumber'), pizzaQty: $('pizzaQty'), commandSuggestions: $('commandSuggestions'), commandNote: $('commandNote'), initialOven: $('initialOven'), addCommandBtn: $('addCommandBtn'), prodSearch: $('prodSearch'), prodStatus: $('prodStatus'), prodAssembler: $('prodAssembler'), clearProdFilters: $('clearProdFilters'), productionTableContainer: $('productionTableContainer'), productionGridContainer: $('productionGridContainer'), viewListBtn: $('viewListBtn'), viewGridBtn: $('viewGridBtn'), productionBody: $('productionBody'), productionMobileList: $('productionMobileList'), productionEmpty: $('productionEmpty'), closeKitchenBtn: $('closeKitchenBtn'), reopenKitchenBtn: $('reopenKitchenBtn'), dispatchGate: $('dispatchGate'), dispatchContent: $('dispatchContent'), dispatchSubtotals: $('dispatchSubtotals'), dispatchSearch: $('dispatchSearch'), dispatchFilter: $('dispatchFilter'), clearDispatchFilters: $('clearDispatchFilters'), dispatchGrid: $('dispatchGrid'), dispatchEmpty: $('dispatchEmpty'), finishDayBtn: $('finishDayBtn'), historyList: $('historyList'), reportOverview: $('reportOverview'), reportCards: $('reportCards'), backupBtn: $('backupBtn'), restoreBtn: $('restoreBtn'), restoreFile: $('restoreFile'), editModal: $('editModal'), editForm: $('editForm'), editId: $('editId'), editNumber: $('editNumber'), editQty: $('editQty'), editAssembler: $('editAssembler'), editStatus: $('editStatus'), editNote: $('editNote'), deleteCommandBtn: $('deleteCommandBtn'), errorModal: $('errorModal'), errorForm: $('errorForm'), errorId: $('errorId'), errorType: $('errorType'), errorNote: $('errorNote'), clearErrorBtn: $('clearErrorBtn'), toast: $('toast'), confirmDeleteModal: $('confirmDeleteModal'), sweetAssemblerModal: $('sweetAssemblerModal'), sweetAssemblerForm: $('sweetAssemblerForm'), sweetAssemblerCmdId: $('sweetAssemblerCmdId'), sweetAssemblerCmdNumber: $('sweetAssemblerCmdNumber'), sweetAssemblerCmdQty: $('sweetAssemblerCmdQty'), sweetAssemblerCmdSweetQty: $('sweetAssemblerCmdSweetQty'), sweetAssemblerCmdMainName: $('sweetAssemblerCmdMainName'), sweetAssemblerSelect: $('sweetAssemblerSelect'), overnightCloseModal: $('overnightCloseModal'), closeOvernightModalBtn: $('closeOvernightModalBtn'), cancelOvernightBtn: $('cancelOvernightBtn'), confirmOvernightCloseBtn: $('confirmOvernightCloseBtn') };
 
     function save() {
       fetch('/api/sync', {
@@ -1121,7 +1121,89 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
     if (sweetPanel) sweetPanel.addEventListener('click', handleCommandAction);
     if (el.viewListBtn) el.viewListBtn.addEventListener('click', () => { productionViewMode = 'list'; updateProductionViewMode(); });
     if (el.viewGridBtn) el.viewGridBtn.addEventListener('click', () => { productionViewMode = 'grid'; updateProductionViewMode(); });
-    el.closeKitchenBtn.addEventListener('click', () => { const op = currentOperation(); if (!op || op.status !== 'production_open') return; if (!confirm('Encerrar a cozinha? Novas comandas ficarão bloqueadas, mas o despacho continuará ativo.')) return; op.status = 'kitchen_closed'; op.kitchenClosedAt = new Date().toISOString(); save(); el.registerCommandModal.classList.remove('show'); renderAll(); showPage('reports'); toast('Cozinha encerrada. Os relatórios da montagem já estão disponíveis.') });
+    let pendingCloseAction = null;
+
+    function openOvernightCloseModal(actionType) {
+      const op = currentOperation();
+      if (!op) return;
+      pendingCloseAction = actionType;
+      const titleEl = $('overnightModalTitle');
+      if (titleEl) titleEl.textContent = actionType === 'kitchen' ? 'Encerrar Cozinha' : 'Finalizar Operação do Dia';
+      document.querySelectorAll('input[name="overnightWork"]').forEach(r => r.checked = false);
+      updateOvernightConfirmButton();
+      if (el.overnightCloseModal) el.overnightCloseModal.classList.add('show');
+    }
+
+    function closeOvernightCloseModal() {
+      pendingCloseAction = null;
+      if (el.overnightCloseModal) el.overnightCloseModal.classList.remove('show');
+    }
+
+    function updateOvernightConfirmButton() {
+      const selected = document.querySelector('input[name="overnightWork"]:checked');
+      const btn = el.confirmOvernightCloseBtn;
+      if (!btn) return;
+      if (selected) {
+        btn.disabled = false;
+        btn.classList.remove('bg-gray-300', 'cursor-not-allowed');
+        if (selected.value === 'yes') {
+          btn.className = 'px-5 py-2.5 text-[13px] font-bold text-white bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] transition-all rounded-xl cursor-pointer shadow-sm';
+          btn.textContent = 'Confirmar (Com Madrugada)';
+        } else {
+          btn.className = 'px-5 py-2.5 text-[13px] font-bold text-white bg-[#B5120B] hover:bg-[#9a0f09] active:scale-[0.98] transition-all rounded-xl cursor-pointer shadow-sm';
+          btn.textContent = 'Confirmar (Sem Madrugada)';
+        }
+      } else {
+        btn.disabled = true;
+        btn.className = 'px-5 py-2.5 text-[13px] font-bold text-white bg-gray-300 rounded-xl cursor-not-allowed transition-all shadow-xs';
+        btn.textContent = 'Selecione uma opção';
+      }
+    }
+
+    if (el.closeKitchenBtn) {
+      el.closeKitchenBtn.addEventListener('click', () => {
+        const op = currentOperation();
+        if (!op || op.status !== 'production_open') return;
+        openOvernightCloseModal('kitchen');
+      });
+    }
+
+    if (el.closeOvernightModalBtn) el.closeOvernightModalBtn.addEventListener('click', closeOvernightCloseModal);
+    if (el.cancelOvernightBtn) el.cancelOvernightBtn.addEventListener('click', closeOvernightCloseModal);
+    document.querySelectorAll('input[name="overnightWork"]').forEach(radio => radio.addEventListener('change', updateOvernightConfirmButton));
+
+    if (el.confirmOvernightCloseBtn) {
+      el.confirmOvernightCloseBtn.addEventListener('click', () => {
+        const selected = document.querySelector('input[name="overnightWork"]:checked');
+        if (!selected) return toast('Selecione se vai trabalhar de madrugada.', 'error');
+        const op = currentOperation();
+        if (!op) return;
+
+        const isOvernight = (selected.value === 'yes');
+        op.overnightWork = isOvernight;
+
+        if (pendingCloseAction === 'kitchen') {
+          op.status = 'kitchen_closed';
+          op.kitchenClosedAt = new Date().toISOString();
+          save();
+          if (el.registerCommandModal) el.registerCommandModal.classList.remove('show');
+          closeOvernightCloseModal();
+          renderAll();
+          showPage('reports');
+          toast(`Cozinha encerrada (${isOvernight ? 'Com' : 'Sem'} madrugada).`);
+        } else if (pendingCloseAction === 'day') {
+          op.status = 'completed';
+          op.completedAt = new Date().toISOString();
+          save();
+          selectedReportOperationId = op.id;
+          closeOvernightCloseModal();
+          renderAll();
+          showPage('reports');
+          toast(`Operação do dia finalizada (${isOvernight ? 'Com' : 'Sem'} madrugada).`);
+        }
+      });
+    }
+
     el.reopenKitchenBtn.addEventListener('click', () => { const op = currentOperation(); if (!op || op.status !== 'kitchen_closed') return; if (!confirm('Reabrir a cozinha para novos registros?')) return; op.status = 'production_open'; op.kitchenClosedAt = null; save(); renderAll(); toast('Cozinha reaberta.', 'warn') });
 
     // modais
@@ -1217,7 +1299,7 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
       toast('Montador de doces registrado.');
     });
     // despacho
-    [el.dispatchSearch, el.dispatchFilter].forEach(x => x.addEventListener(x.tagName === 'INPUT' ? 'input' : 'change', renderDispatch)); el.clearDispatchFilters.addEventListener('click', () => { el.dispatchSearch.value = ''; el.dispatchFilter.value = ''; renderDispatch() }); el.dispatchGrid.addEventListener('change', e => { if (e.target.dataset.dField === 'change') { const card = e.target.closest('[data-dispatch-card]'), amt = card.querySelector('[data-d-field="changeAmount"]'); amt.disabled = !e.target.checked; if (!e.target.checked) amt.value = '' } }); el.dispatchGrid.addEventListener('click', e => { const b = e.target.closest('[data-d-action]'); if (!b) return; const op = currentOperation(), c = getCommand(op, b.dataset.id), card = e.target.closest('[data-dispatch-card]'); if (!c || !card) return; collectDispatch(card, c); const now = new Date().toISOString(); if (b.dataset.dAction === 'check') { c.dispatch.status = 'conferido'; c.dispatch.checkedAt = now } if (b.dataset.dAction === 'release') { c.dispatch.status = 'liberado'; c.dispatch.checkedAt ||= now; c.dispatch.releasedAt = now } save(); renderDispatch(); renderDashboard(); toast(b.dataset.dAction === 'release' ? 'Pedido liberado.' : 'Conferência salva.') }); el.finishDayBtn.addEventListener('click', () => { const op = currentOperation(); if (!op || op.status !== 'kitchen_closed') return toast('Encerre a cozinha antes de finalizar o dia.', 'warn'); const p = pendingToFinish(op); if (p) return toast(`Ainda existem ${p} pedidos não finalizados.`, 'warn'); if (!confirm('Finalizar toda a operação do dia?')) return; op.status = 'completed'; op.completedAt = new Date().toISOString(); save(); selectedReportOperationId = op.id; renderAll(); showPage('reports'); toast('Operação do dia finalizada.') });
+    [el.dispatchSearch, el.dispatchFilter].forEach(x => x.addEventListener(x.tagName === 'INPUT' ? 'input' : 'change', renderDispatch)); el.clearDispatchFilters.addEventListener('click', () => { el.dispatchSearch.value = ''; el.dispatchFilter.value = ''; renderDispatch() }); el.dispatchGrid.addEventListener('change', e => { if (e.target.dataset.dField === 'change') { const card = e.target.closest('[data-dispatch-card]'), amt = card.querySelector('[data-d-field="changeAmount"]'); amt.disabled = !e.target.checked; if (!e.target.checked) amt.value = '' } }); el.dispatchGrid.addEventListener('click', e => { const b = e.target.closest('[data-d-action]'); if (!b) return; const op = currentOperation(), c = getCommand(op, b.dataset.id), card = e.target.closest('[data-dispatch-card]'); if (!c || !card) return; collectDispatch(card, c); const now = new Date().toISOString(); if (b.dataset.dAction === 'check') { c.dispatch.status = 'conferido'; c.dispatch.checkedAt = now } if (b.dataset.dAction === 'release') { c.dispatch.status = 'liberado'; c.dispatch.checkedAt ||= now; c.dispatch.releasedAt = now } save(); renderDispatch(); renderDashboard(); toast(b.dataset.dAction === 'release' ? 'Pedido liberado.' : 'Conferência salva.') }); el.finishDayBtn.addEventListener('click', () => { const op = currentOperation(); if (!op || op.status !== 'kitchen_closed') return toast('Encerre a cozinha antes de finalizar o dia.', 'warn'); const p = pendingToFinish(op); if (p) return toast(`Ainda existem ${p} pedidos não finalizados.`, 'warn'); openOvernightCloseModal('day'); });
     // relatórios
     el.historyList.addEventListener('click', e => { const x = e.target.closest('[data-report-op]'); if (x) { selectedReportOperationId = x.dataset.reportOp; renderReports() } }); el.reportCards.addEventListener('click', e => { const b = e.target.closest('[data-report-action]'); if (!b) return; const op = getOperation(selectedReportOperationId); if (!op) return; const a = b.dataset.reportAction; if (a === 'download-attendance') downloadHtml(`lista_presenca_${op.date}.html`, attendanceReport(op)); if (a === 'print-attendance') printHtml(attendanceReport(op)); if (a === 'download-production') downloadHtml(`resultado_montagem_${op.date}.html`, productionReport(op)); if (a === 'print-production') printHtml(productionReport(op)) }); el.backupBtn.addEventListener('click', () => { const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' }), url = URL.createObjectURL(blob), a = document.createElement('a'); a.href = url; a.download = `backup_imperial_${today()}.json`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); toast('Backup baixado.') }); el.restoreBtn.addEventListener('click', () => el.restoreFile.click()); el.restoreFile.addEventListener('change', async e => { const f = e.target.files[0]; if (!f) return; try { const d = JSON.parse(await f.text()); if (!Array.isArray(d.people) || !Array.isArray(d.operations)) throw new Error(); if (!confirm('Restaurar este backup e substituir os dados atuais?')) return; state.people = d.people; state.operations = d.operations; save(); selectedReportOperationId = null; renderAll(); toast('Backup restaurado.') } catch (err) { toast('Backup inválido.', 'error') } finally { e.target.value = '' } });
 
