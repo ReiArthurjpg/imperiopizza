@@ -69,7 +69,11 @@ class Comanda
                 ]);
                 
                 if (!empty($c['assemblerId'])) {
-                    $validCommands[] = ['number' => (int)$c['number'], 'assemblerId' => $c['assemblerId']];
+                    $validCommands[] = [
+                        'number' => (int)$c['number'], 
+                        'assemblerId' => $c['assemblerId'],
+                        'assemblerName' => $c['assemblerName'] ?? 'Desconhecido'
+                    ];
                 }
             }
         }
@@ -81,7 +85,7 @@ class Comanda
         
         foreach ($validCommands as $c) {
             if ($currentLote === null) {
-                $currentLote = ['assemblerId' => $c['assemblerId'], 'inicio' => $c['number'], 'fim' => $c['number']];
+                $currentLote = ['assemblerId' => $c['assemblerId'], 'assemblerName' => $c['assemblerName'], 'inicio' => $c['number'], 'fim' => $c['number']];
             } else {
                 if ($currentLote['assemblerId'] === $c['assemblerId'] && $c['number'] === $currentLote['fim'] + 1) {
                     $currentLote['fim'] = $c['number'];
@@ -89,7 +93,7 @@ class Comanda
                     // Same number, ignore
                 } else {
                     $lotes[] = $currentLote;
-                    $currentLote = ['assemblerId' => $c['assemblerId'], 'inicio' => $c['number'], 'fim' => $c['number']];
+                    $currentLote = ['assemblerId' => $c['assemblerId'], 'assemblerName' => $c['assemblerName'], 'inicio' => $c['number'], 'fim' => $c['number']];
                 }
             }
         }
@@ -100,8 +104,16 @@ class Comanda
         if (!empty($lotes)) {
             $db->prepare("DELETE FROM comandas_lotes WHERE operacao_id = ?")->execute([$operacaoId]);
             $stmtLote = $db->prepare("INSERT INTO comandas_lotes (operacao_id, assembler_id, comanda_inicio, comanda_fim) VALUES (?, ?, ?, ?)");
+            $stmtEquipe = $db->prepare("INSERT INTO equipe (id, nome, cargo) VALUES (?, ?, 'Montagem') ON DUPLICATE KEY UPDATE nome = VALUES(nome)");
+            
             foreach ($lotes as $l) {
-                $stmtLote->execute([$operacaoId, $l['assemblerId'], $l['inicio'], $l['fim']]);
+                try {
+                    $stmtEquipe->execute([$l['assemblerId'], $l['assemblerName']]);
+                } catch (\Exception $e) { /* ignore */ }
+                
+                try {
+                    $stmtLote->execute([$operacaoId, $l['assemblerId'], $l['inicio'], $l['fim']]);
+                } catch (\Exception $e) { /* ignore */ }
             }
         }
     }

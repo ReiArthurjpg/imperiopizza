@@ -61,7 +61,7 @@
       <div class="bg-white rounded-xl border border-[#E7E7E7] shadow-[0_2px_10px_rgb(0,0,0,0.02)] p-5">
         <div class="flex items-center justify-between mb-6">
           <h2 class="text-base font-semibold text-[#171717]">Produção em Tempo Real</h2>
-          <span class="px-2.5 py-0.5 rounded-full text-xs font-medium border bg-[#FDECEB] text-[#B5120B] border-[#FCA5A5]">Fluxo Atual</span>
+          <span id="dashboardPipelineBadge" class="px-2.5 py-0.5 rounded-full text-xs font-medium border bg-[#FDECEB] text-[#B5120B] border-[#FCA5A5]">Fluxo Atual</span>
         </div>
         
         <div id="pipelineContainer" class="flex flex-col md:flex-row items-center justify-between gap-2 overflow-x-auto pb-2">

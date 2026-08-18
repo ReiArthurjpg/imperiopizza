@@ -682,8 +682,11 @@
 
     .suggest-box h4 {
       margin: 0 0 8px;
-      color: var(--navy);
-      font-size: 13px
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
     }
 
     .num-chips {
@@ -695,18 +698,20 @@
     .num-chip {
       min-width: 46px;
       min-height: 42px;
-      border: 1px solid #b8d9f1;
-      border-radius: 10px;
-      background: #fff;
-      color: var(--navy);
-      font-weight: 950;
-      cursor: pointer
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface);
+      color: var(--text);
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      transition: all 0.2s ease;
     }
 
     .num-chip.missing {
-      border-color: #f1c68f;
-      background: var(--orange-soft);
-      color: #995100
+      border-color: var(--red);
+      background: var(--red-soft);
+      color: var(--red);
     }
 
     .num-chip:hover {
@@ -2486,18 +2491,11 @@
     }
 
     .qty-control button,
-    .num-chip,
     .key {
       color: #121416;
       background: linear-gradient(145deg, #fff, #d9dcdf);
       border-color: #c3c7ca;
       box-shadow: inset 0 1px 0 #fff
-    }
-
-    .num-chip.missing {
-      color: #fff;
-      background: linear-gradient(145deg, #111, #555);
-      border-color: #111
     }
 
     /* Barra de rolagem da janela de nova comanda */
@@ -3388,3 +3386,28 @@
       50%       { opacity: .5 }
     }
     .animate-pulse { animation: pulse 2s cubic-bezier(.4,0,.6,1) infinite }
+    
+    .table-spaced {
+      border-collapse: separate !important;
+      border-spacing: 0 1rem !important;
+    }
+    .table-spaced tr {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+    }
+    .table-spaced td {
+      background: #ffffff !important;
+      padding: 16px !important;
+      vertical-align: middle !important;
+      border-top: 1px solid #E7E7E7 !important;
+      border-bottom: 1px solid #E7E7E7 !important;
+    }
+    .table-spaced td:first-child {
+      border-left: 1px solid #E7E7E7 !important;
+      border-top-left-radius: 12px !important;
+      border-bottom-left-radius: 12px !important;
+    }
+    .table-spaced td:last-child {
+      border-right: 1px solid #E7E7E7 !important;
+      border-top-right-radius: 12px !important;
+      border-bottom-right-radius: 12px !important;
+    }
