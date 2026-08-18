@@ -516,6 +516,21 @@
             </div>
           </label>
         </div>
+
+        <!-- Overnight Team Selection Container -->
+        <div id="overnightTeamSection" class="hidden mt-3 pt-3 border-t border-gray-100 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <label class="block text-[12px] font-bold text-gray-700 uppercase tracking-wider">
+              Profissionais que vão continuar:
+            </label>
+            <button type="button" id="overnightSelectAllBtn" class="text-[12px] font-semibold text-indigo-600 hover:text-indigo-800 transition-colors">
+              Marcar todos
+            </button>
+          </div>
+          <div id="overnightTeamList" class="max-h-[180px] overflow-y-auto space-y-2 pr-1 custom-scrollbar">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
       </div>
 
       <!-- Footer Actions -->

@@ -1123,6 +1123,28 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
     if (el.viewGridBtn) el.viewGridBtn.addEventListener('click', () => { productionViewMode = 'grid'; updateProductionViewMode(); });
     let pendingCloseAction = null;
 
+    function renderOvernightTeamList(op) {
+      const container = $('overnightTeamList');
+      if (!container) return;
+      const team = op?.team || [];
+      if (!team.length) {
+        container.innerHTML = '<p class="text-xs text-gray-400 italic p-2 text-center">Nenhum profissional cadastrado na equipe de hoje.</p>';
+        return;
+      }
+      container.innerHTML = team.map(p => `
+        <label class="flex items-center justify-between p-2.5 rounded-xl border border-gray-200 bg-gray-50/50 hover:bg-indigo-50/40 hover:border-indigo-300 transition-all cursor-pointer select-none">
+          <div class="flex items-center gap-3">
+            <input type="checkbox" name="overnightTeamMember" value="${p.personId}" checked class="w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500 cursor-pointer">
+            <div>
+              <span class="text-sm font-bold text-gray-800 block leading-tight">${esc(p.name)}</span>
+              <span class="text-[11px] text-gray-500 font-medium">${esc(p.role)}</span>
+            </div>
+          </div>
+          <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 shrink-0">Online</span>
+        </label>
+      `).join('');
+    }
+
     function openOvernightCloseModal(actionType) {
       const op = currentOperation();
       if (!op) return;
@@ -1130,6 +1152,8 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
       const titleEl = $('overnightModalTitle');
       if (titleEl) titleEl.textContent = actionType === 'kitchen' ? 'Encerrar Cozinha' : 'Finalizar Operação do Dia';
       document.querySelectorAll('input[name="overnightWork"]').forEach(r => r.checked = false);
+      const teamSec = $('overnightTeamSection');
+      if (teamSec) teamSec.classList.add('hidden');
       updateOvernightConfirmButton();
       if (el.overnightCloseModal) el.overnightCloseModal.classList.add('show');
     }
@@ -1142,6 +1166,7 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
     function updateOvernightConfirmButton() {
       const selected = document.querySelector('input[name="overnightWork"]:checked');
       const btn = el.confirmOvernightCloseBtn;
+      const teamSec = $('overnightTeamSection');
       if (!btn) return;
       if (selected) {
         btn.disabled = false;
@@ -1149,14 +1174,20 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
         if (selected.value === 'yes') {
           btn.className = 'px-5 py-2.5 text-[13px] font-bold text-white bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] transition-all rounded-xl cursor-pointer shadow-sm';
           btn.textContent = 'Confirmar (Com Madrugada)';
+          if (teamSec) {
+            teamSec.classList.remove('hidden');
+            renderOvernightTeamList(currentOperation());
+          }
         } else {
           btn.className = 'px-5 py-2.5 text-[13px] font-bold text-white bg-[#B5120B] hover:bg-[#9a0f09] active:scale-[0.98] transition-all rounded-xl cursor-pointer shadow-sm';
           btn.textContent = 'Confirmar (Sem Madrugada)';
+          if (teamSec) teamSec.classList.add('hidden');
         }
       } else {
         btn.disabled = true;
         btn.className = 'px-5 py-2.5 text-[13px] font-bold text-white bg-gray-300 rounded-xl cursor-not-allowed transition-all shadow-xs';
         btn.textContent = 'Selecione uma opção';
+        if (teamSec) teamSec.classList.add('hidden');
       }
     }
 
@@ -1172,6 +1203,16 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
     if (el.cancelOvernightBtn) el.cancelOvernightBtn.addEventListener('click', closeOvernightCloseModal);
     document.querySelectorAll('input[name="overnightWork"]').forEach(radio => radio.addEventListener('change', updateOvernightConfirmButton));
 
+    const selectAllBtn = $('overnightSelectAllBtn');
+    if (selectAllBtn) {
+      selectAllBtn.addEventListener('click', () => {
+        const checkboxes = document.querySelectorAll('input[name="overnightTeamMember"]');
+        const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+        checkboxes.forEach(cb => cb.checked = !allChecked);
+        selectAllBtn.textContent = allChecked ? 'Marcar todos' : 'Desmarcar todos';
+      });
+    }
+
     if (el.confirmOvernightCloseBtn) {
       el.confirmOvernightCloseBtn.addEventListener('click', () => {
         const selected = document.querySelector('input[name="overnightWork"]:checked');
@@ -1182,6 +1223,15 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
         const isOvernight = (selected.value === 'yes');
         op.overnightWork = isOvernight;
 
+        if (isOvernight) {
+          const checkedMembers = Array.from(document.querySelectorAll('input[name="overnightTeamMember"]:checked')).map(cb => cb.value);
+          if (!checkedMembers.length) return toast('Selecione ao menos um profissional para a madrugada.', 'warn');
+          
+          const overnightTeam = (op.team || []).filter(p => checkedMembers.includes(p.personId));
+          op.overnightTeam = overnightTeam;
+          op.team = overnightTeam; // Atualiza a equipe para apenas os que vão trabalhar na madrugada
+        }
+
         if (pendingCloseAction === 'kitchen') {
           op.status = 'kitchen_closed';
           op.kitchenClosedAt = new Date().toISOString();
@@ -1190,7 +1240,7 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
           closeOvernightCloseModal();
           renderAll();
           showPage('reports');
-          toast(`Cozinha encerrada (${isOvernight ? 'Com' : 'Sem'} madrugada).`);
+          toast(`Cozinha encerrada (${isOvernight ? `Com madrugada - ${op.overnightTeam?.length || 0} profissionais` : 'Sem madrugada'}).`);
         } else if (pendingCloseAction === 'day') {
           op.status = 'completed';
           op.completedAt = new Date().toISOString();
@@ -1199,7 +1249,7 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
           closeOvernightCloseModal();
           renderAll();
           showPage('reports');
-          toast(`Operação do dia finalizada (${isOvernight ? 'Com' : 'Sem'} madrugada).`);
+          toast(`Operação do dia finalizada (${isOvernight ? `Com madrugada - ${op.overnightTeam?.length || 0} profissionais` : 'Sem madrugada'}).`);
         }
       });
     }
