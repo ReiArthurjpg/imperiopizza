@@ -2013,27 +2013,81 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
       const mass = ensureMass(op), used = massConsumed(op), left = massRemaining(op), workers = massWorkers(op);
       setMassInputs('stock', mass.stock);
 
-      el.massSubtotals.innerHTML = [
-        ['Batidas', mass.batches.length], ['Farinha usada', `${fmt(used.flourKg)} kg`], ['Ovos usados', fmt(used.eggs, 0)],
-        ['Óleo usado', `${fmt(used.oilMl, 0)} ml`], ['Farinha restante', `${fmt(left.flourKg)} kg`], ['Masseiros', workers.length]
-      ].map(([l, v]) => `<div class="subtotal-item"><small>${l}</small><strong>${v}</strong></div>`).join('');
+      const kpis = [
+        { label: 'Batidas', value: mass.batches.length, bgStyle: 'bg-indigo-50', textStyle: 'text-indigo-500', hoverBg: 'group-hover:bg-indigo-100', glow: 'bg-indigo-100', icon: '<i data-lucide="layers" class="w-4 h-4"></i>' },
+        { label: 'Farinha usada', value: `${fmt(used.flourKg)} kg`, bgStyle: 'bg-red-50', textStyle: 'text-red-500', hoverBg: 'group-hover:bg-red-100', glow: 'bg-red-100', icon: '<i data-lucide="wheat" class="w-4 h-4"></i>' },
+        { label: 'Ovos usados', value: fmt(used.eggs, 0), bgStyle: 'bg-amber-50', textStyle: 'text-amber-500', hoverBg: 'group-hover:bg-amber-100', glow: 'bg-amber-100', icon: '<i data-lucide="egg" class="w-4 h-4"></i>' },
+        { label: 'Óleo usado', value: `${fmt(used.oilMl, 0)} ml`, bgStyle: 'bg-orange-50', textStyle: 'text-orange-500', hoverBg: 'group-hover:bg-orange-100', glow: 'bg-orange-100', icon: '<i data-lucide="droplet" class="w-4 h-4"></i>' },
+        { label: 'Farinha rest.', value: `${fmt(left.flourKg)} kg`, bgStyle: 'bg-emerald-50', textStyle: 'text-emerald-500', hoverBg: 'group-hover:bg-emerald-100', glow: 'bg-emerald-100', icon: '<i data-lucide="archive" class="w-4 h-4"></i>' },
+        { label: 'Masseiros', value: workers.length, bgStyle: 'bg-gray-50', textStyle: 'text-gray-500', hoverBg: 'group-hover:bg-gray-100', glow: 'bg-gray-100', icon: '<i data-lucide="users" class="w-4 h-4"></i>' }
+      ];
 
-      el.massBalanceGrid.innerHTML = Object.keys(MASS_RECIPE).map(k => `<div class="mass-balance-item ${left[k] < 0 ? 'negative' : ''}">
-    <small>${MASS_LABELS[k]}</small><strong>${fmt(left[k])} ${MASS_UNITS[k]}</strong>
-  </div>`).join('');
+      el.massSubtotals.innerHTML = kpis.map(k => `
+        <div class="relative overflow-hidden group bg-white border border-[#E5E7EB] rounded-2xl p-4 sm:p-5 shadow-sm transition-all duration-300 hover:shadow-md flex flex-col justify-between min-h-[105px]">
+          <div class="absolute -right-6 -top-6 w-24 h-24 ${k.glow} rounded-full blur-2xl opacity-40 group-hover:opacity-80 transition-opacity"></div>
+          <div class="relative z-10 flex items-center justify-between mb-2">
+            <span class="text-[13px] font-semibold text-[#6B7280] tracking-tight uppercase">${k.label}</span>
+            <div class="w-8 h-8 flex items-center justify-center rounded-lg ${k.bgStyle} ${k.textStyle} transition-colors duration-300 ${k.hoverBg}">
+              <div class="w-4 h-4 flex items-center justify-center">
+                ${k.icon}
+              </div>
+            </div>
+          </div>
+          <div class="relative z-10 flex items-baseline">
+            <span class="text-3xl leading-none font-extrabold text-[#111827] tracking-tight">${k.value}</span>
+          </div>
+        </div>
+      `).join('');
+
+      el.massBalanceGrid.innerHTML = Object.keys(MASS_RECIPE).map(k => `
+        <div class="p-3 rounded-lg border ${left[k] < 0 ? 'bg-red-50 border-red-200 text-red-700' : 'bg-gray-50/50 border-[#E7E7E7] text-[#171717]'}">
+          <p class="text-[11px] font-medium text-[#737373] uppercase tracking-wider mb-1">${MASS_LABELS[k]}</p>
+          <p class="text-base font-bold">${fmt(left[k])} <span class="text-xs font-normal text-[#737373]">${MASS_UNITS[k]}</span></p>
+        </div>
+      `).join('');
+
       el.massStockStatus.textContent = mass.stockSaved ? 'Estoque salvo' : 'Informe o estoque';
-      el.massStockStatus.className = `chip ${mass.stockSaved ? 'stock-saved' : ''}`;
-      if (Object.values(left).some(v => v < 0)) { el.massStockStatus.textContent = 'Consumo acima do estoque'; el.massStockStatus.className = 'chip stock-alert' }
+      el.massStockStatus.className = `px-2.5 py-1 rounded-full text-xs font-medium border shrink-0 self-start sm:self-center ${mass.stockSaved ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'}`;
+      if (Object.values(left).some(v => v < 0)) {
+        el.massStockStatus.textContent = 'Consumo acima do estoque';
+        el.massStockStatus.className = 'px-2.5 py-1 rounded-full text-xs font-medium border shrink-0 self-start sm:self-center bg-red-50 text-red-700 border-red-200';
+      }
       el.massRecipeChip.textContent = 'Receita padrão: 10 kg farinha · 10 ovos';
 
       el.openMassBatchBtn.disabled = op.status !== 'production_open' || !workers.length;
       el.saveMassStockBtn.disabled = op.status === 'completed';
 
-      el.massBatchHistory.innerHTML = mass.batches.length ? `<div class="mass-batch-list">${[...mass.batches].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).map((b, i) => `<div class="mass-batch-row">
-    <div class="mass-batch-number">#${String(b.number).padStart(2, '0')}</div>
-    <div><strong>${esc(b.workerName)}</strong><small>${formatTime(b.createdAt)}${b.note ? ` · ${esc(b.note)}` : ''}</small><div class="mass-batch-materials">${Object.keys(MASS_RECIPE).map(k => `<span class="material-tag">${MASS_LABELS[k]} ${fmt(b.materials[k])} ${MASS_UNITS[k]}</span>`).join('')}</div></div>
-    <div class="actions"><button class="btn btn-soft-red btn-small" data-delete-batch="${b.id}">Excluir</button></div>
-  </div>`).join('')}</div>` : empty('Nenhuma batida registrada', 'Use o botão “Nova batida” para registrar a primeira.');
+      el.massBatchHistory.innerHTML = mass.batches.length ? `${[...mass.batches].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).map((b, i) => `
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl border border-[#E7E7E7] hover:bg-gray-50/50 transition-colors">
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-full bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-sm shrink-0">
+              #${String(b.number).padStart(2, '0')}
+            </div>
+            <div>
+              <div class="flex flex-wrap items-center gap-2 mb-1">
+                <span class="font-bold text-[#171717]">${esc(b.workerName)}</span>
+                <span class="text-xs text-[#737373]">• ${formatTime(b.createdAt)}</span>
+                ${b.note ? `<span class="px-2 py-0.5 rounded bg-gray-100 text-gray-600 text-[10px] font-medium border border-gray-200">${esc(b.note)}</span>` : ''}
+              </div>
+              <div class="flex flex-wrap gap-1.5 mt-2">
+                ${Object.keys(MASS_RECIPE).map(k => `<span class="px-2 py-0.5 rounded text-[11px] font-medium bg-white border border-[#E7E7E7] text-[#4B5563] shadow-sm">${MASS_LABELS[k]} <strong class="text-[#171717]">${fmt(b.materials[k])}</strong> ${MASS_UNITS[k]}</span>`).join('')}
+              </div>
+            </div>
+          </div>
+          <button class="shrink-0 w-full sm:w-auto px-3 py-1.5 bg-white text-red-600 text-xs font-semibold rounded-lg hover:bg-red-50 border border-red-200 transition-colors flex items-center justify-center gap-1" data-delete-batch="${b.id}">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Excluir
+          </button>
+        </div>
+      `).join('')}` : `
+        <div class="p-10 text-center flex flex-col items-center justify-center bg-gray-50/50 rounded-xl border border-dashed border-[#E7E7E7]">
+          <div class="w-12 h-12 bg-white border border-[#E7E7E7] shadow-sm rounded-full flex items-center justify-center mb-3">
+            <i data-lucide="inbox" class="w-5 h-5 text-gray-400"></i>
+          </div>
+          <strong class="text-sm text-[#171717] mb-1">Nenhuma batida registrada</strong>
+          <p class="text-xs text-[#737373]">Use o botão "Nova batida" para registrar a primeira.</p>
+        </div>
+      `;
+      lucide.createIcons();
     }
     function openMassBatch() {
       const op = currentOperation(); if (!op || op.status !== 'production_open') return toast('A cozinha precisa estar em operação.', 'warn');
