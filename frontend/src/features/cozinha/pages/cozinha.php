@@ -1,20 +1,20 @@
 <section id="page-production" class="page">
   <!-- PAGE HEADER -->
-  <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
     <div>
       <h2 class="text-2xl font-bold text-[#171717]">Produção</h2>
       <p class="text-sm text-[#737373] mt-1">
         Registre novas comandas e acompanhe as etapas da produção em tempo real.
       </p>
     </div>
-    <div class="flex items-center gap-3 shrink-0 mt-1 flex-wrap">
-
-      <button id="reopenKitchenBtn" class="hidden px-4 py-3 bg-amber-100 text-amber-800 text-xs font-semibold rounded-lg hover:bg-amber-200 active:scale-[0.98] transition-all duration-150 shadow-sm flex items-center gap-1.5">
-        <i data-lucide="power" class="w-3.5 h-3.5"></i>
+    
+    <div class="shrink-0 w-full sm:w-auto">
+      <button id="reopenKitchenBtn" class="hidden w-full sm:w-auto px-4 py-2.5 bg-amber-100 text-amber-800 text-sm font-semibold rounded-lg hover:bg-amber-200 active:scale-[0.98] transition-all duration-150 shadow-[0_2px_8px_rgba(251,191,36,0.25)] flex justify-center items-center gap-2 border border-transparent">
+        <i data-lucide="power" class="w-4 h-4"></i>
         Reabrir cozinha
       </button>
-      <button id="closeKitchenBtn" class="px-4 py-3 bg-[#B5120B] text-white text-xs font-semibold rounded-lg hover:bg-[#9a0f09] active:scale-[0.98] transition-all duration-150 shadow-sm flex items-center gap-1.5">
-        <i data-lucide="power-off" class="w-3.5 h-3.5"></i>
+      <button id="closeKitchenBtn" class="w-full sm:w-auto px-4 py-2.5 bg-[#B5120B] text-white text-sm font-semibold rounded-lg hover:bg-[#9a0f09] active:scale-[0.98] transition-all duration-150 shadow-[0_2px_8px_rgba(181,18,11,0.25)] flex justify-center items-center gap-2 border border-transparent">
+        <i data-lucide="power-off" class="w-4 h-4"></i>
         Encerrar cozinha
       </button>
     </div>

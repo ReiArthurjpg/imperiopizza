@@ -1717,25 +1717,28 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
       const s = stats(op);
       
       const kpis = [
-        { label: 'Comandas', value: s.commands, icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>' },
-        { label: 'Pizzas', value: fmt(s.pizzas), icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 11V4.234a2 2 0 012-1.986l.283.028a2 2 0 011.666 1.638L16.275 11H11zM11 13v6.766a2 2 0 002 1.986l.283-.028a2 2 0 001.666-1.638L16.275 13H11zM9 11H3.725a2 2 0 00-1.666 1.638l-.283.028A2 2 0 003.762 14.65L9 14.65V11zM9 13H3.725a2 2 0 01-1.666-1.638l-.283-.028A2 2 0 013.762 9.35L9 9.35V13z"></path></svg>' },
-        { label: 'No forno', value: s.oven, icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z"></path></svg>' },
-        { label: 'Vulcão', value: fmt(s.volcano), icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>' },
-        { label: 'Esfirras', value: fmt(s.esfihas, 0), icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>' },
-        { label: 'Doces', value: fmt(s.sweet), icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>' },
-        { label: 'Erros', value: s.errors, icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>' }
+        { label: 'Comandas', value: s.commands, bgStyle: 'bg-blue-50', textStyle: 'text-blue-500', hoverBg: 'group-hover:bg-blue-100', glow: 'bg-blue-100', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>' },
+        { label: 'Pizzas', value: fmt(s.pizzas), bgStyle: 'bg-emerald-50', textStyle: 'text-emerald-500', hoverBg: 'group-hover:bg-emerald-100', glow: 'bg-emerald-100', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 11V4.234a2 2 0 012-1.986l.283.028a2 2 0 011.666 1.638L16.275 11H11zM11 13v6.766a2 2 0 002 1.986l.283-.028a2 2 0 001.666-1.638L16.275 13H11zM9 11H3.725a2 2 0 00-1.666 1.638l-.283.028A2 2 0 003.762 14.65L9 14.65V11zM9 13H3.725a2 2 0 01-1.666-1.638l-.283-.028A2 2 0 013.762 9.35L9 9.35V13z"></path></svg>' },
+        { label: 'No forno', value: s.oven, bgStyle: 'bg-orange-50', textStyle: 'text-orange-500', hoverBg: 'group-hover:bg-orange-100', glow: 'bg-orange-100', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z"></path></svg>' },
+        { label: 'Vulcão', value: fmt(s.volcano), bgStyle: 'bg-purple-50', textStyle: 'text-purple-500', hoverBg: 'group-hover:bg-purple-100', glow: 'bg-purple-100', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>' },
+        { label: 'Esfirras', value: fmt(s.esfihas, 0), bgStyle: 'bg-amber-50', textStyle: 'text-amber-500', hoverBg: 'group-hover:bg-amber-100', glow: 'bg-amber-100', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>' },
+        { label: 'Doces', value: fmt(s.sweet), bgStyle: 'bg-pink-50', textStyle: 'text-pink-500', hoverBg: 'group-hover:bg-pink-100', glow: 'bg-pink-100', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>' },
+        { label: 'Erros', value: s.errors, bgStyle: 'bg-red-50', textStyle: 'text-red-500', hoverBg: 'group-hover:bg-red-100', glow: 'bg-red-100', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>' }
       ];
 
       el.productionSubtotals.innerHTML = kpis.map(k => `
-        <div class="group bg-white border border-[#E5E7EB] rounded-xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.02)] transition-all duration-200 hover:shadow-[0_4px_12px_rgba(0,0,0,0.04)] hover:border-[#D1D5DB] flex flex-col justify-between min-h-[96px]">
-          <div class="flex items-center justify-between mb-3">
-            <span class="text-[13px] font-medium text-[#6B7280] tracking-tight">${k.label}</span>
-            <div class="w-5 h-5 text-[#9CA3AF] transition-colors duration-200 group-hover:text-[#4F46E5]">
-              ${k.icon}
+        <div class="relative overflow-hidden group bg-white border border-[#E5E7EB] rounded-2xl p-4 sm:p-5 shadow-sm transition-all duration-300 hover:shadow-md flex flex-col justify-between min-h-[105px]">
+          <div class="absolute -right-6 -top-6 w-24 h-24 ${k.glow} rounded-full blur-2xl opacity-40 group-hover:opacity-80 transition-opacity"></div>
+          <div class="relative z-10 flex items-center justify-between mb-2">
+            <span class="text-[13px] font-semibold text-[#6B7280] tracking-tight uppercase">${k.label}</span>
+            <div class="w-8 h-8 flex items-center justify-center rounded-lg ${k.bgStyle} ${k.textStyle} transition-colors duration-300 ${k.hoverBg}">
+              <div class="w-4 h-4 flex items-center justify-center">
+                ${k.icon}
+              </div>
             </div>
           </div>
-          <div class="flex items-end justify-between">
-            <span class="text-[28px] font-bold text-[#111827] tracking-tight leading-none">${k.value}</span>
+          <div class="relative z-10 flex items-baseline">
+            <span class="text-3xl leading-none font-extrabold text-[#111827] tracking-tight">${k.value}</span>
           </div>
         </div>
       `).join('');
