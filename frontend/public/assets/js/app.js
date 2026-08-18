@@ -315,9 +315,9 @@
       renderPipeline(op);
       
       if (!op) {
-        el.dashboardBanner.innerHTML = `<div class="flex items-center justify-between p-4 rounded-xl border bg-gray-50 border-gray-200 w-full">
-          <div class="flex items-center gap-3">
-            <div class="relative flex h-3 w-3">
+        el.dashboardBanner.innerHTML = `<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-xl border bg-gray-50 border-gray-200 w-full">
+          <div class="flex items-start sm:items-center gap-3">
+            <div class="relative flex h-3 w-3 mt-1 sm:mt-0 shrink-0">
               <span class="relative inline-flex rounded-full h-3 w-3 bg-gray-400"></span>
             </div>
             <div>
@@ -325,9 +325,9 @@
               <p class="text-xs text-gray-500 mt-0.5">Cadastre a equipe e abra a produção para começar.</p>
             </div>
           </div>
-          <div class="flex gap-2">
-            <button class="px-4 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors" data-go="team">Organizar Equipe</button>
-            <button class="px-4 py-2 text-xs font-medium text-white bg-[#B5120B] rounded-lg hover:bg-[#9a0f09] shadow-sm transition-colors" data-go="team">Abrir Produção</button>
+          <div class="flex w-full sm:w-auto gap-2">
+            <button class="flex-1 sm:flex-none justify-center px-4 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors" data-go="team">Organizar Equipe</button>
+            <button class="flex-1 sm:flex-none justify-center px-4 py-2 text-xs font-medium text-white bg-[#B5120B] rounded-lg hover:bg-[#9a0f09] shadow-sm transition-colors" data-go="team">Abrir Produção</button>
           </div>
         </div>`;
         el.dashboardTeam.innerHTML = empty('Equipe não cadastrada', 'Abra a página Equipe.');
@@ -345,9 +345,9 @@
       if (op.status === 'completed') desc = `Dia finalizado às ${formatTime(op.completedAt)} • ${s.pizzas} pizzas`;
       
       const isActive = op.status === 'production_open';
-      el.dashboardBanner.innerHTML = `<div class="flex items-center justify-between p-4 rounded-xl border ${isActive ? 'bg-[#E7F8F0] border-[#A7F3D0]' : 'bg-gray-50 border-gray-200'} w-full">
-        <div class="flex items-center gap-3">
-          <div class="relative flex h-3 w-3">
+      el.dashboardBanner.innerHTML = `<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-xl border ${isActive ? 'bg-[#E7F8F0] border-[#A7F3D0]' : 'bg-gray-50 border-gray-200'} w-full">
+        <div class="flex items-start sm:items-center gap-3">
+          <div class="relative flex h-3 w-3 mt-1 sm:mt-0 shrink-0">
             ${isActive ? '<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>' : ''}
             <span class="relative inline-flex rounded-full h-3 w-3 ${isActive ? 'bg-emerald-500' : 'bg-gray-400'}"></span>
           </div>
@@ -357,9 +357,9 @@
           </div>
         </div>
         ${op.status === 'draft' ? `
-          <div class="flex gap-2">
-            <button class="px-4 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors" data-go="team">Organizar Equipe</button>
-            <button class="px-4 py-2 text-xs font-medium text-white bg-[#B5120B] rounded-lg hover:bg-[#9a0f09] shadow-sm transition-colors" id="startOperationBtn">Abrir Produção</button>
+          <div class="flex w-full sm:w-auto gap-2">
+            <button class="flex-1 sm:flex-none justify-center px-4 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors" data-go="team">Organizar Equipe</button>
+            <button class="flex-1 sm:flex-none justify-center px-4 py-2 text-xs font-medium text-white bg-[#B5120B] rounded-lg hover:bg-[#9a0f09] shadow-sm transition-colors" id="startOperationBtn">Abrir Produção</button>
           </div>
         ` : ''}
       </div>`;
