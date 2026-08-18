@@ -33,6 +33,11 @@
       <span class="opacity-0 group-hover:opacity-100 transition-all duration-300 overflow-hidden whitespace-nowrap">Produção</span>
     </button>
     
+    <button class="sidebar-nav-btn w-full flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 gap-3 text-gray-600 hover:bg-[#FDECEB] hover:text-[#B5120B] group" data-page="mass">
+      <i data-lucide="soup" class="w-5 h-5 shrink-0 text-gray-400 group-hover:text-[#B5120B]"></i>
+      <span class="opacity-0 group-hover:opacity-100 transition-all duration-300 overflow-hidden whitespace-nowrap">Massas</span>
+    </button>
+    
     <button class="sidebar-nav-btn w-full flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 gap-3 text-gray-600 hover:bg-[#FDECEB] hover:text-[#B5120B] group" data-page="dispatch">
       <i data-lucide="truck" class="w-5 h-5 shrink-0 text-gray-400 group-hover:text-[#B5120B]"></i>
       <span class="opacity-0 group-hover:opacity-100 transition-all duration-300 overflow-hidden whitespace-nowrap">Despacho</span>
