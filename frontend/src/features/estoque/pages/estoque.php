@@ -9,10 +9,7 @@
     </div>
     
     <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto shrink-0">
-      <button id="manageTeamMassBtn" class="w-full sm:w-auto px-4 py-2.5 bg-white text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-50 active:scale-[0.98] transition-all duration-150 shadow-sm border border-[#E7E7E7] flex justify-center items-center gap-2" data-go="team">
-        <i data-lucide="users" class="w-4 h-4"></i>
-        Acionar equipe
-      </button>
+
       <button id="openMassBatchBtn" class="w-full sm:w-auto px-4 py-2.5 bg-[#1F6FB2] text-white text-sm font-semibold rounded-lg hover:bg-[#1a5e98] active:scale-[0.98] transition-all duration-150 shadow-[0_2px_8px_rgba(31,111,178,0.25)] border border-transparent flex justify-center items-center gap-2">
         <i data-lucide="plus-circle" class="w-4 h-4"></i>
         Nova batida
@@ -69,7 +66,7 @@
           </div>
         </div>
 
-        <button id="saveMassStockBtn" class="w-full px-4 py-2.5 bg-[#171717] text-white text-sm font-semibold rounded-lg hover:bg-[#333333] active:scale-[0.98] transition-all duration-150 shadow-sm flex justify-center items-center gap-2 mt-auto">
+        <button id="saveMassStockBtn" class="w-full px-4 py-2.5 bg-emerald-600 text-white text-sm font-semibold rounded-lg hover:bg-emerald-700 active:scale-[0.98] transition-all duration-150 shadow-sm flex justify-center items-center gap-2 mt-auto">
           <i data-lucide="save" class="w-4 h-4"></i>
           Salvar estoque do mês
         </button>
