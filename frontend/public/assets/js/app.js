@@ -68,6 +68,16 @@
           }
         }
       });
+      document.querySelectorAll('.mobile-nav .nav-btn, .more-menu-item').forEach(b => {
+        b.classList.toggle('active', b.dataset.page === name || (name === 'dispatch' && b.dataset.page === 'dispatch') || (name === 'reports' && b.dataset.page === 'reports'));
+      });
+      
+      // Update 'Mais' button active state if one of its children is active
+      const moreBtn = document.getElementById('moreMenuBtn');
+      if (moreBtn) {
+        moreBtn.classList.toggle('active', ['dispatch', 'reports'].includes(name));
+      }
+      
       // Removed registerCommandModal toggle
 
       if (name === 'dashboard') { renderDashboard(); fetchTopMontadoresMensal(); }
@@ -1378,7 +1388,21 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
     // relatórios
     el.historyList.addEventListener('click', e => { const x = e.target.closest('[data-report-op]'); if (x) { selectedReportOperationId = x.dataset.reportOp; renderReports() } }); el.reportCards.addEventListener('click', e => { const b = e.target.closest('[data-report-action]'); if (!b) return; const op = getOperation(selectedReportOperationId); if (!op) return; const a = b.dataset.reportAction; if (a === 'download-attendance') downloadHtml(`lista_presenca_${op.date}.html`, attendanceReport(op)); if (a === 'print-attendance') printHtml(attendanceReport(op)); if (a === 'download-production') downloadHtml(`resultado_montagem_${op.date}.html`, productionReport(op)); if (a === 'print-production') printHtml(productionReport(op)) }); el.backupBtn.addEventListener('click', () => { const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' }), url = URL.createObjectURL(blob), a = document.createElement('a'); a.href = url; a.download = `backup_imperial_${today()}.json`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); toast('Backup baixado.') }); el.restoreBtn.addEventListener('click', () => el.restoreFile.click()); el.restoreFile.addEventListener('change', async e => { const f = e.target.files[0]; if (!f) return; try { const d = JSON.parse(await f.text()); if (!Array.isArray(d.people) || !Array.isArray(d.operations)) throw new Error(); if (!confirm('Restaurar este backup e substituir os dados atuais?')) return; state.people = d.people; state.operations = d.operations; save(); selectedReportOperationId = null; renderAll(); toast('Backup restaurado.') } catch (err) { toast('Backup inválido.', 'error') } finally { e.target.value = '' } });
 
-    function renderAll() { renderHeader(); const page = document.querySelector('.page.active')?.id.replace('page-', '') || 'dashboard'; showPage(page) }
+    function renderAll() { 
+      renderHeader(); 
+      let page = 'dashboard';
+      const path = window.location.pathname;
+      if (path.includes('/equipe')) page = 'team';
+      else if (path.includes('/cozinha')) page = 'production';
+      else if (path.includes('/estoque')) page = 'stock';
+      else if (path.includes('/comandas')) page = 'dispatch';
+      else if (path.includes('/relatorios')) page = 'reports';
+      else {
+        const activeEl = document.querySelector('.page.active');
+        if (activeEl) page = activeEl.id.replace('page-', '');
+      }
+      showPage(page);
+    }
     if (el.globalDate) el.globalDate.value = today();
     if (el.globalStartDate) el.globalStartDate.value = today();
     if (el.globalEndDate) el.globalEndDate.value = today();
@@ -2271,7 +2295,17 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
 
     /* Re-renderização final usando as novas regras. */
     renderAll = function () {
-      const page = document.querySelector('.page.active')?.id.replace('page-', '') || 'dashboard';
+      let page = 'dashboard';
+      const path = window.location.pathname;
+      if (path.includes('/equipe')) page = 'team';
+      else if (path.includes('/cozinha')) page = 'production';
+      else if (path.includes('/estoque')) page = 'stock';
+      else if (path.includes('/comandas')) page = 'dispatch';
+      else if (path.includes('/relatorios')) page = 'reports';
+      else {
+        const activeEl = document.querySelector('.page.active');
+        if (activeEl) page = activeEl.id.replace('page-', '');
+      }
       if (typeof showPage === 'function') {
          showPage(page);
       }
