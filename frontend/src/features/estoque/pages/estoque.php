@@ -32,8 +32,8 @@
       <!-- Estoque informado do dia -->
       <article class="bg-white rounded-xl border border-[#E7E7E7] shadow-[0_4px_12px_rgba(0,0,0,0.02)] p-5 flex flex-col h-full transition-all duration-200 hover:shadow-[0_2px_8px_rgb(0,0,0,0.03)]">
         <div class="mb-5">
-          <h3 class="text-base font-semibold text-[#171717]">Estoque informado do dia</h3>
-          <p class="text-xs text-[#737373] mt-0.5">Informe quanto existe disponível. O sistema calcula automaticamente o saldo após as batidas.</p>
+          <h3 class="text-base font-semibold text-[#171717]">Atualizar Estoque do Mês</h3>
+          <p class="text-xs text-[#737373] mt-0.5">Informe o estoque disponível. O saldo será atualizado imediatamente.</p>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1 mb-6">
@@ -71,7 +71,7 @@
 
         <button id="saveMassStockBtn" class="w-full px-4 py-2.5 bg-[#171717] text-white text-sm font-semibold rounded-lg hover:bg-[#333333] active:scale-[0.98] transition-all duration-150 shadow-sm flex justify-center items-center gap-2 mt-auto">
           <i data-lucide="save" class="w-4 h-4"></i>
-          Salvar estoque do dia
+          Salvar estoque do mês
         </button>
       </article>
 
@@ -79,8 +79,8 @@
       <article class="bg-white rounded-xl border border-[#E7E7E7] shadow-[0_4px_12px_rgba(0,0,0,0.02)] p-5 flex flex-col h-full transition-all duration-200 hover:shadow-[0_2px_8px_rgb(0,0,0,0.03)]">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 border-b border-[#E7E7E7] pb-4">
           <div>
-            <h3 class="text-base font-semibold text-[#171717]">Saldo estimado</h3>
-            <p class="text-xs text-[#737373] mt-0.5">Estoque informado menos o consumo registrado nas batidas.</p>
+            <h3 class="text-base font-semibold text-[#171717]">Estoque Atual</h3>
+            <p class="text-xs text-[#737373] mt-0.5">Saldo disponível para uso.</p>
           </div>
           <span id="massStockStatus" class="px-2.5 py-1 rounded-full text-xs font-medium border bg-gray-50 text-gray-600 border-gray-200 shrink-0 self-start sm:self-center">Aguardando estoque</span>
         </div>

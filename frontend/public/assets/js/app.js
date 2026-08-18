@@ -1,6 +1,6 @@
     const STORAGE_KEY = 'imperial_controle_comandas_v3';
     const SECTORS = ['Montagem', 'Massa', 'Cozinha', 'Forno', 'Despacho', 'Atendimento', 'Estoque', 'Liderança', 'Outros'];
-    let state = { people: [], operations: [] }; let selectedReportOperationId = null; let productionViewMode = 'list';
+    let state = { people: [], operations: [], globalMassStock: { flourKg: 0, sugarG: 0, saltG: 0, eggs: 0, oilMl: 0, waterL: 0, yeastG: 0 } }; let selectedReportOperationId = null; let productionViewMode = 'list';
     const $ = id => document.getElementById(id);
     const el = { globalDate: $('globalDate'), globalStartDate: $('globalStartDate'), globalEndDate: $('globalEndDate'), phasePill: $('phasePill'), dashboardBanner: $('dashboardBanner'), dashCommands: $('dashCommands'), dashPizzas: $('dashPizzas'), dashKitchen: $('dashKitchen'), dashOven: $('dashOven'), dashDispatch: $('dashDispatch'), dashErrors: $('dashErrors'), dashboardTeam: $('dashboardTeam'), dashboardRank: $('dashboardRank'), dashboardLive: $('dashboardLive'), personForm: $('personForm'), personName: $('personName'), personRole: $('personRole'), editPersonModal: $('editPersonModal'), editPersonForm: $('editPersonForm'), editPersonId: $('editPersonId'), editPersonName: $('editPersonName'), editPersonRole: $('editPersonRole'), peopleChecklist: $('peopleChecklist'), dayTeamGroups: $('dayTeamGroups'), teamOperationNotice: $('teamOperationNotice'), saveTeamBtn: $('saveTeamBtn'), startOperationBtn: $('startOperationBtn'), manageTeamBtn: $('manageTeamBtn'), manageTeamDispatchBtn: $('manageTeamDispatchBtn'), productionGate: $('productionGate'), productionContent: $('productionContent'), productionSubtotals: $('productionSubtotals'), openRegisterCommandBtn: $('openRegisterCommandBtn'), openUpdateCommandsBtn: $('openUpdateCommandsBtn'), updatePendingBadge: $('updatePendingBadge'), productionRecent: $('productionRecent'), commandHistoryPanel: $('commandHistoryPanel'), registerCommandModal: $('registerCommandModal'), assemblerSearch: $('assemblerSearch'), assemblerId: $('assemblerId'), assemblerSuggestions: $('assemblerSuggestions'), assemblerPickerBtn: $('assemblerPickerBtn'), assemblerPickerValue: $('assemblerPickerValue'), assemblerPickerModal: $('assemblerPickerModal'), assemblerPickerSearch: $('assemblerPickerSearch'), assemblerPickerList: $('assemblerPickerList'), pickerManageTeamBtn: $('pickerManageTeamBtn'), commandNumber: $('commandNumber'), pizzaQty: $('pizzaQty'), commandSuggestions: $('commandSuggestions'), commandNote: $('commandNote'), initialOven: $('initialOven'), addCommandBtn: $('addCommandBtn'), prodSearch: $('prodSearch'), prodStatus: $('prodStatus'), prodAssembler: $('prodAssembler'), clearProdFilters: $('clearProdFilters'), productionTableContainer: $('productionTableContainer'), productionGridContainer: $('productionGridContainer'), viewListBtn: $('viewListBtn'), viewGridBtn: $('viewGridBtn'), productionBody: $('productionBody'), productionMobileList: $('productionMobileList'), productionEmpty: $('productionEmpty'), closeKitchenBtn: $('closeKitchenBtn'), reopenKitchenBtn: $('reopenKitchenBtn'), dispatchGate: $('dispatchGate'), dispatchContent: $('dispatchContent'), dispatchSubtotals: $('dispatchSubtotals'), dispatchSearch: $('dispatchSearch'), dispatchFilter: $('dispatchFilter'), clearDispatchFilters: $('clearDispatchFilters'), dispatchGrid: $('dispatchGrid'), dispatchEmpty: $('dispatchEmpty'), finishDayBtn: $('finishDayBtn'), historyList: $('historyList'), reportOverview: $('reportOverview'), reportCards: $('reportCards'), backupBtn: $('backupBtn'), restoreBtn: $('restoreBtn'), restoreFile: $('restoreFile'), editModal: $('editModal'), editForm: $('editForm'), editId: $('editId'), editNumber: $('editNumber'), editQty: $('editQty'), editAssembler: $('editAssembler'), editStatus: $('editStatus'), editNote: $('editNote'), deleteCommandBtn: $('deleteCommandBtn'), errorModal: $('errorModal'), errorForm: $('errorForm'), errorId: $('errorId'), errorType: $('errorType'), errorNote: $('errorNote'), clearErrorBtn: $('clearErrorBtn'), toast: $('toast'), confirmDeleteModal: $('confirmDeleteModal'), sweetAssemblerModal: $('sweetAssemblerModal'), sweetAssemblerForm: $('sweetAssemblerForm'), sweetAssemblerCmdId: $('sweetAssemblerCmdId'), sweetAssemblerCmdNumber: $('sweetAssemblerCmdNumber'), sweetAssemblerCmdQty: $('sweetAssemblerCmdQty'), sweetAssemblerCmdSweetQty: $('sweetAssemblerCmdSweetQty'), sweetAssemblerCmdMainName: $('sweetAssemblerCmdMainName'), sweetAssemblerSelect: $('sweetAssemblerSelect'), overnightCloseModal: $('overnightCloseModal'), closeOvernightModalBtn: $('closeOvernightModalBtn'), cancelOvernightBtn: $('cancelOvernightBtn'), confirmOvernightCloseBtn: $('confirmOvernightCloseBtn') };
 
@@ -1498,7 +1498,7 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
     }
     function ensureMass(op) {
       if (!op) return null;
-      if (!op.mass) op.mass = { stock: { flourKg: 0, sugarG: 0, saltG: 0, eggs: 0, oilMl: 0, waterL: 0, yeastG: 0 }, stockSaved: false, batches: [] };
+      if (!op.mass) op.mass = { batches: [] };
       op.mass.stock = { flourKg: 0, sugarG: 0, saltG: 0, eggs: 0, oilMl: 0, waterL: 0, yeastG: 0, ...(op.mass.stock || {}) };
       op.mass.batches = Array.isArray(op.mass.batches) ? op.mass.batches : [];
       return op.mass;
@@ -1508,10 +1508,9 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
       (ensureMass(op)?.batches || []).forEach(b => Object.keys(total).forEach(k => total[k] += num(b.materials?.[k])));
       return total;
     }
-    function massRemaining(op) {
-      const mass = ensureMass(op), used = massConsumed(op), left = {};
-      Object.keys(MASS_RECIPE).forEach(k => left[k] = num(mass.stock[k]) - used[k]);
-      return left;
+    function massRemaining() {
+      if (!state.globalMassStock) state.globalMassStock = { flourKg: 0, sugarG: 0, saltG: 0, eggs: 0, oilMl: 0, waterL: 0, yeastG: 0 };
+      return state.globalMassStock;
     }
     function massWorkers(op) { return (op?.team || []).filter(p => p.role === 'Massa') }
     function dispatchDone(c) { return c?.status === 'despacho' && c?.dispatch?.status === 'entrega' }
@@ -2010,8 +2009,8 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
         el.massContent.classList.add('hidden'); return;
       }
       el.massGate.innerHTML = ''; el.massContent.classList.remove('hidden');
-      const mass = ensureMass(op), used = massConsumed(op), left = massRemaining(op), workers = massWorkers(op);
-      setMassInputs('stock', mass.stock);
+      const mass = ensureMass(op), used = massConsumed(op), left = massRemaining(), workers = massWorkers(op);
+      setMassInputs('stock', left);
 
       const kpis = [
         { label: 'Batidas', value: mass.batches.length, bgStyle: 'bg-indigo-50', textStyle: 'text-indigo-500', hoverBg: 'group-hover:bg-indigo-100', glow: 'bg-indigo-100', icon: '<i data-lucide="layers" class="w-4 h-4"></i>' },
@@ -2046,8 +2045,8 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
         </div>
       `).join('');
 
-      el.massStockStatus.textContent = mass.stockSaved ? 'Estoque salvo' : 'Informe o estoque';
-      el.massStockStatus.className = `px-2.5 py-1 rounded-full text-xs font-medium border shrink-0 self-start sm:self-center ${mass.stockSaved ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'}`;
+      el.massStockStatus.textContent = 'Atualizado';
+      el.massStockStatus.className = `px-2.5 py-1 rounded-full text-xs font-medium border shrink-0 self-start sm:self-center bg-emerald-50 text-emerald-700 border-emerald-200`;
       if (Object.values(left).some(v => v < 0)) {
         el.massStockStatus.textContent = 'Consumo acima do estoque';
         el.massStockStatus.className = 'px-2.5 py-1 rounded-full text-xs font-medium border shrink-0 self-start sm:self-center bg-red-50 text-red-700 border-red-200';
@@ -2096,18 +2095,18 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
       setMassInputs('batch', MASS_RECIPE); el.batchNote.value = ''; el.massBatchModal.classList.add('show');
     }
     function saveMassStock() {
-      const op = currentOperation(); if (!op) return;
-      const mass = ensureMass(op), stock = massInputObject('stock');
+      const stock = massInputObject('stock');
       if (Object.values(stock).some(v => v < 0)) return toast('O estoque não pode ter valores negativos.', 'error');
-      mass.stock = stock; mass.stockSaved = true; mass.stockUpdatedAt = new Date().toISOString(); save(); renderMass(); toast('Estoque do dia salvo.');
+      state.globalMassStock = stock; save(); renderMass(); toast('Estoque atualizado com sucesso.');
     }
     function saveMassBatch() {
       const op = currentOperation(); if (!op || op.status !== 'production_open') return toast('A cozinha não está em operação.', 'warn');
-      const mass = ensureMass(op); if (!mass.stockSaved) return toast('Salve primeiro o estoque disponível do dia.', 'warn');
+      const mass = ensureMass(op);
       const worker = massWorkers(op).find(w => w.personId === el.massWorkerSelect.value); if (!worker) return toast('Selecione o masseiro.', 'error');
       const materials = massInputObject('batch'); if (Object.values(materials).some(v => v < 0)) return toast('Os materiais não podem ser negativos.', 'error');
-      const left = massRemaining(op), insufficient = Object.keys(materials).filter(k => materials[k] > left[k] + 1e-9);
+      const left = massRemaining(), insufficient = Object.keys(materials).filter(k => materials[k] > left[k] + 1e-9);
       if (insufficient.length) return toast(`Estoque insuficiente: ${insufficient.map(k => MASS_LABELS[k]).join(', ')}.`, 'warn');
+      Object.keys(materials).forEach(k => { state.globalMassStock[k] = Math.max(0, (state.globalMassStock[k] || 0) - materials[k]); });
       const next = (mass.batches.reduce((m, b) => Math.max(m, num(b.number)), 0) || 0) + 1;
       mass.batches.push({ id: uid(), number: next, workerId: worker.personId, workerName: worker.name, materials, note: el.batchNote.value.trim(), createdAt: new Date().toISOString() });
       save(); el.massBatchModal.classList.remove('show'); renderMass(); toast(`Batida #${next} registrada.`);
