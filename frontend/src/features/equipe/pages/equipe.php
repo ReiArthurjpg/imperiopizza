@@ -1,30 +1,32 @@
 <section id="page-team" class="page">
 
   <!-- ═══════════════════════════════════════════════════
-       PAGE HEADER
+       PAGE HEADER E STATUS
   ════════════════════════════════════════════════════ -->
-  <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
     <div>
       <h2 class="text-2xl font-bold text-[#171717]">Equipe do Dia</h2>
       <p class="text-sm text-[#737373] mt-1">
         Cadastre profissionais, marque a presença e inicie a operação.
       </p>
     </div>
-    <!-- Badge de status da operação (atualizado pelo JS) e botão de cadastrar -->
-    <div class="flex items-center gap-3 shrink-0 mt-1">
-      <div id="teamHeaderBadge" class="flex items-center gap-2"></div>
+    
+    <div class="shrink-0 w-full sm:w-auto">
       <button
         id="openAddPersonModalBtn"
         type="button"
-        class="px-4 py-3 bg-[#1F6FB2] text-white text-xs font-semibold rounded-lg
-               hover:bg-[#1a5e98] active:scale-[0.98] transition-all duration-150 shadow-sm
-               flex items-center gap-1.5"
+        class="w-full sm:w-auto px-4 py-2.5 bg-[#1F6FB2] text-white text-sm font-semibold rounded-lg
+               hover:bg-[#1a5e98] active:scale-[0.98] transition-all duration-150 shadow-[0_2px_8px_rgba(31,111,178,0.25)]
+               flex justify-center items-center gap-2 border border-transparent"
       >
-        <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
+        <i data-lucide="user-plus" class="w-4 h-4"></i>
         Adicionar Colaborador
       </button>
     </div>
   </div>
+
+  <!-- Banner de status da operação (atualizado pelo JS) -->
+  <div id="teamHeaderBadge" class="mb-6 w-full"></div>
 
 
   <!-- ═══════════════════════════════════════════════════
