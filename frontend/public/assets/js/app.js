@@ -81,7 +81,7 @@
     function stats(op) { const cs = op?.commands || []; return { commands: cs.length, pizzas: cs.reduce((a, c) => a + (Number(c.pizzas) || 1), 0), kitchen: cs.filter(c => c.status === 'cozinha').length, oven: cs.filter(c => c.status === 'forno' || c.status === 'pronto').length, dispatchPending: cs.filter(c => c.status === 'despacho' && c.dispatch?.status !== 'liberado').length, released: cs.filter(c => c.status === 'despacho' && c.dispatch?.status === 'liberado').length, errors: cs.filter(c => c.error?.active).length } }
     function pendingToFinish(op) { return (op?.commands || []).filter(c => c.status !== 'despacho' || c.dispatch?.status !== 'liberado').length }
     function empty(title, text) { return `<div class="empty"><strong>${esc(title)}</strong>${esc(text)}</div>` }
-    function teamHtml(team, scrollClass = 'max-h-[170px] overflow-y-auto pr-2 custom-scrollbar') { 
+    function teamHtml(team, scrollClass = 'max-h-[300px] overflow-y-auto pr-2 custom-scrollbar') { 
       if (!team?.length) return empty('Equipe não definida', 'Selecione os profissionais do dia.'); 
       return `<div class="space-y-3 ${scrollClass}">${team.map(member => `
         <div class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 transition-colors -mx-2">
@@ -193,17 +193,42 @@
       ];
       
       container.innerHTML = pipelineSteps.map((step, idx) => `
-        <div class="flex-1 min-w-[120px] bg-gray-50 rounded-lg p-4 border border-gray-100 flex flex-col items-center justify-center text-center relative group hover:bg-white hover:border-gray-200 hover:shadow-sm transition-all cursor-pointer">
-          <div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 rounded-r-md bg-gray-300 ${step.color} border-l-4 group-hover:h-12 transition-all"></div>
-          <span class="text-2xl font-bold text-[#171717] mb-1">${step.count}</span>
-          <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">${step.stage}</span>
+        <div class="shrink-0 w-full sm:w-[130px] md:flex-1 bg-gray-50 rounded-lg p-6 sm:p-4 border border-gray-100 flex flex-col items-center justify-center text-center relative group hover:bg-white hover:border-gray-200 hover:shadow-sm transition-all cursor-pointer snap-start min-h-[140px] sm:min-h-0">
+          <div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-12 sm:h-8 rounded-r-md bg-gray-300 ${step.color} border-l-4 group-hover:h-16 sm:group-hover:h-12 transition-all"></div>
+          <span class="text-4xl sm:text-2xl font-bold text-[#171717] mb-2 sm:mb-1">${step.count}</span>
+          <span class="text-sm sm:text-xs font-medium text-gray-500 uppercase tracking-wider">${step.stage}</span>
         </div>
         ${idx < pipelineSteps.length - 1 ? `
-          <div class="hidden md:flex text-gray-300">
+          <div class="hidden md:flex text-gray-300 shrink-0">
             <i data-lucide="chevron-right" class="w-5 h-5"></i>
           </div>
         ` : ''}
       `).join('');
+
+      // Auto-scroll para mobile
+      if (window.pipelineScrollInterval) clearInterval(window.pipelineScrollInterval);
+      if (window.innerWidth < 768) {
+        let scrollPos = 0;
+        window.pipelineScrollInterval = setInterval(() => {
+          if (!container || !document.body.contains(container)) {
+            clearInterval(window.pipelineScrollInterval);
+            return;
+          }
+          const maxScroll = container.scrollWidth - container.clientWidth;
+          if (maxScroll <= 0) return;
+          
+          // Rolar a largura exata de um card (que agora é a largura do container) + gap (12px)
+          scrollPos += container.clientWidth + 12; 
+          if (scrollPos > maxScroll + 10) scrollPos = 0;
+          
+          container.scrollTo({ left: scrollPos, behavior: 'smooth' });
+        }, 2500);
+
+        // Pausa se o usuário tocar
+        container.addEventListener('touchstart', () => {
+          clearInterval(window.pipelineScrollInterval);
+        }, { once: true });
+      }
     }
 
 
