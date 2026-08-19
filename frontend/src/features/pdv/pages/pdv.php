@@ -14,28 +14,31 @@
         <!-- SUBTOTAIS (KPIs) -->
         <div id="dispatchSubtotals" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 lg:gap-4"></div>
 
-        <div class="grid grid-cols-1 gap-4">
-          <button id="openDispatchIntakeBtn" type="button" class="relative group bg-white border border-[#E5E7EB] hover:border-[#1F6FB2] rounded-xl p-5 shadow-sm transition-all duration-300 hover:shadow-md flex items-start gap-4 text-left overflow-hidden">
-            <div class="absolute -right-6 -top-6 w-24 h-24 bg-blue-100 rounded-full blur-2xl opacity-40 group-hover:opacity-80 transition-opacity"></div>
-            <div class="relative z-10 w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
-              <i data-lucide="flame" class="w-6 h-6"></i>
-              <span id="ovenReadyBadge" class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500 text-white text-[11px] font-bold flex items-center justify-center border-2 border-white shadow-sm">0</span>
-            </div>
-            <div class="relative z-10">
-              <strong class="block text-base font-bold text-[#171717] mb-1">Puxar do forno</strong>
-              <small class="text-[13px] text-[#737373] leading-snug block">Veja as comandas que já entraram no forno e receba manualmente no atendimento.</small>
-            </div>
-          </button>
-        </div>
-
-        <article id="dispatchQueuePanel" class="bg-white rounded-xl border border-[#E7E7E7] shadow-[0_4px_12px_rgba(0,0,0,0.02)] flex flex-col overflow-hidden">
+        <!-- FILTERS PANEL -->
+        <article class="bg-white rounded-xl border border-[#E7E7E7] shadow-[0_4px_12px_rgba(0,0,0,0.02)]">
           <div class="p-5 border-b border-[#E7E7E7] bg-gray-50/30">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
               <div>
                 <h3 class="text-base font-semibold text-[#171717]">Fila do atendimento</h3>
                 <p class="text-xs text-[#737373] mt-0.5">Recebidas do forno, conferidas e enviadas para entrega.</p>
               </div>
-              <span class="px-2.5 py-1 rounded-full text-xs font-medium border bg-indigo-50 text-indigo-700 border-indigo-200 shrink-0 self-start sm:self-center">Última etapa: saiu para entrega</span>
+              <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto shrink-0">
+                <div class="max-sm:hidden flex items-center bg-[#F3F4F6] p-1 rounded-lg border border-[#E7E7E7]">
+                  <button type="button" id="viewListDispatchBtn" class="p-1.5 text-[#9CA3AF] hover:text-[#4B5563] hover:bg-[#E5E7EB] rounded-md transition-colors" title="Ver em lista">
+                    <i data-lucide="list" class="w-4 h-4"></i>
+                  </button>
+                  <button type="button" id="viewGridDispatchBtn" class="p-1.5 bg-white shadow-sm rounded-md text-[#1F6FB2] transition-colors" title="Ver em cards">
+                    <i data-lucide="layout-grid" class="w-4 h-4"></i>
+                  </button>
+                </div>
+                <button id="openDispatchIntakeBtn" class="px-4 py-2.5 bg-[#1F6FB2] text-white text-sm font-semibold rounded-lg hover:bg-[#1a5e98] active:scale-[0.98] transition-all duration-150 shadow-[0_2px_8px_rgba(31,111,178,0.25)] border border-transparent flex justify-center items-center gap-2">
+                  <div class="relative flex items-center justify-center">
+                    <i data-lucide="flame" class="w-4 h-4"></i>
+                    <span id="ovenReadyBadge" class="absolute -top-2 -right-2 w-4.5 h-4.5 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center border border-white shadow-sm">0</span>
+                  </div>
+                  Puxar do forno
+                </button>
+              </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-[1fr_210px_auto] gap-3">
@@ -58,19 +61,42 @@
               </button>
             </div>
           </div>
-
-          <div class="p-5">
-            <div id="dispatchGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
-            
-            <div id="dispatchEmpty" class="hidden p-10 text-center flex-col items-center justify-center bg-gray-50/50 rounded-xl border border-dashed border-[#E7E7E7]">
-              <div class="w-12 h-12 bg-white border border-[#E7E7E7] shadow-sm rounded-full flex items-center justify-center mb-3 mx-auto">
-                <i data-lucide="inbox" class="w-5 h-5 text-gray-400"></i>
-              </div>
-              <strong class="block text-sm text-[#171717] mb-1">Nenhuma comanda recebida</strong>
-              <p class="text-xs text-[#737373]">Use "Puxar do forno" para trazer uma comanda ao atendimento.</p>
-            </div>
-          </div>
         </article>
+
+        <!-- RESULTS PANEL -->
+        <div id="dispatchQueuePanel" class="space-y-4">
+          <!-- Grid mode -->
+          <div id="dispatchGridContainer">
+            <div id="dispatchGrid" class="grid grid-cols-1 gap-4"></div>
+          </div>
+
+          <!-- List/Table mode -->
+          <div id="dispatchTableContainer" class="hidden overflow-x-auto border border-[#E7E7E7] rounded-xl bg-white">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-gray-50 border-b border-[#E7E7E7]">
+                  <th class="p-4 text-xs font-bold text-[#737373] uppercase tracking-wider">Comanda</th>
+                  <th class="p-4 text-xs font-bold text-[#737373] uppercase tracking-wider">Montador</th>
+                  <th class="p-4 text-xs font-bold text-[#737373] uppercase tracking-wider">Equiv.</th>
+                  <th class="p-4 text-xs font-bold text-[#737373] uppercase tracking-wider">Status</th>
+                  <th class="p-4 text-xs font-bold text-[#737373] uppercase tracking-wider">Acompanhamentos</th>
+                  <th class="p-4 text-xs font-bold text-[#737373] uppercase tracking-wider text-right">Ação</th>
+                </tr>
+              </thead>
+              <tbody id="dispatchTableBody"></tbody>
+            </table>
+          </div>
+          
+          <div id="dispatchEmpty" class="hidden p-10 text-center flex-col items-center justify-center bg-white rounded-xl border border-dashed border-[#E7E7E7] shadow-[0_4px_12px_rgba(0,0,0,0.02)]">
+            <div class="w-12 h-12 bg-white border border-[#E7E7E7] shadow-sm rounded-full flex items-center justify-center mb-3 mx-auto">
+              <i data-lucide="inbox" class="w-5 h-5 text-gray-400"></i>
+            </div>
+            <strong class="block text-sm text-[#171717] mb-1">Nenhuma comanda recebida</strong>
+            <p class="text-xs text-[#737373]">Use "Puxar do forno" para trazer uma comanda ao atendimento.</p>
+          </div>
+
+          <div id="dispatchPagination"></div>
+        </div>
       </div>
     </section>
 

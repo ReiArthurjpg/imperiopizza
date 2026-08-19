@@ -1,8 +1,8 @@
     const STORAGE_KEY = 'imperial_controle_comandas_v3';
     const SECTORS = ['Montagem', 'Massa', 'Cozinha', 'Forno', 'Despacho', 'Atendimento', 'Estoque', 'Liderança', 'Outros'];
-    let state = { people: [], operations: [], globalMassStock: { flourKg: 0, sugarG: 0, saltG: 0, eggs: 0, oilMl: 0, waterL: 0, yeastG: 0 } }; let selectedReportOperationId = null; let productionViewMode = 'list';
+    let state = { people: [], operations: [], globalMassStock: { flourKg: 0, sugarG: 0, saltG: 0, eggs: 0, oilMl: 0, waterL: 0, yeastG: 0 } }; let selectedReportOperationId = null; let productionViewMode = 'list'; let dispatchViewMode = 'grid';
     const $ = id => document.getElementById(id);
-    const el = { globalDate: $('globalDate'), globalStartDate: $('globalStartDate'), globalEndDate: $('globalEndDate'), phasePill: $('phasePill'), dashboardBanner: $('dashboardBanner'), dashCommands: $('dashCommands'), dashPizzas: $('dashPizzas'), dashKitchen: $('dashKitchen'), dashOven: $('dashOven'), dashDispatch: $('dashDispatch'), dashErrors: $('dashErrors'), dashboardTeam: $('dashboardTeam'), dashboardRank: $('dashboardRank'), dashboardLive: $('dashboardLive'), personForm: $('personForm'), personName: $('personName'), personRole: $('personRole'), editPersonModal: $('editPersonModal'), editPersonForm: $('editPersonForm'), editPersonId: $('editPersonId'), editPersonName: $('editPersonName'), editPersonRole: $('editPersonRole'), peopleChecklist: $('peopleChecklist'), dayTeamGroups: $('dayTeamGroups'), teamOperationNotice: $('teamOperationNotice'), saveTeamBtn: $('saveTeamBtn'), startOperationBtn: $('startOperationBtn'), manageTeamBtn: $('manageTeamBtn'), manageTeamDispatchBtn: $('manageTeamDispatchBtn'), productionGate: $('productionGate'), productionContent: $('productionContent'), productionSubtotals: $('productionSubtotals'), openRegisterCommandBtn: $('openRegisterCommandBtn'), openUpdateCommandsBtn: $('openUpdateCommandsBtn'), updatePendingBadge: $('updatePendingBadge'), productionRecent: $('productionRecent'), commandHistoryPanel: $('commandHistoryPanel'), registerCommandModal: $('registerCommandModal'), assemblerSearch: $('assemblerSearch'), assemblerId: $('assemblerId'), assemblerSuggestions: $('assemblerSuggestions'), assemblerPickerBtn: $('assemblerPickerBtn'), assemblerPickerValue: $('assemblerPickerValue'), assemblerPickerModal: $('assemblerPickerModal'), assemblerPickerSearch: $('assemblerPickerSearch'), assemblerPickerList: $('assemblerPickerList'), pickerManageTeamBtn: $('pickerManageTeamBtn'), commandNumber: $('commandNumber'), pizzaQty: $('pizzaQty'), commandSuggestions: $('commandSuggestions'), commandNote: $('commandNote'), initialOven: $('initialOven'), addCommandBtn: $('addCommandBtn'), prodSearch: $('prodSearch'), prodStatus: $('prodStatus'), prodAssembler: $('prodAssembler'), clearProdFilters: $('clearProdFilters'), productionTableContainer: $('productionTableContainer'), productionGridContainer: $('productionGridContainer'), viewListBtn: $('viewListBtn'), viewGridBtn: $('viewGridBtn'), productionBody: $('productionBody'), productionMobileList: $('productionMobileList'), productionEmpty: $('productionEmpty'), closeKitchenBtn: $('closeKitchenBtn'), reopenKitchenBtn: $('reopenKitchenBtn'), dispatchGate: $('dispatchGate'), dispatchContent: $('dispatchContent'), dispatchSubtotals: $('dispatchSubtotals'), dispatchSearch: $('dispatchSearch'), dispatchFilter: $('dispatchFilter'), clearDispatchFilters: $('clearDispatchFilters'), dispatchGrid: $('dispatchGrid'), dispatchEmpty: $('dispatchEmpty'), finishDayBtn: $('finishDayBtn'), historyList: $('historyList'), reportOverview: $('reportOverview'), reportCards: $('reportCards'), backupBtn: $('backupBtn'), restoreBtn: $('restoreBtn'), restoreFile: $('restoreFile'), editModal: $('editModal'), editForm: $('editForm'), editId: $('editId'), editNumber: $('editNumber'), editQty: $('editQty'), editAssembler: $('editAssembler'), editStatus: $('editStatus'), editNote: $('editNote'), deleteCommandBtn: $('deleteCommandBtn'), errorModal: $('errorModal'), errorForm: $('errorForm'), errorId: $('errorId'), errorType: $('errorType'), errorNote: $('errorNote'), clearErrorBtn: $('clearErrorBtn'), toast: $('toast'), confirmDeleteModal: $('confirmDeleteModal'), sweetAssemblerModal: $('sweetAssemblerModal'), sweetAssemblerForm: $('sweetAssemblerForm'), sweetAssemblerCmdId: $('sweetAssemblerCmdId'), sweetAssemblerCmdNumber: $('sweetAssemblerCmdNumber'), sweetAssemblerCmdQty: $('sweetAssemblerCmdQty'), sweetAssemblerCmdSweetQty: $('sweetAssemblerCmdSweetQty'), sweetAssemblerCmdMainName: $('sweetAssemblerCmdMainName'), sweetAssemblerSelect: $('sweetAssemblerSelect'), overnightCloseModal: $('overnightCloseModal'), closeOvernightModalBtn: $('closeOvernightModalBtn'), cancelOvernightBtn: $('cancelOvernightBtn'), confirmOvernightCloseBtn: $('confirmOvernightCloseBtn') };
+    const el = { globalDate: $('globalDate'), globalStartDate: $('globalStartDate'), globalEndDate: $('globalEndDate'), phasePill: $('phasePill'), dashboardBanner: $('dashboardBanner'), dashCommands: $('dashCommands'), dashPizzas: $('dashPizzas'), dashKitchen: $('dashKitchen'), dashOven: $('dashOven'), dashDispatch: $('dashDispatch'), dashErrors: $('dashErrors'), dashboardTeam: $('dashboardTeam'), dashboardRank: $('dashboardRank'), dashboardLive: $('dashboardLive'), personForm: $('personForm'), personName: $('personName'), personRole: $('personRole'), editPersonModal: $('editPersonModal'), editPersonForm: $('editPersonForm'), editPersonId: $('editPersonId'), editPersonName: $('editPersonName'), editPersonRole: $('editPersonRole'), peopleChecklist: $('peopleChecklist'), dayTeamGroups: $('dayTeamGroups'), teamOperationNotice: $('teamOperationNotice'), saveTeamBtn: $('saveTeamBtn'), startOperationBtn: $('startOperationBtn'), manageTeamBtn: $('manageTeamBtn'), manageTeamDispatchBtn: $('manageTeamDispatchBtn'), productionGate: $('productionGate'), productionContent: $('productionContent'), productionSubtotals: $('productionSubtotals'), openRegisterCommandBtn: $('openRegisterCommandBtn'), openUpdateCommandsBtn: $('openUpdateCommandsBtn'), updatePendingBadge: $('updatePendingBadge'), productionRecent: $('productionRecent'), commandHistoryPanel: $('commandHistoryPanel'), registerCommandModal: $('registerCommandModal'), assemblerSearch: $('assemblerSearch'), assemblerId: $('assemblerId'), assemblerSuggestions: $('assemblerSuggestions'), assemblerPickerBtn: $('assemblerPickerBtn'), assemblerPickerValue: $('assemblerPickerValue'), assemblerPickerModal: $('assemblerPickerModal'), assemblerPickerSearch: $('assemblerPickerSearch'), assemblerPickerList: $('assemblerPickerList'), pickerManageTeamBtn: $('pickerManageTeamBtn'), commandNumber: $('commandNumber'), pizzaQty: $('pizzaQty'), commandSuggestions: $('commandSuggestions'), commandNote: $('commandNote'), initialOven: $('initialOven'), addCommandBtn: $('addCommandBtn'), prodSearch: $('prodSearch'), prodStatus: $('prodStatus'), prodAssembler: $('prodAssembler'), clearProdFilters: $('clearProdFilters'), productionTableContainer: $('productionTableContainer'), productionGridContainer: $('productionGridContainer'), viewListBtn: $('viewListBtn'), viewGridBtn: $('viewGridBtn'), productionBody: $('productionBody'), productionMobileList: $('productionMobileList'), productionEmpty: $('productionEmpty'), closeKitchenBtn: $('closeKitchenBtn'), reopenKitchenBtn: $('reopenKitchenBtn'), dispatchGate: $('dispatchGate'), dispatchContent: $('dispatchContent'), dispatchSubtotals: $('dispatchSubtotals'), dispatchSearch: $('dispatchSearch'), dispatchFilter: $('dispatchFilter'), clearDispatchFilters: $('clearDispatchFilters'), dispatchGrid: $('dispatchGrid'), dispatchEmpty: $('dispatchEmpty'), finishDayBtn: $('finishDayBtn'), viewListDispatchBtn: $('viewListDispatchBtn'), viewGridDispatchBtn: $('viewGridDispatchBtn'), dispatchGridContainer: $('dispatchGridContainer'), dispatchTableContainer: $('dispatchTableContainer'), dispatchTableBody: $('dispatchTableBody'), historyList: $('historyList'), reportOverview: $('reportOverview'), reportCards: $('reportCards'), backupBtn: $('backupBtn'), restoreBtn: $('restoreBtn'), restoreFile: $('restoreFile'), editModal: $('editModal'), editForm: $('editForm'), editId: $('editId'), editNumber: $('editNumber'), editQty: $('editQty'), editAssembler: $('editAssembler'), editStatus: $('editStatus'), editNote: $('editNote'), deleteCommandBtn: $('deleteCommandBtn'), errorModal: $('errorModal'), errorForm: $('errorForm'), errorId: $('errorId'), errorType: $('errorType'), errorNote: $('errorNote'), clearErrorBtn: $('clearErrorBtn'), toast: $('toast'), confirmDeleteModal: $('confirmDeleteModal'), sweetAssemblerModal: $('sweetAssemblerModal'), sweetAssemblerForm: $('sweetAssemblerForm'), sweetAssemblerCmdId: $('sweetAssemblerCmdId'), sweetAssemblerCmdNumber: $('sweetAssemblerCmdNumber'), sweetAssemblerCmdQty: $('sweetAssemblerCmdQty'), sweetAssemblerCmdSweetQty: $('sweetAssemblerCmdSweetQty'), sweetAssemblerCmdMainName: $('sweetAssemblerCmdMainName'), sweetAssemblerSelect: $('sweetAssemblerSelect'), overnightCloseModal: $('overnightCloseModal'), closeOvernightModalBtn: $('closeOvernightModalBtn'), cancelOvernightBtn: $('cancelOvernightBtn'), confirmOvernightCloseBtn: $('confirmOvernightCloseBtn') };
 
     function save() {
       fetch('/api/sync', {
@@ -779,6 +779,24 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
     function statusText(c) { if (c.status === 'cozinha') return 'Na cozinha'; if (c.status === 'forno') return 'No forno'; if (c.status === 'pronto') return 'Aguardando atendimento'; return c.dispatch?.status === 'liberado' ? 'Liberada pelo despacho' : 'Saiu para o despacho' }
     function statusClass(c) { if (c.status === 'cozinha') return 'b-kitchen'; if (c.status === 'forno') return 'b-oven'; if (c.status === 'pronto') return 'b-dispatch'; return c.dispatch?.status === 'liberado' ? 'b-released' : 'b-dispatch' }
     function updateProductionViewMode() { if (productionViewMode === 'list') { if (el.viewListBtn) { el.viewListBtn.classList.add('bg-white', 'shadow-sm', 'text-[#B5120B]'); el.viewListBtn.classList.remove('text-[#9CA3AF]', 'hover:text-[#4B5563]', 'hover:bg-[#E5E7EB]'); } if (el.viewGridBtn) { el.viewGridBtn.classList.remove('bg-white', 'shadow-sm', 'text-[#B5120B]'); el.viewGridBtn.classList.add('text-[#9CA3AF]', 'hover:text-[#4B5563]', 'hover:bg-[#E5E7EB]'); } if (el.productionTableContainer) el.productionTableContainer.classList.remove('hidden'); if (el.productionGridContainer) el.productionGridContainer.classList.add('hidden'); if (el.productionMobileList) el.productionMobileList.classList.remove('hidden'); } else { if (el.viewGridBtn) { el.viewGridBtn.classList.add('bg-white', 'shadow-sm', 'text-[#B5120B]'); el.viewGridBtn.classList.remove('text-[#9CA3AF]', 'hover:text-[#4B5563]', 'hover:bg-[#E5E7EB]'); } if (el.viewListBtn) { el.viewListBtn.classList.remove('bg-white', 'shadow-sm', 'text-[#B5120B]'); el.viewListBtn.classList.add('text-[#9CA3AF]', 'hover:text-[#4B5563]', 'hover:bg-[#E5E7EB]'); } if (el.productionTableContainer) el.productionTableContainer.classList.add('hidden'); if (el.productionGridContainer) el.productionGridContainer.classList.remove('hidden'); if (el.productionMobileList) el.productionMobileList.classList.add('hidden'); } }
+    function updateDispatchViewMode() {
+      if (!el.viewListDispatchBtn || !el.viewGridDispatchBtn) return;
+      if (dispatchViewMode === 'list') {
+        el.viewListDispatchBtn.classList.add('bg-white', 'shadow-sm', 'text-[#1F6FB2]');
+        el.viewListDispatchBtn.classList.remove('text-[#9CA3AF]', 'hover:text-[#4B5563]', 'hover:bg-[#E5E7EB]');
+        el.viewGridDispatchBtn.classList.remove('bg-white', 'shadow-sm', 'text-[#1F6FB2]');
+        el.viewGridDispatchBtn.classList.add('text-[#9CA3AF]', 'hover:text-[#4B5563]', 'hover:bg-[#E5E7EB]');
+        if (el.dispatchTableContainer) el.dispatchTableContainer.classList.remove('hidden');
+        if (el.dispatchGridContainer) el.dispatchGridContainer.classList.add('hidden');
+      } else {
+        el.viewGridDispatchBtn.classList.add('bg-white', 'shadow-sm', 'text-[#1F6FB2]');
+        el.viewGridDispatchBtn.classList.remove('text-[#9CA3AF]', 'hover:text-[#4B5563]', 'hover:bg-[#E5E7EB]');
+        el.viewListDispatchBtn.classList.remove('bg-white', 'shadow-sm', 'text-[#1F6FB2]');
+        el.viewListDispatchBtn.classList.add('text-[#9CA3AF]', 'hover:text-[#4B5563]', 'hover:bg-[#E5E7EB]');
+        if (el.dispatchTableContainer) el.dispatchTableContainer.classList.add('hidden');
+        if (el.dispatchGridContainer) el.dispatchGridContainer.classList.remove('hidden');
+      }
+    }
     function renderProductionTable(op) {
       if (typeof window.renderProductionTableOverride === 'function') return window.renderProductionTableOverride(op);
       const cs = filteredCommands(op);
@@ -1149,13 +1167,15 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
     [el.prodSearch, el.prodStatus, el.prodAssembler].forEach(x => x.addEventListener(x.tagName === 'INPUT' ? 'input' : 'change', () => { window.currentProductionPage = 1; (window.renderProductionTableOverride || renderProductionTable)(currentOperation()); }));
     if (el.clearProdFilters) el.clearProdFilters.addEventListener('click', () => { el.prodSearch.value = ''; el.prodStatus.value = ''; el.prodAssembler.value = ''; window.currentProductionPage = 1; (window.renderProductionTableOverride || renderProductionTable)(currentOperation()) });
     function handleCommandAction(e) { const b = e.target.closest('[data-cmd-action]'); if (!b) return; const op = currentOperation(), c = getCommand(op, b.dataset.id); if (!c) return; if (b.dataset.cmdAction === 'next' || b.dataset.cmdAction === 'back') move(c, b.dataset.cmdAction); if (b.dataset.cmdAction === 'edit') openEdit(c); if (b.dataset.cmdAction === 'error') openError(c); if (b.dataset.cmdAction === 'sweet-asm') openSweetAssembler(c); }
+    if (el.viewListBtn) el.viewListBtn.addEventListener('click', () => { productionViewMode = 'list'; updateProductionViewMode(); });
+    if (el.viewGridBtn) el.viewGridBtn.addEventListener('click', () => { productionViewMode = 'grid'; updateProductionViewMode(); });
+    if (el.viewListDispatchBtn) el.viewListDispatchBtn.addEventListener('click', () => { dispatchViewMode = 'list'; updateDispatchViewMode(); renderDispatch(); });
+    if (el.viewGridDispatchBtn) el.viewGridDispatchBtn.addEventListener('click', () => { dispatchViewMode = 'grid'; updateDispatchViewMode(); renderDispatch(); });
     el.productionBody.addEventListener('click', handleCommandAction);
     el.productionMobileList.addEventListener('click', handleCommandAction);
     if (el.productionGridContainer) el.productionGridContainer.addEventListener('click', handleCommandAction);
     const sweetPanel = $('sweetPendingPanel');
     if (sweetPanel) sweetPanel.addEventListener('click', handleCommandAction);
-    if (el.viewListBtn) el.viewListBtn.addEventListener('click', () => { productionViewMode = 'list'; updateProductionViewMode(); });
-    if (el.viewGridBtn) el.viewGridBtn.addEventListener('click', () => { productionViewMode = 'grid'; updateProductionViewMode(); });
     let pendingCloseAction = null;
 
     function renderOvernightTeamList(op) {
@@ -2270,6 +2290,40 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
         </div>
       </article>`;
     }
+    function dispatchRowHtml(c) {
+      const d = c.dispatch || {}, isDelivery = d.status === 'entrega', isChecked = d.status === 'conferido';
+      const statusColor = isDelivery ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : isChecked ? 'bg-indigo-50 text-indigo-700 border-indigo-200' : 'bg-yellow-50 text-yellow-700 border-yellow-200';
+      const statusLabel = isDelivery ? 'Saiu para entrega' : isChecked ? 'Conferido' : 'Recebido / aguardando';
+      const statusIcon = isDelivery ? 'bike' : isChecked ? 'check-circle-2' : 'clock';
+
+      const chips = [
+        d.beverage ? '<span class="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-100">Bebida</span>' : '',
+        d.change ? `<span class="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-100">Troco ${esc(d.changeAmount || '')}</span>` : '',
+        d.ketchup ? '<span class="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-bold bg-red-50 text-red-700 border border-red-100">Ketchup</span>' : '',
+        d.mayonnaise ? '<span class="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-100">Maionese</span>' : ''
+      ].filter(Boolean).join(' ');
+
+      return `<tr class="border-b border-[#E7E7E7] hover:bg-gray-50/50 transition-colors ${isDelivery ? 'opacity-70 grayscale-[0.3]' : ''}">
+        <td class="p-4 font-bold text-[#171717]">#${String(c.number).padStart(3, '0')}</td>
+        <td class="p-4 text-sm text-[#737373] font-medium">${formatAssemblers(c)}</td>
+        <td class="p-4 text-sm text-[#171717] font-semibold">${fmt(commandEquivalent(c))}</td>
+        <td class="p-4">
+          <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${statusColor}">
+            <i data-lucide="${statusIcon}" class="w-3 h-3"></i>
+            ${statusLabel}
+          </span>
+        </td>
+        <td class="p-4">
+          <div class="flex flex-wrap gap-1.5">${chips || '<span class="text-xs text-[#9CA3AF] font-medium">Nenhum</span>'}</div>
+        </td>
+        <td class="p-4 text-right">
+          <button class="px-3 py-1.5 bg-white border border-[#E7E7E7] text-[#171717] text-xs font-semibold rounded-lg hover:bg-gray-50 active:scale-[0.98] transition-all shadow-sm flex items-center gap-1 ml-auto" data-open-dispatch="${c.id}">
+            <i data-lucide="${isDelivery ? 'eye' : 'edit-3'}" class="w-3.5 h-3.5"></i>
+            ${isDelivery ? 'Ver' : 'Conferir'}
+          </button>
+        </td>
+      </tr>`;
+    }
 
     renderDispatch = function () {
       renderHeader(); const op = currentOperation(); if (el.manageTeamDispatchBtn) el.manageTeamDispatchBtn.disabled = op?.status === 'completed';
@@ -2314,10 +2368,67 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
       </div>
       `).join('');
 
+      if (typeof window.currentDispatchPage === 'undefined') window.currentDispatchPage = 1;
+      const DISPATCH_PAGE_SIZE = 12;
+
       const q = norm(el.dispatchSearch.value), f = el.dispatchFilter.value, order = { aguardando: 0, conferido: 1, entrega: 2 };
-      const cs = all.filter(c => (!q || norm(`${c.number} ${c.assemblerName}`).includes(q)) && (!f || c.dispatch.status === f))
+      const allCs = all.filter(c => (!q || norm(`${c.number} ${c.assemblerName}`).includes(q)) && (!f || c.dispatch.status === f))
         .sort((a, b) => order[a.dispatch.status] - order[b.dispatch.status] || (b.dispatch.receivedAt || '').localeCompare(a.dispatch.receivedAt || ''));
-      el.dispatchGrid.innerHTML = cs.map(dispatchCard).join(''); el.dispatchEmpty.classList.toggle('hidden', cs.length > 0);
+
+      const totalPages = Math.max(1, Math.ceil(allCs.length / DISPATCH_PAGE_SIZE));
+      if (window.currentDispatchPage > totalPages) window.currentDispatchPage = totalPages;
+      const pageStart = (window.currentDispatchPage - 1) * DISPATCH_PAGE_SIZE;
+      const cs = allCs.slice(pageStart, pageStart + DISPATCH_PAGE_SIZE);
+
+      el.dispatchGrid.innerHTML = cs.map(dispatchCard).join('');
+      if (el.dispatchTableBody) el.dispatchTableBody.innerHTML = cs.map(dispatchRowHtml).join('');
+      updateDispatchViewMode();
+      el.dispatchEmpty.classList.toggle('hidden', allCs.length > 0);
+
+      // --- Dispatch Pagination Controls ---
+      const paginationEl = document.getElementById('dispatchPagination');
+      if (paginationEl) {
+        if (allCs.length === 0) {
+          paginationEl.innerHTML = '';
+        } else {
+          const cur = window.currentDispatchPage;
+          const pageBtn = (n, label, disabled = false, active = false) =>
+            `<button data-dispatch-page="${n}" class="dispatch-page-btn min-w-[34px] h-[34px] px-2.5 text-[13px] font-semibold rounded-lg border transition-colors ${
+              active
+                ? 'bg-[#1F6FB2] text-white border-[#1F6FB2] shadow-sm'
+                : disabled
+                  ? 'text-gray-300 border-gray-100 bg-white cursor-not-allowed'
+                  : 'text-gray-600 border-gray-200 bg-white hover:bg-blue-50 hover:border-[#1F6FB2] hover:text-[#1F6FB2]'
+            }" ${disabled ? 'disabled' : ''}>${label}</button>`;
+
+          let pages = '';
+          pages += pageBtn(cur - 1, '&#8249;', cur === 1);
+          for (let i = 1; i <= totalPages; i++) {
+            if (totalPages <= 7 || i === 1 || i === totalPages || (i >= cur - 1 && i <= cur + 1)) {
+              pages += pageBtn(i, i, false, i === cur);
+            } else if (i === cur - 2 || i === cur + 2) {
+              pages += `<span class="text-gray-400 text-[13px] px-0.5">…</span>`;
+            }
+          }
+          pages += pageBtn(cur + 1, '&#8250;', cur === totalPages);
+
+          paginationEl.innerHTML = `
+            <div class="flex items-center justify-between px-5 py-3 border-t border-gray-100 bg-white rounded-b-xl">
+              <span class="text-[12px] text-gray-400 font-medium">
+                Mostrando ${pageStart + 1}–${Math.min(pageStart + DISPATCH_PAGE_SIZE, allCs.length)} de ${allCs.length} comanda${allCs.length !== 1 ? 's' : ''}
+              </span>
+              <div class="flex items-center gap-1">${pages}</div>
+            </div>`;
+
+          paginationEl.querySelectorAll('.dispatch-page-btn:not([disabled])').forEach(btn => {
+            btn.addEventListener('click', () => {
+              window.currentDispatchPage = Number(btn.dataset.dispatchPage);
+              renderDispatch();
+            });
+          });
+        }
+      }
+
       if (el.finishDayBtn) {
         el.finishDayBtn.disabled = op.status !== 'kitchen_closed' || pendingToFinish(op) > 0;
         el.finishDayBtn.innerHTML = op.status === 'completed' ? '<i data-lucide="check-circle" class="w-4 h-4"></i> Dia finalizado' : pendingToFinish(op) > 0 ? `<i data-lucide="alert-circle" class="w-4 h-4"></i> Faltam ${pendingToFinish(op)} pedidos` : '<i data-lucide="check-circle" class="w-4 h-4"></i> Finalizar o dia';
