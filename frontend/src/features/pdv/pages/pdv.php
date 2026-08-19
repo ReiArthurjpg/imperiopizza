@@ -73,7 +73,7 @@
 
           <!-- List/Table mode -->
           <div id="dispatchTableContainer" class="hidden overflow-x-auto w-full pb-4">
-            <table class="w-full text-left min-w-[600px] table-spaced" style="border-spacing: 0 2rem !important;">
+            <table class="w-full text-left min-w-[600px] table-spaced" style="border-spacing: 0 1rem !important;">
               <tbody id="dispatchTableBody"></tbody>
             </table>
           </div>
