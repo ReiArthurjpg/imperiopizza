@@ -895,81 +895,8 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
     function openEdit(c) { const op = currentOperation(); el.editId.value = c.id; el.editNumber.value = c.number; el.editQty.value = c.pizzas; el.editStatus.value = c.status; el.editNote.value = c.note || ''; el.editAssembler.innerHTML = assemblers(op).map(p => `<option value="${p.personId}" ${p.personId === c.assemblerId ? 'selected' : ''}>${esc(p.name)}</option>`).join(''); el.editModal.classList.add('show') }
     function openError(c) { el.errorId.value = c.id; el.errorType.value = c.error?.active ? c.error.type : ''; el.errorNote.value = c.error?.active ? c.error.note : ''; el.clearErrorBtn.disabled = !c.error?.active; el.errorModal.classList.add('show') }
 
-    
-    async function renderDispatch() { 
-      renderHeader(); 
-      const op = currentOperation(); 
-      el.manageTeamDispatchBtn.disabled = op?.status === 'completed'; 
-      if (!op || op.status === 'draft' || op.status === 'production_open') { 
-        el.dispatchGate.innerHTML = gateCard(op?.status === 'production_open' ? 'Despacho disponível durante a operação' : 'Operação não iniciada', op?.status === 'production_open' ? 'As comandas enviadas pela cozinha já aparecem abaixo.' : 'Inicie a operação para usar o despacho.', op?.status === 'production_open' ? 'Abrir produção' : 'Ir para equipe', op?.status === 'production_open' ? 'production' : 'team', op?.status === 'production_open' ? 'chef-hat' : 'users'); 
-        if (!op || op.status === 'draft') { 
-          el.dispatchContent.classList.add('hidden'); 
-          el.finishDayBtn.disabled = true; 
-          el.manageTeamDispatchBtn.classList.add('hidden'); 
-          el.finishDayBtn.classList.add('hidden'); 
-          return 
-        } 
-      } else el.dispatchGate.innerHTML = ''; 
-      
-      el.manageTeamDispatchBtn.classList.remove('hidden'); 
-      el.finishDayBtn.classList.remove('hidden'); 
-      
-      if (op?.status === 'completed') { 
-        el.dispatchGate.innerHTML = gateCard("Operação finalizada", "Todos os registros estão disponíveis nos relatórios.", "Abrir relatórios", "reports", "bar-chart-2"); 
-        el.manageTeamDispatchBtn.classList.add('hidden'); 
-        el.finishDayBtn.classList.add('hidden'); 
-      } 
-      
-      el.dispatchContent.classList.toggle('hidden', !op || op.status === 'draft'); 
-      if (!op) return; 
-
-      try {
-        const q = norm(el.dispatchSearch.value), f = el.dispatchFilter.value;
-        const [statsRes, queueRes] = await Promise.all([
-          fetch(`/api/operations/${op.id}/dispatch/stats`),
-          fetch(`/api/operations/${op.id}/dispatch/queue?search=${encodeURIComponent(q)}&status=${encodeURIComponent(f)}`)
-        ]);
-        
-        const stats = await statsRes.json();
-        const queueData = await queueRes.json();
-        
-        const kpis = stats.stats || { aguardando: 0, conferido: 0, entrega: 0, pendingToFinish: 0 };
-        const totalRecebidas = kpis.aguardando + kpis.conferido + kpis.entrega;
-        
-        el.dispatchSubtotals.innerHTML = [['Recebidas', totalRecebidas], ['Aguardando', kpis.aguardando], ['Conferidas', kpis.conferido], ['Saíram Entrega', kpis.entrega], ['Faltam zerar', kpis.pendingToFinish]].map(([l, v]) => `<div class="subtotal-item"><small>${l}</small><strong>${v}</strong></div>`).join(''); 
-        
-        const cs = queueData.queue || [];
-        // Map backend fields to frontend expected fields for dispatchCard
-        const mappedCs = cs.map(c => ({
-          ...c,
-          dispatch: {
-            status: c.dispatch_status,
-            beverage: c.beverage,
-            change: c.change,
-            changeAmount: c.change_amount,
-            ketchup: c.ketchup,
-            mayonnaise: c.mayonnaise,
-            note: c.dispatch_note
-          },
-          statusTimes: { despacho: c.despacho_time },
-          assemblerName: c.assemblerName || c.assembler_name
-        }));
-        
-        el.dispatchGrid.innerHTML = mappedCs.map(dispatchCard).join(''); 
-        
-        const mode = el.viewListDispatchBtn?.classList.contains('text-[#1F6FB2]') ? 'list' : 'grid';
-        if (mode === 'list') {
-            el.dispatchTableBody.innerHTML = mappedCs.map(dispatchListRow).join('');
-        }
-        
-        el.dispatchEmpty.classList.toggle('hidden', mappedCs.length === 0); 
-        el.finishDayBtn.disabled = op.status !== 'kitchen_closed' || kpis.pendingToFinish > 0; 
-        el.finishDayBtn.textContent = op.status === 'completed' ? 'Dia finalizado' : kpis.pendingToFinish > 0 ? `Faltam ${kpis.pendingToFinish} pedidos` : 'Finalizar o dia';
-      } catch(e) {
-        console.error('Erro ao buscar despacho:', e);
-      }
-    }
-function dispatchCard(c) { const d = c.dispatch, cls = d.status === 'liberado' ? 'b-released' : d.status === 'conferido' ? 'b-dispatch' : 'b-oven', label = d.status === 'liberado' ? 'Liberado' : d.status === 'conferido' ? 'Conferido' : 'Aguardando'; return `<article class="dispatch-card ${d.status === 'liberado' ? 'released' : ''}" data-dispatch-card="${c.id}"><div class="dispatch-head"><div><h4>Comanda #${String(c.number).padStart(3, '0')}</h4><p>${c.pizzas} pizza${c.pizzas > 1 ? 's' : ''} · montador ${formatAssemblers(c)} · ${formatTime(c.statusTimes.despacho)}</p></div><span class="badge ${cls}">${label}</span></div><div class="dispatch-options"><label class="option"><input type="checkbox" data-d-field="beverage" ${d.beverage ? 'checked' : ''}> Tem bebida</label><label class="option"><input type="checkbox" data-d-field="change" ${d.change ? 'checked' : ''}> Precisa de troco</label><label class="option"><input type="checkbox" data-d-field="ketchup" ${d.ketchup ? 'checked' : ''}> Ketchup</label><label class="option"><input type="checkbox" data-d-field="mayonnaise" ${d.mayonnaise ? 'checked' : ''}> Maionese</label></div><div class="inline"><div class="field"><label>Troco</label><input data-d-field="changeAmount" type="text" value="${esc(d.changeAmount || '')}" placeholder="Ex.: para R$ 100" ${d.change ? '' : 'disabled'}></div><div class="field"><label>Observação</label><input data-d-field="note" type="text" value="${esc(d.note || '')}" placeholder="Opcional"></div></div><div class="actions end mobile-stack"><button class="btn btn-soft btn-small" data-d-action="save" data-id="${c.id}">Salvar</button><button class="btn btn-orange btn-small" data-d-action="check" data-id="${c.id}">Conferido</button><button class="btn btn-green btn-small" data-d-action="release" data-id="${c.id}">Liberar pedido</button></div></article>` }
+    function renderDispatch() { renderHeader(); const op = currentOperation(); el.manageTeamDispatchBtn.disabled = op?.status === 'completed'; if (!op || op.status === 'draft' || op.status === 'production_open') { el.dispatchGate.innerHTML = gateCard(op?.status === 'production_open' ? 'Despacho disponível durante a operação' : 'Operação não iniciada', op?.status === 'production_open' ? 'As comandas enviadas pela cozinha já aparecem abaixo.' : 'Inicie a operação para usar o despacho.', op?.status === 'production_open' ? 'Abrir produção' : 'Ir para equipe', op?.status === 'production_open' ? 'production' : 'team', op?.status === 'production_open' ? 'chef-hat' : 'users'); if (!op || op.status === 'draft') { el.dispatchContent.classList.add('hidden'); el.finishDayBtn.disabled = true; el.manageTeamDispatchBtn.classList.add('hidden'); el.finishDayBtn.classList.add('hidden'); return } } else el.dispatchGate.innerHTML = ''; el.manageTeamDispatchBtn.classList.remove('hidden'); el.finishDayBtn.classList.remove('hidden'); if (op?.status === 'completed') { el.dispatchGate.innerHTML = gateCard("Operação finalizada", "Todos os registros estão disponíveis nos relatórios.", "Abrir relatórios", "reports", "bar-chart-2"); el.manageTeamDispatchBtn.classList.add('hidden'); el.finishDayBtn.classList.add('hidden'); } el.dispatchContent.classList.toggle('hidden', !op || op.status === 'draft'); if (!op) return; const all = op.commands.filter(c => c.status === 'despacho'), w = all.filter(c => c.dispatch.status === 'aguardando').length, ch = all.filter(c => c.dispatch.status === 'conferido').length, r = all.filter(c => c.dispatch.status === 'liberado').length; el.dispatchSubtotals.innerHTML = [['Recebidas', all.length], ['Aguardando', w], ['Conferidas', ch], ['Liberadas', r], ['Faltam zerar', pendingToFinish(op)]].map(([l, v]) => `<div class="subtotal-item"><small>${l}</small><strong>${v}</strong></div>`).join(''); const q = norm(el.dispatchSearch.value), f = el.dispatchFilter.value, cs = all.filter(c => (!q || norm(`${c.number} ${c.assemblerName}`).includes(q)) && (!f || c.dispatch.status === f)).sort((a, b) => ({ aguardando: 0, conferido: 1, liberado: 2 }[a.dispatch.status] - { aguardando: 0, conferido: 1, liberado: 2 }[b.dispatch.status]) || b.statusTimes.despacho.localeCompare(a.statusTimes.despacho)); el.dispatchGrid.innerHTML = cs.map(dispatchCard).join(''); el.dispatchEmpty.classList.toggle('hidden', cs.length > 0); el.finishDayBtn.disabled = op.status !== 'kitchen_closed' || pendingToFinish(op) > 0; el.finishDayBtn.textContent = op.status === 'completed' ? 'Dia finalizado' : pendingToFinish(op) > 0 ? `Faltam ${pendingToFinish(op)} pedidos` : 'Finalizar o dia' }
+    function dispatchCard(c) { const d = c.dispatch, cls = d.status === 'liberado' ? 'b-released' : d.status === 'conferido' ? 'b-dispatch' : 'b-oven', label = d.status === 'liberado' ? 'Liberado' : d.status === 'conferido' ? 'Conferido' : 'Aguardando'; return `<article class="dispatch-card ${d.status === 'liberado' ? 'released' : ''}" data-dispatch-card="${c.id}"><div class="dispatch-head"><div><h4>Comanda #${String(c.number).padStart(3, '0')}</h4><p>${c.pizzas} pizza${c.pizzas > 1 ? 's' : ''} · montador ${formatAssemblers(c)} · ${formatTime(c.statusTimes.despacho)}</p></div><span class="badge ${cls}">${label}</span></div><div class="dispatch-options"><label class="option"><input type="checkbox" data-d-field="beverage" ${d.beverage ? 'checked' : ''}> Tem bebida</label><label class="option"><input type="checkbox" data-d-field="change" ${d.change ? 'checked' : ''}> Precisa de troco</label><label class="option"><input type="checkbox" data-d-field="ketchup" ${d.ketchup ? 'checked' : ''}> Ketchup</label><label class="option"><input type="checkbox" data-d-field="mayonnaise" ${d.mayonnaise ? 'checked' : ''}> Maionese</label></div><div class="inline"><div class="field"><label>Troco</label><input data-d-field="changeAmount" type="text" value="${esc(d.changeAmount || '')}" placeholder="Ex.: para R$ 100" ${d.change ? '' : 'disabled'}></div><div class="field"><label>Observação</label><input data-d-field="note" type="text" value="${esc(d.note || '')}" placeholder="Opcional"></div></div><div class="actions end mobile-stack"><button class="btn btn-soft btn-small" data-d-action="save" data-id="${c.id}">Salvar</button><button class="btn btn-orange btn-small" data-d-action="check" data-id="${c.id}">Conferido</button><button class="btn btn-green btn-small" data-d-action="release" data-id="${c.id}">Liberar pedido</button></div></article>` }
     function collectDispatch(card, c) { const get = n => { const x = card.querySelector(`[data-d-field="${n}"]`); return x?.type === 'checkbox' ? x.checked : (x?.value || '').trim() }; c.dispatch.beverage = get('beverage'); c.dispatch.change = get('change'); c.dispatch.changeAmount = c.dispatch.change ? get('changeAmount') : ''; c.dispatch.ketchup = get('ketchup'); c.dispatch.mayonnaise = get('mayonnaise'); c.dispatch.note = get('note'); c.updatedAt = new Date().toISOString() }
 
     function renderReports() { renderHeader(); const ops = [...state.operations].sort((a, b) => b.date.localeCompare(a.date)); if (!ops.length) { el.historyList.innerHTML = empty('Nenhuma operação', 'Crie a equipe do primeiro dia.'); el.reportOverview.innerHTML = empty('Sem dados', 'Os relatórios aparecerão aqui.'); el.reportCards.innerHTML = ''; return } if (!selectedReportOperationId || !getOperation(selectedReportOperationId)) selectedReportOperationId = ops[0].id; el.historyList.innerHTML = ops.map(o => { const s = stats(o); return `<div class="history-item ${o.id === selectedReportOperationId ? 'selected' : ''}" data-report-op="${o.id}"><h4>${formatDate(o.date)}</h4><p>${phaseLabel(o)} · ${o.team.length} pessoas</p><div class="metric-chips"><span class="metric-chip">${s.pizzas} pizzas</span><span class="metric-chip">${s.errors} erros</span><span class="metric-chip">${s.released} liberadas</span></div></div>` }).join(''); renderReportDetail(getOperation(selectedReportOperationId)) }
@@ -1477,79 +1404,7 @@ function dispatchCard(c) { const d = c.dispatch, cls = d.status === 'liberado' ?
       toast('Montador de doces registrado.');
     });
     // despacho
-    [el.dispatchSearch, el.dispatchFilter].forEach(x => x.addEventListener(x.tagName === 'INPUT' ? 'input' : 'change', renderDispatch)); el.clearDispatchFilters.addEventListener('click', () => { el.dispatchSearch.value = ''; el.dispatchFilter.value = ''; renderDispatch() }); el.dispatchGrid.addEventListener('change', e => { if (e.target.dataset.dField === 'change') { const card = e.target.closest('[data-dispatch-card]'), amt = card.querySelector('[data-d-field="changeAmount"]'); amt.disabled = !e.target.checked; if (!e.target.checked) amt.value = '' } }); 
-el.dispatchGrid.addEventListener('click', async e => { 
-  const b = e.target.closest('[data-d-action]'); 
-  if (!b) return; 
-  const op = currentOperation(); 
-  if (!op) return;
-  const card = e.target.closest('[data-dispatch-card]'); 
-  if (!card) return; 
-  const cmdId = b.dataset.id;
-  
-  b.disabled = true;
-  const originalText = b.innerHTML;
-  b.innerHTML = '<i class="lucide-loader w-4 h-4 animate-spin"></i>';
-  
-  try {
-    if (b.dataset.dAction === 'check') { 
-      await fetch(`/api/operations/${op.id}/commands/${cmdId}/dispatch/check`, { method: 'POST' });
-      toast('Conferência salva.');
-    } else if (b.dataset.dAction === 'release') { 
-      await fetch(`/api/operations/${op.id}/commands/${cmdId}/dispatch/send-delivery`, { method: 'POST' });
-      toast('Pedido saiu para entrega.');
-    } else if (b.dataset.dAction === 'revert') {
-      await fetch(`/api/operations/${op.id}/commands/${cmdId}/dispatch/revert`, { method: 'POST' });
-      toast('Pedido revertido para aguardando.');
-    } else if (b.dataset.dAction === 'save') {
-      const get = n => { const x = card.querySelector(`[data-d-field="${n}"]`); return x?.type === 'checkbox' ? (x.checked ? 1 : 0) : (x?.value || '').trim() }; 
-      const data = {
-          beverage: get('beverage'),
-          change: get('change'),
-          changeAmount: get('change') ? get('changeAmount') : '',
-          ketchup: get('ketchup'),
-          mayonnaise: get('mayonnaise'),
-          note: get('note')
-      };
-      await fetch(`/api/operations/${op.id}/commands/${cmdId}/dispatch`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-      });
-      toast('Dados salvos com sucesso.');
-    }
-  } catch(e) {
-    console.error(e);
-    toast('Erro ao atualizar.', 'error');
-  } finally {
-    b.disabled = false;
-    b.innerHTML = originalText;
-    await renderDispatch();
-  }
-});
- 
-if (el.finishDayBtn) el.finishDayBtn.addEventListener('click', async () => {
-    const op = currentOperation();
-    if (!op || op.status !== 'kitchen_closed') return toast('Encerre a cozinha antes de finalizar o dia.', 'warn');
-    
-    // We already fetch pendingToFinish dynamically, but we can rely on the button disabled state.
-    if (el.finishDayBtn.disabled) return;
-    
-    if (confirm('Tem certeza que deseja finalizar a operação de hoje? Nenhuma comanda poderá ser editada depois.')) {
-        try {
-            el.finishDayBtn.disabled = true;
-            el.finishDayBtn.textContent = 'Finalizando...';
-            await fetch(`/api/operations/${op.id}/finish-day`, { method: 'POST' });
-            toast('Operação finalizada!');
-            window.location.reload();
-        } catch(e) {
-            toast('Erro ao finalizar', 'error');
-            el.finishDayBtn.disabled = false;
-            el.finishDayBtn.textContent = 'Finalizar o dia';
-        }
-    }
-});
-
+    [el.dispatchSearch, el.dispatchFilter].forEach(x => x.addEventListener(x.tagName === 'INPUT' ? 'input' : 'change', renderDispatch)); el.clearDispatchFilters.addEventListener('click', () => { el.dispatchSearch.value = ''; el.dispatchFilter.value = ''; renderDispatch() }); el.dispatchGrid.addEventListener('change', e => { if (e.target.dataset.dField === 'change') { const card = e.target.closest('[data-dispatch-card]'), amt = card.querySelector('[data-d-field="changeAmount"]'); amt.disabled = !e.target.checked; if (!e.target.checked) amt.value = '' } }); el.dispatchGrid.addEventListener('click', e => { const b = e.target.closest('[data-d-action]'); if (!b) return; const op = currentOperation(), c = getCommand(op, b.dataset.id), card = e.target.closest('[data-dispatch-card]'); if (!c || !card) return; collectDispatch(card, c); const now = new Date().toISOString(); if (b.dataset.dAction === 'check') { c.dispatch.status = 'conferido'; c.dispatch.checkedAt = now } if (b.dataset.dAction === 'release') { c.dispatch.status = 'liberado'; c.dispatch.checkedAt ||= now; c.dispatch.releasedAt = now } save(); renderDispatch(); renderDashboard(); toast(b.dataset.dAction === 'release' ? 'Pedido liberado.' : 'Conferência salva.') }); if (el.finishDayBtn) el.finishDayBtn.addEventListener('click', () => { const op = currentOperation(); if (!op || op.status !== 'kitchen_closed') return toast('Encerre a cozinha antes de finalizar o dia.', 'warn'); const p = pendingToFinish(op); if (p) return toast(`Ainda existem ${p} pedidos não finalizados.`, 'warn'); openOvernightCloseModal('day'); });
     // relatórios
     el.historyList.addEventListener('click', e => { const x = e.target.closest('[data-report-op]'); if (x) { selectedReportOperationId = x.dataset.reportOp; renderReports() } }); el.reportCards.addEventListener('click', e => { const b = e.target.closest('[data-report-action]'); if (!b) return; const op = getOperation(selectedReportOperationId); if (!op) return; const a = b.dataset.reportAction; if (a === 'download-attendance') downloadHtml(`lista_presenca_${op.date}.html`, attendanceReport(op)); if (a === 'print-attendance') printHtml(attendanceReport(op)); if (a === 'download-production') downloadHtml(`resultado_montagem_${op.date}.html`, productionReport(op)); if (a === 'print-production') printHtml(productionReport(op)) }); el.backupBtn.addEventListener('click', () => { const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' }), url = URL.createObjectURL(blob), a = document.createElement('a'); a.href = url; a.download = `backup_imperial_${today()}.json`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); toast('Backup baixado.') }); el.restoreBtn.addEventListener('click', () => el.restoreFile.click()); el.restoreFile.addEventListener('change', async e => { const f = e.target.files[0]; if (!f) return; try { const d = JSON.parse(await f.text()); if (!Array.isArray(d.people) || !Array.isArray(d.operations)) throw new Error(); if (!confirm('Restaurar este backup e substituir os dados atuais?')) return; state.people = d.people; state.operations = d.operations; save(); selectedReportOperationId = null; renderAll(); toast('Backup restaurado.') } catch (err) { toast('Backup inválido.', 'error') } finally { e.target.value = '' } });
 
@@ -2345,50 +2200,25 @@ if (el.finishDayBtn) el.finishDayBtn.addEventListener('click', async () => {
         <div class="flex flex-wrap gap-1.5">${specialTagsHtml(c)}</div>
       </div>`;
     }
-    
     function renderOvenPicker(selectedId = '') {
-      const q = norm(el.ovenCommandSearch.value);
-      const list = (window._ovenList || []).filter(c => !q || norm(`${c.number} ${c.assemblerName}`).includes(q));
+      const op = currentOperation(), q = norm(el.ovenCommandSearch.value), list = ovenAvailable(op).filter(c => !q || norm(`${c.number} ${c.assemblerName}`).includes(q));
       el.ovenCommandList.innerHTML = list.length ? list.map(c => `<button type="button" class="oven-command-option ${c.id === selectedId ? 'selected' : ''}" data-oven-command="${c.id}">
     <strong>#${String(c.number).padStart(3, '0')}</strong>
-    <span>${formatAssemblers(c)}<small>${num(c.pizzas)} físicas</small></span>
-    <span class="oven-eq">${fmt(c.equivalent)} equiv.</span>
+    <span>${formatAssemblers(c)}<small>${num(c.pizzas)} físicas ${commandTags(c).length ? '· ' + commandTags(c).join(' · ') : ''}</small></span>
+    <span class="oven-eq">${fmt(commandEquivalent(c))} equiv.</span>
   </button>`).join('') : empty('Nenhuma comanda no forno', 'Quando a cozinha marcar “entrou no forno”, ela aparecerá aqui.');
     }
-async function openDispatchIntake(commandId = '') {
-      const op = currentOperation(); 
-      if (!op || ['draft', 'completed'].includes(op.status)) return toast('O atendimento não está disponível.', 'warn');
-      el.dispatchModalTitle.textContent = 'Puxar comanda do forno'; 
-      el.dispatchModalSubtitle.textContent = 'Selecione uma comanda que já entrou no forno.';
-      el.ovenCommandPickerBlock.classList.remove('hidden'); 
-      el.dispatchCommandId.value = commandId || ''; 
-      el.ovenCommandSearch.value = '';
-      resetDispatchFields(); 
-      
-      el.ovenCommandList.innerHTML = '<div class="p-4 text-center text-gray-500">Carregando...</div>';
+    function openDispatchIntake(commandId = '') {
+      const op = currentOperation(); if (!op || ['draft', 'completed'].includes(op.status)) return toast('O atendimento não está disponível.', 'warn');
+      el.dispatchModalTitle.textContent = 'Puxar comanda do forno'; el.dispatchModalSubtitle.textContent = 'Selecione uma comanda que já entrou no forno.';
+      el.ovenCommandPickerBlock.classList.remove('hidden'); el.dispatchCommandId.value = commandId || ''; el.ovenCommandSearch.value = '';
+      resetDispatchFields(); renderOvenPicker(commandId);
+      const c = commandId ? getCommand(op, commandId) : null;
+      el.dispatchSelectedSummary.innerHTML = selectedDispatchHtml(c); el.dispatchSelectedSummary.classList.toggle('show', !!c);
+      el.receiveDispatchBtn.classList.remove('hidden'); el.checkDispatchBtn.classList.add('hidden'); el.outForDeliveryBtn.classList.add('hidden');
       el.dispatchCommandModal.classList.add('show');
-      
-      try {
-        const res = await fetch(`/api/operations/${op.id}/oven`);
-        const data = await res.json();
-        const list = data.queue || [];
-        
-        // Save globally to be filtered by renderOvenPicker
-        window._ovenList = list;
-        renderOvenPicker(commandId);
-      } catch(e) {
-        console.error(e);
-        toast('Erro ao carregar forno', 'error');
-      }
-      
-      const c = commandId ? window._ovenList?.find(x => x.id === commandId) : null;
-      el.dispatchSelectedSummary.innerHTML = c ? selectedDispatchHtml(c) : ''; 
-      el.dispatchSelectedSummary.classList.toggle('show', !!c);
-      el.receiveDispatchBtn.classList.remove('hidden'); 
-      el.checkDispatchBtn.classList.add('hidden'); 
-      el.outForDeliveryBtn.classList.add('hidden');
     }
-function openDispatchExisting(commandId) {
+    function openDispatchExisting(commandId) {
       const op = currentOperation(), c = getCommand(op, commandId); if (!c) return;
       el.dispatchModalTitle.textContent = `Conferir comanda #${String(c.number).padStart(3, '0')}`;
       el.dispatchModalSubtitle.textContent = c.dispatch?.status === 'entrega' ? 'Pedido já saiu para entrega.' : 'Atualize os dados antes da saída para o motoboy.';
@@ -2693,69 +2523,16 @@ function openDispatchExisting(commandId) {
     });
     el.dispatchChange.addEventListener('change', () => { el.dispatchChangeAmount.disabled = !el.dispatchChange.checked; if (!el.dispatchChange.checked) el.dispatchChangeAmount.value = '' });
 
-    
-el.receiveDispatchBtn.addEventListener('click', async () => {
-    const op = currentOperation(), cmdId = el.dispatchCommandId.value;
-    if (!op || !cmdId) return toast('Selecione uma comanda.', 'warn');
-    
-    el.receiveDispatchBtn.disabled = true;
-    el.receiveDispatchBtn.textContent = 'Puxando...';
-    try {
-        await fetch(`/api/operations/${op.id}/dispatch/pull-from-oven`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ commandId: cmdId })
-        });
-        
-        // Also save data
-        const get = (id) => $(id).type === 'checkbox' ? ($(id).checked ? 1 : 0) : $(id).value.trim();
-        const data = {
-          beverage: get('dispatchBeverage'),
-          change: get('dispatchChange'),
-          changeAmount: get('dispatchChange') ? get('dispatchChangeAmount') : '',
-          ketchup: get('dispatchKetchup'),
-          mayonnaise: get('dispatchMayonnaise'),
-          note: get('dispatchNote')
-        };
-        await fetch(`/api/operations/${op.id}/commands/${cmdId}/dispatch`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
-        
-        toast('Comanda recebida no atendimento.');
-        el.dispatchCommandModal.classList.remove('show');
-        await renderDispatch();
-    } catch(e) {
-        console.error(e);
-        toast('Erro ao puxar do forno.', 'error');
-    } finally {
-        el.receiveDispatchBtn.disabled = false;
-        el.receiveDispatchBtn.textContent = 'Puxar para atendimento';
-    }
-});
-
-el.checkDispatchBtn.addEventListener('click', async () => {
-    const op = currentOperation(), cmdId = el.dispatchCommandId.value;
-    if (!op || !cmdId) return;
-    el.checkDispatchBtn.disabled = true;
-    try {
-        await fetch(`/api/operations/${op.id}/commands/${cmdId}/dispatch/check`, { method: 'POST' });
-        
-        const get = (id) => $(id).type === 'checkbox' ? ($(id).checked ? 1 : 0) : $(id).value.trim();
-        const data = { beverage: get('dispatchBeverage'), change: get('dispatchChange'), changeAmount: get('dispatchChange') ? get('dispatchChangeAmount') : '', ketchup: get('dispatchKetchup'), mayonnaise: get('dispatchMayonnaise'), note: get('dispatchNote') };
-        await fetch(`/api/operations/${op.id}/commands/${cmdId}/dispatch`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-        
-        toast('Conferência salva.');
-        el.dispatchCommandModal.classList.remove('show');
-        await renderDispatch();
-    } catch(e) {
-        toast('Erro ao conferir', 'error');
-    } finally {
-        el.checkDispatchBtn.disabled = false;
-    }
-});
-el.outForDeliveryBtn.addEventListener('click', () => {
+    el.receiveDispatchBtn.addEventListener('click', () => {
+      const op = currentOperation(), c = getCommand(op, el.dispatchCommandId.value); if (!c || c.status !== 'pronto') return toast('Selecione uma comanda enviada para o atendimento.', 'warn');
+      collectDispatchModal(c); const now = new Date().toISOString(); c.status = 'despacho'; c.statusTimes.despacho = now; c.dispatch.receivedAt = now; c.dispatch.status = 'aguardando';
+      save(); el.dispatchCommandModal.classList.remove('show'); renderDispatch(); renderProduction(); renderDashboard(); toast(`Comanda ${c.number} recebida no atendimento.`);
+    });
+    el.checkDispatchBtn.addEventListener('click', () => {
+      const c = getCommand(currentOperation(), el.dispatchCommandId.value); if (!c) return; collectDispatchModal(c);
+      c.dispatch.status = 'conferido'; c.dispatch.checkedAt = new Date().toISOString(); save(); openDispatchExisting(c.id); renderDispatch(); renderDashboard(); toast('Comanda conferida.');
+    });
+    el.outForDeliveryBtn.addEventListener('click', () => {
       const c = getCommand(currentOperation(), el.dispatchCommandId.value); if (!c) return;
       if (c.dispatch.status !== 'conferido') return toast('Marque a comanda como conferida antes da saída.', 'warn');
       collectDispatchModal(c); c.dispatch.status = 'entrega'; c.dispatch.outForDeliveryAt = new Date().toISOString(); save();

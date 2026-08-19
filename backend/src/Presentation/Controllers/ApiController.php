@@ -516,6 +516,25 @@ class ApiController
         }
     }
 
+    
+    public function getMassRecipe()
+    {
+        try {
+            $recipe = [
+                'flour_kg' => 10,
+                'sugar_g' => 500,
+                'salt_g' => 120,
+                'eggs' => 10,
+                'oil_ml' => 900,
+                'water_l' => 3,
+                'yeast_g' => 100
+            ];
+            $this->jsonResponse(['success' => true, 'data' => $recipe]);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['error' => $e->getMessage()], 500);
+        }
+    }
+
     public function getCurrentOperation()
     {
         try {
