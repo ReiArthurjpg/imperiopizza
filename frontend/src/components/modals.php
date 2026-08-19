@@ -296,65 +296,218 @@
 
 
   <div id="editModal" class="modal-bg">
-    <div class="modal">
-      <div class="modal-head">
-        <h3>Editar comanda</h3><button class="close" data-close="edit">×</button>
+    <form id="editForm" class="modal" style="max-width:540px; border-radius:20px; padding:0; overflow:hidden;">
+      <input id="editId" type="hidden">
+      
+      <!-- Header -->
+      <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+        <div>
+          <h3 class="text-[15px] font-bold text-gray-900 leading-none">Editar comanda</h3>
+          <p class="text-[12px] text-gray-400 mt-0.5">Altere os dados da comanda selecionada.</p>
+        </div>
+        <button type="button" data-close="edit" class="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
       </div>
-      <form id="editForm"><input id="editId" type="hidden">
-        <div class="inline">
-          <div class="field"><label for="editNumber">Comanda</label><input id="editNumber" type="number" min="1"
-              max="1000" required></div>
-          <div class="field"><label for="editQty">Pizzas</label><input id="editQty" type="number" min="0" max="50"
-              required></div>
+
+      <!-- Body -->
+      <div class="register-modal-body px-6 py-5 space-y-5 overflow-y-auto" style="max-height:70vh;">
+        
+        <div class="space-y-1.5">
+          <label class="text-[12px] font-semibold text-gray-500 uppercase tracking-wider">Montador</label>
+          <div class="relative">
+            <select id="editAssembler" required class="w-full appearance-none px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 focus:bg-white focus:border-[#1F6FB2] focus:ring-2 focus:ring-[#1F6FB2]/20 transition-all text-[14px] font-semibold text-gray-700 outline-none cursor-pointer"></select>
+            <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none">
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </div>
+          </div>
         </div>
-        <div class="special-edit-grid">
-          <div class="field"><label for="editVolcanoQty">Vulcão</label><input id="editVolcanoQty" type="number" min="0"
-              max="50" value="0"></div>
-          <div class="field"><label for="editEsfihaQty">Esfirras</label><input id="editEsfihaQty" type="number" min="0"
-              max="200" value="0"></div>
-          <div class="field"><label for="editSweetQty">Doces</label><input id="editSweetQty" type="number" min="0"
-              max="50" value="0"></div>
+
+        <div class="space-y-1.5" id="editSweetAssemblerField" style="display:none;">
+          <label class="text-[12px] font-semibold text-gray-500 uppercase tracking-wider">Montador (Doces)</label>
+          <div class="relative">
+            <select id="editSweetAssembler" class="w-full appearance-none px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 focus:bg-white focus:border-[#1F6FB2] focus:ring-2 focus:ring-[#1F6FB2]/20 transition-all text-[14px] font-semibold text-gray-700 outline-none cursor-pointer"></select>
+            <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none">
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </div>
+          </div>
         </div>
-        <div class="field"><label for="editAssembler">Montador</label><select id="editAssembler" required></select></div>
-        <div class="field" id="editSweetAssemblerField" style="display:none;">
-          <label for="editSweetAssembler">Montador (Doces)</label>
-          <select id="editSweetAssembler"></select>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div class="space-y-1.5">
+            <label for="editNumber" class="text-[12px] font-semibold text-gray-500 uppercase tracking-wider">Nº da comanda</label>
+            <input id="editNumber" type="number" min="1" max="1000" inputmode="numeric" required class="w-full px-4 py-3 text-[15px] font-bold text-gray-900 bg-gray-50 border border-gray-200 rounded-xl placeholder-gray-300 focus:outline-none focus:border-[#1F6FB2] focus:ring-2 focus:ring-blue-100 transition-all">
+          </div>
+          <div class="space-y-1.5">
+            <label for="editQty" class="text-[12px] font-semibold text-gray-500 uppercase tracking-wider">Qtd. de pizzas</label>
+            <input id="editQty" type="number" min="0" max="50" inputmode="numeric" required class="w-full px-4 py-3 text-[15px] font-bold text-gray-900 bg-gray-50 border border-gray-200 rounded-xl placeholder-gray-300 focus:outline-none focus:border-[#1F6FB2] focus:ring-2 focus:ring-blue-100 transition-all">
+          </div>
         </div>
-        <div class="field"><label for="editStatus">Status</label><select id="editStatus">
-            <option value="cozinha">Na cozinha</option>
-            <option value="forno">No forno</option>
-            <option value="pronto">Aguardando atendimento</option>
-            <option value="despacho">Saiu para o despacho</option>
-          </select></div>
-        <div class="field"><label for="editNote">Observação</label><textarea id="editNote" maxlength="220"></textarea>
+
+        <div class="space-y-1.5">
+          <label for="editStatus" class="text-[12px] font-semibold text-gray-500 uppercase tracking-wider">Status</label>
+          <div class="relative">
+            <select id="editStatus" class="w-full appearance-none px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 focus:bg-white focus:border-[#1F6FB2] focus:ring-2 focus:ring-[#1F6FB2]/20 transition-all text-[14px] font-semibold text-gray-700 outline-none cursor-pointer">
+              <option value="cozinha">Na cozinha</option>
+              <option value="forno">No forno</option>
+              <option value="pronto">Aguardando atendimento</option>
+              <option value="despacho">Saiu para o despacho</option>
+            </select>
+            <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none">
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </div>
+          </div>
         </div>
-        <div class="actions end mobile-stack"><button id="deleteCommandBtn" type="button"
-            class="btn btn-soft-red">Excluir</button><button type="button" class="btn btn-ghost"
-            data-close="edit">Cancelar</button><button class="btn btn-primary" type="submit">Salvar</button></div>
-      </form>
-    </div>
+
+        <div class="space-y-1.5">
+          <label for="editNote" class="text-[12px] font-semibold text-gray-500 uppercase tracking-wider">Observação</label>
+          <textarea id="editNote" maxlength="220" class="w-full px-4 py-3 text-[13px] text-gray-700 bg-gray-50 border border-gray-200 rounded-xl placeholder-gray-300 focus:outline-none focus:border-[#1F6FB2] focus:ring-2 focus:ring-blue-100 transition-all resize-none" rows="2"></textarea>
+        </div>
+
+        <!-- Special Products Edit -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <h4 class="text-[13px] font-bold text-gray-800">Produtos especiais</h4>
+              <p class="text-[11px] text-gray-400 mt-0.5">Informe as quantidades abaixo</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 gap-2.5">
+            <!-- Volcano -->
+            <div class="flex items-center gap-3 p-3.5 rounded-xl border border-gray-200 bg-gray-50 transition-all">
+              <div class="w-8 h-8 flex items-center justify-center rounded-[8px] border border-orange-200 bg-orange-50 shrink-0">
+                <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-[13px] font-semibold text-gray-700 leading-none">Pizza vulcão</p>
+                <p class="text-[11px] text-gray-400 mt-0.5">Cada unidade vale 2 pizzas</p>
+              </div>
+              <input id="editVolcanoQty" class="w-16 px-2 py-1.5 text-[13px] font-bold text-center bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all" type="number" min="0" max="50" value="0" inputmode="numeric">
+            </div>
+
+            <!-- Esfiha -->
+            <div class="flex items-center gap-3 p-3.5 rounded-xl border border-gray-200 bg-gray-50 transition-all">
+              <div class="w-8 h-8 flex items-center justify-center rounded-[8px] border border-amber-200 bg-amber-50 shrink-0">
+                <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-[13px] font-semibold text-gray-700 leading-none">Esfirras</p>
+                <p class="text-[11px] text-gray-400 mt-0.5">5 esfirras = 2 pizzas</p>
+              </div>
+              <input id="editEsfihaQty" class="w-16 px-2 py-1.5 text-[13px] font-bold text-center bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 transition-all" type="number" min="0" max="200" value="0" inputmode="numeric">
+            </div>
+
+            <!-- Sweet -->
+            <div class="flex items-center gap-3 p-3.5 rounded-xl border border-gray-200 bg-gray-50 transition-all">
+              <div class="w-8 h-8 flex items-center justify-center rounded-[8px] border border-pink-200 bg-pink-50 shrink-0">
+                <svg class="w-4 h-4 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-[13px] font-semibold text-gray-700 leading-none">Pizza doce</p>
+                <p class="text-[11px] text-gray-400 mt-0.5">Mapeia a produção de pizzas doces</p>
+              </div>
+              <input id="editSweetQty" class="w-16 px-2 py-1.5 text-[13px] font-bold text-center bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-100 transition-all" type="number" min="0" max="50" value="0" inputmode="numeric">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer Actions -->
+      <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 px-6 py-4 bg-gray-50/80 border-t border-gray-100">
+        <button id="deleteCommandBtn" type="button" class="w-full sm:w-auto inline-flex justify-center items-center px-4 py-2.5 text-[13px] font-bold text-red-600 bg-red-50 border border-red-100 rounded-xl hover:bg-red-100 transition-colors">
+          <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+          Excluir
+        </button>
+        <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
+          <button type="button" data-close="edit" class="inline-flex items-center px-4 py-2.5 text-[13px] font-semibold text-gray-700 bg-gray-100 border border-transparent rounded-xl hover:bg-gray-200 transition-colors">
+            Cancelar
+          </button>
+          <button type="submit" class="inline-flex items-center px-5 py-2.5 text-[13px] font-bold text-white bg-[#2f9e64] rounded-xl hover:bg-[#248150] active:scale-[0.98] transition-all shadow-sm">
+            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 21v-8H7v8M7 3v5h8"/>
+            </svg>
+            Salvar
+          </button>
+        </div>
+      </div>
+    </form>
   </div>
   <div id="errorModal" class="modal-bg">
-    <div class="modal">
-      <div class="modal-head">
-        <h3>Sinalizar erro</h3><button class="close" data-close="error">×</button>
+    <div class="modal !p-0 !max-w-[440px] !rounded-2xl !overflow-hidden border border-gray-100 shadow-2xl">
+      
+      <!-- Header -->
+      <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100 bg-gradient-to-r from-red-50/40 to-white shrink-0">
+        <div>
+          <h3 class="text-[16px] font-bold text-gray-900 leading-snug">Sinalizar erro</h3>
+          <p class="text-[12px] text-gray-500 mt-0.5">Registre problemas na produção da comanda</p>
+        </div>
+        <button type="button" class="w-8 h-8 flex items-center justify-center rounded-xl bg-gray-100/80 text-gray-500 hover:bg-gray-200 hover:text-gray-700 transition-colors" data-close="error">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
       </div>
-      <form id="errorForm"><input id="errorId" type="hidden">
-        <div class="field"><label for="errorType">Tipo</label><select id="errorType" required>
-            <option value="">Selecione</option>
-            <option>Montagem incorreta</option>
-            <option>Ingrediente faltando</option>
-            <option>Pizza queimada</option>
-            <option>Atraso</option>
-            <option>Divergência da comanda</option>
-            <option>Embalagem ou despacho</option>
-            <option>Outro</option>
-          </select></div>
-        <div class="field"><label for="errorNote">Descrição opcional</label><textarea id="errorNote"
-            maxlength="220"></textarea></div>
-        <div class="actions end mobile-stack"><button id="clearErrorBtn" type="button" class="btn btn-soft">Retirar
-            erro</button><button type="button" class="btn btn-ghost" data-close="error">Cancelar</button><button
-            class="btn btn-red" type="submit">Registrar erro</button></div>
+
+      <!-- Form -->
+      <form id="errorForm" class="flex flex-col">
+        <input id="errorId" type="hidden">
+        
+        <div class="px-6 py-5 space-y-5">
+          
+          <!-- Tipo -->
+          <div class="space-y-1.5">
+            <label for="errorType" class="text-[12px] font-bold text-gray-700">Tipo de erro</label>
+            <div class="relative">
+              <select id="errorType" class="w-full px-3.5 py-2.5 text-[14px] bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 appearance-none text-gray-800 font-medium transition-all" required>
+                <option value="">Selecione o problema...</option>
+                <option>Montagem incorreta</option>
+                <option>Ingrediente faltando</option>
+                <option>Pizza queimada</option>
+                <option>Atraso</option>
+                <option>Divergência da comanda</option>
+                <option>Embalagem ou despacho</option>
+                <option>Outro</option>
+              </select>
+              <div class="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Descrição -->
+          <div class="space-y-1.5">
+            <label for="errorNote" class="text-[12px] font-bold text-gray-700">Descrição opcional</label>
+            <textarea id="errorNote" class="w-full px-3.5 py-3 text-[14px] bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 resize-none h-24 text-gray-800 transition-all placeholder:text-gray-400" placeholder="Detalhe o que aconteceu..." maxlength="220"></textarea>
+          </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/50 flex flex-col-reverse sm:flex-row items-center justify-between gap-3">
+          <button id="clearErrorBtn" type="button" class="w-full sm:w-auto px-4 py-2.5 text-[13px] font-bold text-gray-500 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:text-gray-700 transition-all">
+            Retirar erro
+          </button>
+          
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+            <button type="button" class="flex-1 sm:flex-none px-4 py-2.5 text-[13px] font-bold text-gray-600 bg-transparent hover:bg-gray-100 rounded-xl transition-all" data-close="error">
+              Cancelar
+            </button>
+            <button type="submit" class="inline-flex items-center justify-center px-5 py-2.5 text-[13px] font-bold text-white bg-[#2f9e64] rounded-xl hover:bg-[#248150] active:scale-[0.98] transition-all shadow-sm">
+              <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 21v-8H7v8M7 3v5h8"/>
+              </svg>
+              Registrar erro
+            </button>
+          </div>
+        </div>
       </form>
     </div>
   </div>
