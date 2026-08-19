@@ -19,6 +19,111 @@ $swagger = [
                 ]
             ]
         ],
+        "/api/mass-batch" => [
+            "post" => [
+                "tags" => ["Massa"],
+                "summary" => "Salvar uma nova batida de massa",
+                "requestBody" => [
+                    "required" => true,
+                    "content" => [
+                        "application/json" => [
+                            "schema" => [
+                                "type" => "object",
+                                "properties" => [
+                                    "worker_id" => ["type" => "string"],
+                                    "flour_kg" => ["type" => "number"],
+                                    "sugar_g" => ["type" => "number"],
+                                    "salt_g" => ["type" => "number"],
+                                    "eggs" => ["type" => "integer"],
+                                    "oil_ml" => ["type" => "number"],
+                                    "water_l" => ["type" => "number"],
+                                    "yeast_g" => ["type" => "number"],
+                                    "note" => ["type" => "string"]
+                                ],
+                                "required" => ["worker_id"]
+                            ]
+                        ]
+                    ]
+                ],
+                "responses" => [
+                    "200" => ["description" => "Sucesso"],
+                    "400" => ["description" => "Erro de validação ou operação inativa"],
+                    "500" => ["description" => "Erro interno no servidor"]
+                ]
+            ]
+        ],
+        "/api/mass-stock" => [
+            "post" => [
+                "tags" => ["Massa"],
+                "summary" => "Salvar o estoque do mês (estoque atual da operação)",
+                "requestBody" => [
+                    "required" => true,
+                    "content" => [
+                        "application/json" => [
+                            "schema" => [
+                                "type" => "object",
+                                "properties" => [
+                                    "flour_kg" => ["type" => "number"],
+                                    "sugar_g" => ["type" => "number"],
+                                    "salt_g" => ["type" => "number"],
+                                    "eggs" => ["type" => "integer"],
+                                    "oil_ml" => ["type" => "number"],
+                                    "water_l" => ["type" => "number"],
+                                    "yeast_g" => ["type" => "number"]
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+                "responses" => [
+                    "200" => ["description" => "Sucesso"],
+                    "400" => ["description" => "Erro de validação ou operação inativa"],
+                    "500" => ["description" => "Erro interno no servidor"]
+                ]
+            ]
+        ],
+        "/api/mass/kpis" => [
+            "get" => [
+                "tags" => ["Massa"],
+                "summary" => "Obter KPIs de massa da operação atual",
+                "responses" => [
+                    "200" => ["description" => "Sucesso"],
+                    "400" => ["description" => "Erro de validação ou operação inativa"],
+                    "500" => ["description" => "Erro interno no servidor"]
+                ]
+            ]
+        ],
+        "/api/mass/stock" => [
+            "get" => [
+                "tags" => ["Massa"],
+                "summary" => "Obter estoque de massa (inicial e atual)",
+                "responses" => [
+                    "200" => ["description" => "Sucesso"],
+                    "400" => ["description" => "Erro de validação ou operação inativa"],
+                    "500" => ["description" => "Erro interno no servidor"]
+                ]
+            ]
+        ],
+        "/api/mass/history" => [
+            "get" => [
+                "tags" => ["Massa"],
+                "summary" => "Obter histórico de batidas",
+                "responses" => [
+                    "200" => ["description" => "Sucesso"],
+                    "400" => ["description" => "Erro de validação ou operação inativa"],
+                    "500" => ["description" => "Erro interno no servidor"]
+                ]
+            ]
+        ],
+        "/api/mass/recipe" => [
+            "get" => [
+                "tags" => ["Massa"],
+                "summary" => "Obter receita padrão da massa",
+                "responses" => [
+                    "200" => ["description" => "Sucesso"]
+                ]
+            ]
+        ],
         "/api/dashboard/kpis" => [
             "get" => [
                 "tags" => ["Dashboard"],

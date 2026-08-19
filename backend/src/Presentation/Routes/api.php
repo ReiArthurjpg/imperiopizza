@@ -117,6 +117,48 @@ if ($uri === '/api/profissionais' && $method === 'GET') {
     exit;
 }
 
+if ($uri === '/api/mass-batch' && $method === 'POST') {
+    require_once __DIR__ . '/../Controllers/ApiController.php';
+    $controller = new \App\Back\Presentation\Controllers\ApiController();
+    $controller->createBatidaMassa();
+    exit;
+}
+
+if ($uri === '/api/mass-stock' && $method === 'POST') {
+    require_once __DIR__ . '/../Controllers/ApiController.php';
+    $controller = new \App\Back\Presentation\Controllers\ApiController();
+    $controller->updateMassStock();
+    exit;
+}
+
+if ($uri === '/api/mass/kpis' && $method === 'GET') {
+    require_once __DIR__ . '/../Controllers/ApiController.php';
+    $controller = new \App\Back\Presentation\Controllers\ApiController();
+    $controller->getMassKpis();
+    exit;
+}
+
+if ($uri === '/api/mass/stock' && $method === 'GET') {
+    require_once __DIR__ . '/../Controllers/ApiController.php';
+    $controller = new \App\Back\Presentation\Controllers\ApiController();
+    $controller->getMassStock();
+    exit;
+}
+
+if ($uri === '/api/mass/history' && $method === 'GET') {
+    require_once __DIR__ . '/../Controllers/ApiController.php';
+    $controller = new \App\Back\Presentation\Controllers\ApiController();
+    $controller->getMassHistory();
+    exit;
+}
+
+if ($uri === '/api/mass/recipe' && $method === 'GET') {
+    require_once __DIR__ . '/../Controllers/ApiController.php';
+    $controller = new \App\Back\Presentation\Controllers\ApiController();
+    $controller->getMassRecipe();
+    exit;
+}
+
 // Swagger UI
 if ($uri === '/' || $uri === '/docs') {
     require_once __DIR__ . '/../Views/swagger.php';
