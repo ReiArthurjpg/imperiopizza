@@ -2171,7 +2171,14 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
     }
     function selectedDispatchHtml(c) {
       if (!c) return '';
-      return `<h4>Comanda #${String(c.number).padStart(3, '0')}</h4><p>${formatAssemblers(c)} · ${fmt(commandEquivalent(c))} pizzas equivalentes · ${statusText(c)}</p>${specialTagsHtml(c)}`;
+      return `<div class="bg-gray-50 rounded-xl p-4 border border-[#E7E7E7] mb-4">
+        <div class="flex items-center justify-between mb-2">
+          <h4 class="text-lg font-bold text-[#171717]">Comanda #${String(c.number).padStart(3, '0')}</h4>
+          <span class="px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded-lg border border-blue-200">${statusText(c)}</span>
+        </div>
+        <p class="text-sm text-[#737373] mb-3">${formatAssemblers(c)} · ${fmt(commandEquivalent(c))} pizzas equivalentes</p>
+        <div class="flex flex-wrap gap-1.5">${specialTagsHtml(c)}</div>
+      </div>`;
     }
     function renderOvenPicker(selectedId = '') {
       const op = currentOperation(), q = norm(el.ovenCommandSearch.value), list = ovenAvailable(op).filter(c => !q || norm(`${c.number} ${c.assemblerName}`).includes(q));
@@ -2208,15 +2215,62 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
       c.dispatch.ketchup = el.dispatchKetchup.checked; c.dispatch.mayonnaise = el.dispatchMayonnaise.checked; c.dispatch.note = el.dispatchNote.value.trim(); c.updatedAt = new Date().toISOString();
     }
     function dispatchCard(c) {
-      const d = c.dispatch || {}, cls = d.status === 'entrega' ? 'b-released' : d.status === 'conferido' ? 'b-dispatch' : 'b-oven',
-        label = d.status === 'entrega' ? 'Saiu para entrega' : d.status === 'conferido' ? 'Conferido' : 'Recebido / aguardando';
-      return `<article class="dispatch-card ${d.status === 'entrega' ? 'out-for-delivery' : ''}">
-    <div class="dispatch-head"><div><h4>Comanda #${String(c.number).padStart(3, '0')}</h4><p>${fmt(commandEquivalent(c))} equiv. · ${formatAssemblers(c)} · recebida ${formatTime(d.receivedAt)}</p>${specialTagsHtml(c)}</div><span class="badge ${cls}">${label}</span></div>
-    <div class="chips"><span class="chip">${d.beverage ? 'Bebida' : 'Sem bebida'}</span><span class="chip">${d.change ? 'Troco ' + esc(d.changeAmount || '') : 'Sem troco'}</span><span class="chip">${d.ketchup ? 'Ketchup' : 'Sem ketchup'}</span><span class="chip">${d.mayonnaise ? 'Maionese' : 'Sem maionese'}</span></div>
-    ${d.status === 'entrega' ? `<div class="delivery-time">Saiu para o motoboy às ${formatTime(d.outForDeliveryAt)}</div>` : ''}
-    <div class="actions end"><button class="btn btn-primary btn-small" data-open-dispatch="${c.id}">${d.status === 'entrega' ? 'Ver conferência' : 'Abrir conferência'}</button></div>
-  </article>`;
+      const d = c.dispatch || {}, isDelivery = d.status === 'entrega', isChecked = d.status === 'conferido';
+      const statusColor = isDelivery ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : isChecked ? 'bg-indigo-50 text-indigo-700 border-indigo-200' : 'bg-yellow-50 text-yellow-700 border-yellow-200';
+      const statusLabel = isDelivery ? 'Saiu para entrega' : isChecked ? 'Conferido' : 'Recebido / aguardando';
+      const statusIcon = isDelivery ? 'bike' : isChecked ? 'check-circle-2' : 'clock';
+
+      return `<article class="bg-white rounded-xl border border-[#E7E7E7] shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex flex-col transition-all duration-200 hover:shadow-md ${isDelivery ? 'opacity-75 grayscale-[0.3]' : ''}">
+        <div class="p-4 border-b border-[#E7E7E7] bg-gray-50/50">
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <h4 class="text-lg font-bold text-[#171717] leading-tight">Comanda #${String(c.number).padStart(3, '0')}</h4>
+              <p class="text-xs text-[#737373] mt-1 font-medium">${fmt(commandEquivalent(c))} equiv. · ${formatAssemblers(c)}</p>
+            </div>
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] uppercase tracking-wider font-bold border ${statusColor} shrink-0 text-center">
+              <i data-lucide="${statusIcon}" class="w-3.5 h-3.5"></i>
+              ${statusLabel}
+            </span>
+          </div>
+          <div class="mt-3 flex flex-wrap gap-1.5">
+            ${specialTagsHtml(c)}
+          </div>
+        </div>
+        
+        <div class="p-4 flex-grow flex flex-col justify-between gap-4">
+          <div class="flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-gray-100 text-gray-700">
+              <i data-lucide="${d.beverage ? 'cup-soda' : 'ban'}" class="w-3.5 h-3.5 ${d.beverage ? 'text-blue-500' : 'text-gray-400'}"></i>
+              ${d.beverage ? 'Bebida' : 'Sem bebida'}
+            </span>
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-gray-100 text-gray-700">
+              <i data-lucide="banknote" class="w-3.5 h-3.5 ${d.change ? 'text-emerald-500' : 'text-gray-400'}"></i>
+              ${d.change ? 'Troco ' + esc(d.changeAmount || '') : 'Sem troco'}
+            </span>
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-gray-100 text-gray-700">
+              <i data-lucide="${d.ketchup ? 'check' : 'x'}" class="w-3.5 h-3.5 ${d.ketchup ? 'text-red-500' : 'text-gray-400'}"></i>
+              ${d.ketchup ? 'Ketchup' : 'S/ ketchup'}
+            </span>
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-gray-100 text-gray-700">
+              <i data-lucide="${d.mayonnaise ? 'check' : 'x'}" class="w-3.5 h-3.5 ${d.mayonnaise ? 'text-amber-500' : 'text-gray-400'}"></i>
+              ${d.mayonnaise ? 'Maionese' : 'S/ maionese'}
+            </span>
+          </div>
+          
+          <div>
+            ${isDelivery ? `<p class="text-[11px] text-[#737373] mb-3 flex items-center gap-1.5 font-medium"><i data-lucide="history" class="w-3.5 h-3.5"></i> Saiu para o motoboy às ${formatTime(d.outForDeliveryAt)}</p>` : `<p class="text-[11px] text-[#737373] mb-3 flex items-center gap-1.5 font-medium"><i data-lucide="clock" class="w-3.5 h-3.5"></i> Recebida às ${formatTime(d.receivedAt)}</p>`}
+            
+            <button class="w-full py-2.5 rounded-lg text-sm font-semibold transition-all shadow-sm flex items-center justify-center gap-2 
+              ${isDelivery ? 'bg-white border border-[#E7E7E7] text-[#171717] hover:bg-gray-50' : 'bg-[#1F6FB2] text-white hover:bg-[#1a5e98]'}" 
+              data-open-dispatch="${c.id}">
+              <i data-lucide="${isDelivery ? 'eye' : 'edit-3'}" class="w-4 h-4"></i>
+              ${isDelivery ? 'Ver conferência' : 'Abrir conferência'}
+            </button>
+          </div>
+        </div>
+      </article>`;
     }
+
     renderDispatch = function () {
       renderHeader(); const op = currentOperation(); el.manageTeamDispatchBtn.disabled = op?.status === 'completed';
       if (!op || op.status === 'draft') {
@@ -2238,16 +2292,36 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
       const oven = ovenAvailable(op), all = dispatchQueue(op), waiting = all.filter(c => c.dispatch.status === 'aguardando').length,
         checked = all.filter(c => c.dispatch.status === 'conferido').length, delivery = all.filter(c => c.dispatch.status === 'entrega').length;
       el.ovenReadyBadge.textContent = oven.length; el.dispatchQueueBadge.textContent = waiting + checked;
-      el.dispatchSubtotals.innerHTML = [
-        ['No forno', oven.length], ['Recebidas', all.length], ['Aguardando', waiting], ['Conferidas', checked], ['Em entrega', delivery], ['Faltam zerar', pendingToFinish(op)]
-      ].map(([l, v]) => `<div class="subtotal-item"><small>${l}</small><strong>${v}</strong></div>`).join('');
+      
+      const kpis = [
+        ['No forno', oven.length, 'bg-orange-50', 'text-orange-500', 'group-hover:bg-orange-100', 'bg-orange-100', '<i data-lucide="flame" class="w-4 h-4"></i>'],
+        ['Recebidas', all.length, 'bg-blue-50', 'text-blue-600', 'group-hover:bg-blue-100', 'bg-blue-100', '<i data-lucide="inbox" class="w-4 h-4"></i>'],
+        ['Aguardando', waiting, 'bg-yellow-50', 'text-yellow-600', 'group-hover:bg-yellow-100', 'bg-yellow-100', '<i data-lucide="clock" class="w-4 h-4"></i>'],
+        ['Conferidas', checked, 'bg-indigo-50', 'text-indigo-600', 'group-hover:bg-indigo-100', 'bg-indigo-100', '<i data-lucide="check-square" class="w-4 h-4"></i>'],
+        ['Em entrega', delivery, 'bg-emerald-50', 'text-emerald-600', 'group-hover:bg-emerald-100', 'bg-emerald-100', '<i data-lucide="bike" class="w-4 h-4"></i>'],
+        ['Faltam zerar', pendingToFinish(op), 'bg-red-50', 'text-red-500', 'group-hover:bg-red-100', 'bg-red-100', '<i data-lucide="alert-circle" class="w-4 h-4"></i>']
+      ];
+      el.dispatchSubtotals.innerHTML = kpis.map(([label, value, bgStyle, textStyle, hoverBg, glow, icon]) => `
+      <div class="relative group bg-white border border-[#E5E7EB] rounded-xl p-4 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md overflow-hidden">
+        <div class="absolute -right-4 -top-4 w-16 h-16 rounded-full ${glow} blur-xl opacity-50 group-hover:opacity-80 transition-opacity"></div>
+        <div class="flex items-center gap-3 mb-2 relative z-10">
+          <div class="w-8 h-8 rounded-lg ${bgStyle} ${textStyle} flex items-center justify-center shrink-0 transition-colors ${hoverBg}">
+            ${icon}
+          </div>
+          <span class="text-[12px] font-bold text-[#737373] uppercase tracking-wider">${label}</span>
+        </div>
+        <div class="text-2xl font-black text-[#171717] tracking-tight relative z-10">${value}</div>
+      </div>
+      `).join('');
 
       const q = norm(el.dispatchSearch.value), f = el.dispatchFilter.value, order = { aguardando: 0, conferido: 1, entrega: 2 };
       const cs = all.filter(c => (!q || norm(`${c.number} ${c.assemblerName}`).includes(q)) && (!f || c.dispatch.status === f))
         .sort((a, b) => order[a.dispatch.status] - order[b.dispatch.status] || (b.dispatch.receivedAt || '').localeCompare(a.dispatch.receivedAt || ''));
       el.dispatchGrid.innerHTML = cs.map(dispatchCard).join(''); el.dispatchEmpty.classList.toggle('hidden', cs.length > 0);
       el.finishDayBtn.disabled = op.status !== 'kitchen_closed' || pendingToFinish(op) > 0;
-      el.finishDayBtn.textContent = op.status === 'completed' ? 'Dia finalizado' : pendingToFinish(op) > 0 ? `Faltam ${pendingToFinish(op)} pedidos` : 'Finalizar o dia';
+      el.finishDayBtn.innerHTML = op.status === 'completed' ? '<i data-lucide="check-circle" class="w-4 h-4"></i> Dia finalizado' : pendingToFinish(op) > 0 ? `<i data-lucide="alert-circle" class="w-4 h-4"></i> Faltam ${pendingToFinish(op)} pedidos` : '<i data-lucide="check-circle" class="w-4 h-4"></i> Finalizar o dia';
+      
+      if (window.lucide) window.lucide.createIcons();
     };
 
     renderReportDetail = function (op) {
