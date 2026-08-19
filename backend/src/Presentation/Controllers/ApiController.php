@@ -470,4 +470,63 @@ class ApiController
             $this->jsonResponse(['error' => $e->getMessage()], 500);
         }
     }
+
+    public function getMassKpis()
+    {
+        $op = Operacao::getCurrent();
+        if (!$op || $op['status'] === 'draft') {
+            $this->jsonResponse(['error' => 'Nenhuma operação ativa no momento.'], 400);
+        }
+
+        try {
+            $kpis = BatidaMassa::getKpis($op['id']);
+            $this->jsonResponse(['success' => true, 'data' => $kpis]);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getMassStock()
+    {
+        $op = Operacao::getCurrent();
+        if (!$op || $op['status'] === 'draft') {
+            $this->jsonResponse(['error' => 'Nenhuma operação ativa no momento.'], 400);
+        }
+
+        try {
+            $stock = EstoqueMassa::getStock($op['id']);
+            $this->jsonResponse(['success' => true, 'data' => $stock]);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getMassHistory()
+    {
+        $op = Operacao::getCurrent();
+        if (!$op || $op['status'] === 'draft') {
+            $this->jsonResponse(['error' => 'Nenhuma operação ativa no momento.'], 400);
+        }
+
+        try {
+            $history = BatidaMassa::getHistory($op['id']);
+            $this->jsonResponse(['success' => true, 'data' => $history]);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getMassRecipe()
+    {
+        $recipe = [
+            'flour_kg' => 10,
+            'sugar_g' => 500,
+            'salt_g' => 120,
+            'eggs' => 10,
+            'oil_ml' => 900,
+            'water_l' => 3,
+            'yeast_g' => 100
+        ];
+        $this->jsonResponse(['success' => true, 'data' => $recipe]);
+    }
 }

@@ -64,4 +64,35 @@ class BatidaMassa
 
         return $db->lastInsertId();
     }
+
+    public static function getKpis($operacao_id)
+    {
+        $db = Database::getInstance()->getConnection();
+        $stmt = $db->prepare("
+            SELECT 
+                COALESCE(SUM(batch_count), 0) as total_batidas,
+                COALESCE(SUM(flour_kg), 0) as total_flour_kg,
+                COALESCE(SUM(eggs), 0) as total_eggs,
+                COALESCE(SUM(oil_ml), 0) as total_oil_ml,
+                COUNT(DISTINCT worker_id) as total_masseiros
+            FROM lotes_massa 
+            WHERE operacao_id = ?
+        ");
+        $stmt->execute([$operacao_id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public static function getHistory($operacao_id)
+    {
+        $db = Database::getInstance()->getConnection();
+        $stmt = $db->prepare("
+            SELECT b.*, e.nome as worker_name 
+            FROM batidas_massa b
+            JOIN equipe e ON b.worker_id = e.id
+            WHERE b.operacao_id = ?
+            ORDER BY b.created_at DESC
+        ");
+        $stmt->execute([$operacao_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

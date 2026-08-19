@@ -82,6 +82,48 @@ $swagger = [
                 ]
             ]
         ],
+        "/api/mass/kpis" => [
+            "get" => [
+                "tags" => ["Massa"],
+                "summary" => "Obter KPIs de massa da operação atual",
+                "responses" => [
+                    "200" => ["description" => "Sucesso"],
+                    "400" => ["description" => "Erro de validação ou operação inativa"],
+                    "500" => ["description" => "Erro interno no servidor"]
+                ]
+            ]
+        ],
+        "/api/mass/stock" => [
+            "get" => [
+                "tags" => ["Massa"],
+                "summary" => "Obter estoque de massa (inicial e atual)",
+                "responses" => [
+                    "200" => ["description" => "Sucesso"],
+                    "400" => ["description" => "Erro de validação ou operação inativa"],
+                    "500" => ["description" => "Erro interno no servidor"]
+                ]
+            ]
+        ],
+        "/api/mass/history" => [
+            "get" => [
+                "tags" => ["Massa"],
+                "summary" => "Obter histórico de batidas",
+                "responses" => [
+                    "200" => ["description" => "Sucesso"],
+                    "400" => ["description" => "Erro de validação ou operação inativa"],
+                    "500" => ["description" => "Erro interno no servidor"]
+                ]
+            ]
+        ],
+        "/api/mass/recipe" => [
+            "get" => [
+                "tags" => ["Massa"],
+                "summary" => "Obter receita padrão da massa",
+                "responses" => [
+                    "200" => ["description" => "Sucesso"]
+                ]
+            ]
+        ],
         "/api/dashboard/kpis" => [
             "get" => [
                 "tags" => ["Dashboard"],
