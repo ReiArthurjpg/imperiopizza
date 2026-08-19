@@ -372,4 +372,211 @@ class Comanda
         }
         return $result;
     }
+
+    public static function getDispatchQueue($operacaoId, $search = null, $status = null)
+    {
+        $db = Database::getInstance()->getConnection();
+        
+        $query = "SELECT c.*, e.nome as assembler_name 
+                  FROM comandas c 
+                  LEFT JOIN comandas_lotes l ON c.operacao_id = l.operacao_id AND c.number >= l.comanda_inicio AND c.number <= l.comanda_fim
+                  LEFT JOIN equipe e ON l.assembler_id = e.id 
+                  WHERE c.operacao_id = :op_id AND c.status = 'despacho'";
+                  
+        $params = [':op_id' => $operacaoId];
+        
+        if ($status) {
+            $query .= " AND c.dispatch_status = :status";
+            $params[':status'] = $status;
+        }
+        
+        if ($search) {
+            $query .= " AND (c.number LIKE :search OR e.nome LIKE :search2)";
+            $params[':search'] = "%$search%";
+            $params[':search2'] = "%$search%";
+        }
+        
+        $query .= " ORDER BY c.despacho_time ASC";
+        
+        $stmt = $db->prepare($query);
+        $stmt->execute($params);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        $result = [];
+        foreach ($rows as $r) {
+            $equiv = (int)$r['pizzas'] + (int)$r['volcano'] + (int)$r['esfiha'];
+            $result[] = [
+                'id' => $r['id'],
+                'number' => (int)$r['number'],
+                'pizzas' => (int)$r['pizzas'],
+                'equivalentPizzas' => $equiv,
+                'assemblerName' => $r['assembler_name'] ?? 'Desconhecido',
+                'status' => $r['status'],
+                'statusTimes' => [
+                    'despacho' => $r['despacho_time']
+                ],
+                'dispatch' => [
+                    'status' => $r['dispatch_status'],
+                    'beverage' => (bool)$r['beverage'],
+                    'change' => (bool)$r['change'],
+                    'changeAmount' => $r['change_amount'],
+                    'ketchup' => (bool)$r['ketchup'],
+                    'mayonnaise' => (bool)$r['mayonnaise'],
+                    'note' => $r['dispatch_note'],
+                    'receivedAt' => $r['despacho_time'],
+                    'checkedAt' => null, // Would add to schema if strictly needed, using updated_at for now
+                    'deliveryAt' => null // Would add to schema if strictly needed, using updated_at for now
+                ]
+            ];
+        }
+        
+        return $result;
+    }
+
+    public static function getDispatchStats($operacaoId)
+    {
+        $db = Database::getInstance()->getConnection();
+        
+        $stmt = $db->prepare("
+            SELECT
+                SUM(CASE WHEN status = 'despacho' THEN 1 ELSE 0 END) AS total,
+                SUM(CASE WHEN status = 'despacho' AND dispatch_status = 'aguardando' THEN 1 ELSE 0 END) AS aguardando,
+                SUM(CASE WHEN status = 'despacho' AND dispatch_status = 'conferido' THEN 1 ELSE 0 END) AS conferido,
+                SUM(CASE WHEN status = 'despacho' AND dispatch_status = 'entrega' THEN 1 ELSE 0 END) AS entrega,
+                SUM(CASE WHEN status != 'completed' AND status != 'despacho' THEN 1 ELSE 0 END) AS pendingToFinish
+            FROM comandas
+            WHERE operacao_id = ?
+        ");
+        $stmt->execute([$operacaoId]);
+        $stats = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        return [
+            'total' => (int)($stats['total'] ?? 0),
+            'aguardando' => (int)($stats['aguardando'] ?? 0),
+            'conferido' => (int)($stats['conferido'] ?? 0),
+            'entrega' => (int)($stats['entrega'] ?? 0),
+            'pendingToFinish' => (int)($stats['pendingToFinish'] ?? 0)
+        ];
+    }
+
+    public static function getOvenQueue($operacaoId)
+    {
+        $db = Database::getInstance()->getConnection();
+        
+        $stmt = $db->prepare("SELECT c.id, c.number, c.pizzas, c.forno_time as readySince, e.nome as assemblerName 
+                  FROM comandas c 
+                  LEFT JOIN comandas_lotes l ON c.operacao_id = l.operacao_id AND c.number >= l.comanda_inicio AND c.number <= l.comanda_fim
+                  LEFT JOIN equipe e ON l.assembler_id = e.id 
+                  WHERE c.operacao_id = ? AND c.status = 'forno'
+                  ORDER BY c.forno_time ASC");
+                  
+        $stmt->execute([$operacaoId]);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        $result = [];
+        foreach ($rows as $r) {
+            $result[] = [
+                'id' => $r['id'],
+                'number' => (int)$r['number'],
+                'pizzas' => (int)$r['pizzas'],
+                'assemblerName' => $r['assemblerName'] ?? 'Desconhecido',
+                'readySince' => $r['readySince']
+            ];
+        }
+        
+        return $result;
+    }
+
+    public static function pullFromOven($operacaoId, $cmdId)
+    {
+        $db = Database::getInstance()->getConnection();
+        
+        $stmt = $db->prepare("UPDATE comandas SET status = 'despacho', dispatch_status = 'aguardando', despacho_time = CURRENT_TIMESTAMP WHERE operacao_id = ? AND id = ?");
+        $stmt->execute([$operacaoId, $cmdId]);
+        
+        return ['id' => $cmdId, 'status' => 'despacho'];
+    }
+
+    public static function checkDispatch($operacaoId, $cmdId, $data)
+    {
+        $db = Database::getInstance()->getConnection();
+        
+        $stmt = $db->prepare("UPDATE comandas SET 
+            dispatch_status = 'conferido',
+            beverage = :beverage,
+            `change` = :change,
+            change_amount = :change_amount,
+            ketchup = :ketchup,
+            mayonnaise = :mayonnaise,
+            dispatch_note = :dispatch_note,
+            updated_at = CURRENT_TIMESTAMP
+            WHERE operacao_id = :op_id AND id = :id");
+            
+        $stmt->execute([
+            'beverage' => !empty($data['beverage']) ? 1 : 0,
+            'change' => !empty($data['change']) ? 1 : 0,
+            'change_amount' => $data['changeAmount'] ?? '',
+            'ketchup' => !empty($data['ketchup']) ? 1 : 0,
+            'mayonnaise' => !empty($data['mayonnaise']) ? 1 : 0,
+            'dispatch_note' => $data['note'] ?? '',
+            'op_id' => $operacaoId,
+            'id' => $cmdId
+        ]);
+        
+        return [
+            'status' => 'conferido',
+            'checkedAt' => date('Y-m-d H:i:s')
+        ];
+    }
+
+    public static function sendDelivery($operacaoId, $cmdId, $deliveryAt)
+    {
+        $db = Database::getInstance()->getConnection();
+        
+        $stmt = $db->prepare("UPDATE comandas SET dispatch_status = 'entrega', updated_at = CURRENT_TIMESTAMP WHERE operacao_id = ? AND id = ?");
+        $stmt->execute([$operacaoId, $cmdId]);
+        
+        return [
+            'status' => 'entrega',
+            'deliveryAt' => $deliveryAt ?? date('Y-m-d H:i:s')
+        ];
+    }
+
+    public static function revertDispatch($operacaoId, $cmdId, $reason)
+    {
+        $db = Database::getInstance()->getConnection();
+        
+        // Reason is currently just discarded as we don't have a history log for dispatch, 
+        // but status is reverted back to aguardando.
+        $stmt = $db->prepare("UPDATE comandas SET dispatch_status = 'aguardando', updated_at = CURRENT_TIMESTAMP WHERE operacao_id = ? AND id = ?");
+        $stmt->execute([$operacaoId, $cmdId]);
+    }
+
+    public static function updateDispatch($operacaoId, $cmdId, $data)
+    {
+        $db = Database::getInstance()->getConnection();
+        
+        $stmt = $db->prepare("UPDATE comandas SET 
+            beverage = :beverage,
+            `change` = :change,
+            change_amount = :change_amount,
+            ketchup = :ketchup,
+            mayonnaise = :mayonnaise,
+            dispatch_note = :dispatch_note,
+            updated_at = CURRENT_TIMESTAMP
+            WHERE operacao_id = :op_id AND id = :id");
+            
+        $stmt->execute([
+            'beverage' => !empty($data['beverage']) ? 1 : 0,
+            'change' => !empty($data['change']) ? 1 : 0,
+            'change_amount' => $data['changeAmount'] ?? '',
+            'ketchup' => !empty($data['ketchup']) ? 1 : 0,
+            'mayonnaise' => !empty($data['mayonnaise']) ? 1 : 0,
+            'dispatch_note' => $data['note'] ?? '',
+            'op_id' => $operacaoId,
+            'id' => $cmdId
+        ]);
+        
+        return date('Y-m-d H:i:s');
+    }
 }

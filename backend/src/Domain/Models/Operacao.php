@@ -114,4 +114,23 @@ class Operacao
         $stmt->execute([$operacaoId]);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
+
+    public static function finishDay($operacaoId)
+    {
+        $db = Database::getInstance()->getConnection();
+        
+        $stmt = $db->prepare("UPDATE operacoes SET status = 'completed', completed_at = CURRENT_TIMESTAMP WHERE id = ?");
+        $stmt->execute([$operacaoId]);
+        
+        $stmt = $db->prepare("SELECT * FROM operacoes WHERE id = ?");
+        $stmt->execute([$operacaoId]);
+        $op = $stmt->fetch(\PDO::FETCH_ASSOC);
+        
+        return [
+            'id' => $op['id'],
+            'date' => $op['date'],
+            'status' => $op['status'],
+            'completedAt' => $op['completed_at']
+        ];
+    }
 }
