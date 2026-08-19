@@ -18,7 +18,7 @@
     <button type="button" class="nav-btn" data-page="dashboard"><span><i data-lucide="layout-dashboard" class="w-5 h-5"></i></span>Resumo</button>
     <button type="button" class="nav-btn" data-page="team"><span><i data-lucide="users" class="w-5 h-5"></i></span>Equipe</button>
     <button type="button" class="nav-btn" data-page="production"><span><i data-lucide="chef-hat" class="w-5 h-5"></i></span>Produção</button>
-    <button type="button" class="nav-btn" data-page="stock"><span><i data-lucide="soup" class="w-5 h-5"></i></span>Massas</button>
+    <button type="button" class="nav-btn" data-page="mass"><span><i data-lucide="soup" class="w-5 h-5"></i></span>Massas</button>
     
     <div class="nav-btn-more-container" style="position: relative; flex: 1; display: flex; flex-direction: column;">
       <button type="button" class="nav-btn" id="moreMenuBtn" style="border: none; background: transparent; cursor: pointer; width: 100%; height: 100%; display: grid; place-items: center; gap: 2px;">

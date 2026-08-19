@@ -51,7 +51,7 @@
           <p class="text-xs text-[#737373] mt-0.5">No forno aparecem primeiro · clique na ação principal para avançar.</p>
         </div>
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto shrink-0">
-          <div class="hidden sm:flex items-center bg-[#F3F4F6] p-1 rounded-lg border border-[#E7E7E7]">
+          <div class="max-sm:hidden flex items-center bg-[#F3F4F6] p-1 rounded-lg border border-[#E7E7E7]">
             <button type="button" id="viewListBtn" class="p-1.5 bg-white shadow-sm rounded-md text-[#1F6FB2] transition-colors" title="Ver em lista">
               <i data-lucide="list" class="w-4 h-4"></i>
             </button>
