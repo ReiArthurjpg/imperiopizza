@@ -106,3 +106,20 @@ CREATE TABLE IF NOT EXISTS comandas_lotes (
     FOREIGN KEY (operacao_id) REFERENCES operacoes(id) ON DELETE CASCADE,
     FOREIGN KEY (assembler_id) REFERENCES equipe(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS batidas_massa (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    operacao_id VARCHAR(36) NOT NULL,
+    worker_id VARCHAR(36) NOT NULL,
+    flour_kg DECIMAL(10,2) DEFAULT 0,
+    sugar_g DECIMAL(10,2) DEFAULT 0,
+    salt_g DECIMAL(10,2) DEFAULT 0,
+    eggs INT DEFAULT 0,
+    oil_ml DECIMAL(10,2) DEFAULT 0,
+    water_l DECIMAL(10,2) DEFAULT 0,
+    yeast_g DECIMAL(10,2) DEFAULT 0,
+    note TEXT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (operacao_id) REFERENCES operacoes(id) ON DELETE CASCADE,
+    FOREIGN KEY (worker_id) REFERENCES equipe(id) ON DELETE CASCADE
+);

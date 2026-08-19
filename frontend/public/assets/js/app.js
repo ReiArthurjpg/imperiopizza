@@ -2384,6 +2384,111 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
         });
     }
 
+    const saveMassBatchBtn = document.getElementById('saveMassBatchBtn');
+    if (saveMassBatchBtn) {
+        saveMassBatchBtn.addEventListener('click', () => {
+            const worker_id = document.getElementById('massWorkerSelect').value;
+            if (!worker_id) {
+                if (typeof toast === 'function') toast("Selecione o masseiro responsável.", "error");
+                else alert("Selecione o masseiro responsável.");
+                return;
+            }
+
+            const payload = {
+                worker_id: worker_id,
+                flour_kg: parseFloat(document.getElementById('batchFlourKg').value) || 0,
+                sugar_g: parseFloat(document.getElementById('batchSugarG').value) || 0,
+                salt_g: parseFloat(document.getElementById('batchSaltG').value) || 0,
+                eggs: parseInt(document.getElementById('batchEggs').value) || 0,
+                oil_ml: parseFloat(document.getElementById('batchOilMl').value) || 0,
+                water_l: parseFloat(document.getElementById('batchWaterL').value) || 0,
+                yeast_g: parseFloat(document.getElementById('batchYeastG').value) || 0,
+                note: document.getElementById('batchNote').value || ''
+            };
+
+            const originalBtnHtml = saveMassBatchBtn.innerHTML;
+            saveMassBatchBtn.innerHTML = 'Salvando...';
+            saveMassBatchBtn.disabled = true;
+
+            fetch('/api/mass-batch', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                saveMassBatchBtn.innerHTML = originalBtnHtml;
+                saveMassBatchBtn.disabled = false;
+
+                if (data.success) {
+                    if (typeof toast === 'function') toast("Batida de massa salva com sucesso!", "success");
+                    else alert("Batida de massa salva com sucesso!");
+                    
+                    const modal = document.getElementById('massBatchModal');
+                    if (modal) modal.classList.remove('active');
+                    
+                    // Opcional: Atualizar dashboard/status
+                    if(typeof loadState === 'function') loadState();
+                } else {
+                    if (typeof toast === 'function') toast(data.error || "Erro ao salvar batida.", "error");
+                    else alert(data.error || "Erro ao salvar batida.");
+                }
+            })
+            .catch(err => {
+                saveMassBatchBtn.innerHTML = originalBtnHtml;
+                saveMassBatchBtn.disabled = false;
+                console.error(err);
+                if (typeof toast === 'function') toast("Erro de conexão.", "error");
+                else alert("Erro de conexão.");
+            });
+        });
+    }
+
+    const saveMassStockBtn = document.getElementById('saveMassStockBtn');
+    if (saveMassStockBtn) {
+        saveMassStockBtn.addEventListener('click', () => {
+            const payload = {
+                flour_kg: parseFloat(document.getElementById('stockFlourKg').value) || 0,
+                sugar_g: parseFloat(document.getElementById('stockSugarG').value) || 0,
+                salt_g: parseFloat(document.getElementById('stockSaltG').value) || 0,
+                eggs: parseInt(document.getElementById('stockEggs').value) || 0,
+                oil_ml: parseFloat(document.getElementById('stockOilMl').value) || 0,
+                water_l: parseFloat(document.getElementById('stockWaterL').value) || 0,
+                yeast_g: parseFloat(document.getElementById('stockYeastG').value) || 0
+            };
+
+            const originalBtnHtml = saveMassStockBtn.innerHTML;
+            saveMassStockBtn.innerHTML = 'Salvando...';
+            saveMassStockBtn.disabled = true;
+
+            fetch('/api/mass-stock', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                saveMassStockBtn.innerHTML = originalBtnHtml;
+                saveMassStockBtn.disabled = false;
+
+                if (data.success) {
+                    if (typeof toast === 'function') toast("Estoque salvo com sucesso!", "success");
+                    else alert("Estoque salvo com sucesso!");
+                    
+                    if(typeof loadState === 'function') loadState();
+                } else {
+                    if (typeof toast === 'function') toast(data.error || "Erro ao salvar estoque.", "error");
+                    else alert(data.error || "Erro ao salvar estoque.");
+                }
+            })
+            .catch(err => {
+                saveMassStockBtn.innerHTML = originalBtnHtml;
+                saveMassStockBtn.disabled = false;
+                console.error(err);
+                if (typeof toast === 'function') toast("Erro de conexão.", "error");
+                else alert("Erro de conexão.");
+            });
+        });
+    }
+
     loadState();
-
-

@@ -19,6 +19,69 @@ $swagger = [
                 ]
             ]
         ],
+        "/api/mass-batch" => [
+            "post" => [
+                "tags" => ["Massa"],
+                "summary" => "Salvar uma nova batida de massa",
+                "requestBody" => [
+                    "required" => true,
+                    "content" => [
+                        "application/json" => [
+                            "schema" => [
+                                "type" => "object",
+                                "properties" => [
+                                    "worker_id" => ["type" => "string"],
+                                    "flour_kg" => ["type" => "number"],
+                                    "sugar_g" => ["type" => "number"],
+                                    "salt_g" => ["type" => "number"],
+                                    "eggs" => ["type" => "integer"],
+                                    "oil_ml" => ["type" => "number"],
+                                    "water_l" => ["type" => "number"],
+                                    "yeast_g" => ["type" => "number"],
+                                    "note" => ["type" => "string"]
+                                ],
+                                "required" => ["worker_id"]
+                            ]
+                        ]
+                    ]
+                ],
+                "responses" => [
+                    "200" => ["description" => "Sucesso"],
+                    "400" => ["description" => "Erro de validação ou operação inativa"],
+                    "500" => ["description" => "Erro interno no servidor"]
+                ]
+            ]
+        ],
+        "/api/mass-stock" => [
+            "post" => [
+                "tags" => ["Massa"],
+                "summary" => "Salvar o estoque do mês (estoque atual da operação)",
+                "requestBody" => [
+                    "required" => true,
+                    "content" => [
+                        "application/json" => [
+                            "schema" => [
+                                "type" => "object",
+                                "properties" => [
+                                    "flour_kg" => ["type" => "number"],
+                                    "sugar_g" => ["type" => "number"],
+                                    "salt_g" => ["type" => "number"],
+                                    "eggs" => ["type" => "integer"],
+                                    "oil_ml" => ["type" => "number"],
+                                    "water_l" => ["type" => "number"],
+                                    "yeast_g" => ["type" => "number"]
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+                "responses" => [
+                    "200" => ["description" => "Sucesso"],
+                    "400" => ["description" => "Erro de validação ou operação inativa"],
+                    "500" => ["description" => "Erro interno no servidor"]
+                ]
+            ]
+        ],
         "/api/dashboard/kpis" => [
             "get" => [
                 "tags" => ["Dashboard"],

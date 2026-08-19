@@ -6,6 +6,8 @@ use App\Models\Comanda;
 use App\Models\Operacao;
 use App\Models\Equipe;
 use App\Models\Configuracao;
+use App\Models\BatidaMassa;
+use App\Models\EstoqueMassa;
 
 class ApiController
 {
@@ -426,6 +428,44 @@ class ApiController
                 'total'           => count($movimentacoes),
                 'movimentacoes'   => $movimentacoes,
             ]);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function createBatidaMassa()
+    {
+        $data = $this->getJsonInput();
+        $op = Operacao::getCurrent();
+
+        if (!$op || $op['status'] === 'draft') {
+            $this->jsonResponse(['error' => 'Nenhuma operação ativa no momento.'], 400);
+        }
+
+        $data['operacao_id'] = $op['id'];
+
+        try {
+            $id = BatidaMassa::create($data);
+            $this->jsonResponse(['success' => true, 'id' => $id]);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function updateMassStock()
+    {
+        $data = $this->getJsonInput();
+        $op = Operacao::getCurrent();
+
+        if (!$op || $op['status'] === 'draft') {
+            $this->jsonResponse(['error' => 'Nenhuma operação ativa no momento.'], 400);
+        }
+
+        $data['operacao_id'] = $op['id'];
+
+        try {
+            EstoqueMassa::save($data);
+            $this->jsonResponse(['success' => true]);
         } catch (\Exception $e) {
             $this->jsonResponse(['error' => $e->getMessage()], 500);
         }
