@@ -1135,7 +1135,7 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
     el.openRegisterCommandBtn.addEventListener('click', openRegisterCommand);
     if (el.openUpdateCommandsBtn) el.openUpdateCommandsBtn.addEventListener('click', openCommandUpdates);
     if (el.manageTeamBtn) el.manageTeamBtn.addEventListener('click', () => showPage('team'));
-    el.manageTeamDispatchBtn.addEventListener('click', () => showPage('team'));
+    if (el.manageTeamDispatchBtn) el.manageTeamDispatchBtn.addEventListener('click', () => showPage('team'));
     document.querySelectorAll('[data-qty]').forEach(b => b.addEventListener('click', () => { let q = Number(el.pizzaQty.value) || 1; q = b.dataset.qty === 'plus' ? Math.min(50, q + 1) : Math.max(1, q - 1); el.pizzaQty.value = q }));
     el.commandSuggestions.addEventListener('click', e => { const b = e.target.closest('[data-num]'); if (b) { el.commandNumber.value = b.dataset.num; el.commandNumber.focus() } });
     el.addCommandBtn.addEventListener('click', addCommand);
@@ -1384,7 +1384,7 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
       toast('Montador de doces registrado.');
     });
     // despacho
-    [el.dispatchSearch, el.dispatchFilter].forEach(x => x.addEventListener(x.tagName === 'INPUT' ? 'input' : 'change', renderDispatch)); el.clearDispatchFilters.addEventListener('click', () => { el.dispatchSearch.value = ''; el.dispatchFilter.value = ''; renderDispatch() }); el.dispatchGrid.addEventListener('change', e => { if (e.target.dataset.dField === 'change') { const card = e.target.closest('[data-dispatch-card]'), amt = card.querySelector('[data-d-field="changeAmount"]'); amt.disabled = !e.target.checked; if (!e.target.checked) amt.value = '' } }); el.dispatchGrid.addEventListener('click', e => { const b = e.target.closest('[data-d-action]'); if (!b) return; const op = currentOperation(), c = getCommand(op, b.dataset.id), card = e.target.closest('[data-dispatch-card]'); if (!c || !card) return; collectDispatch(card, c); const now = new Date().toISOString(); if (b.dataset.dAction === 'check') { c.dispatch.status = 'conferido'; c.dispatch.checkedAt = now } if (b.dataset.dAction === 'release') { c.dispatch.status = 'liberado'; c.dispatch.checkedAt ||= now; c.dispatch.releasedAt = now } save(); renderDispatch(); renderDashboard(); toast(b.dataset.dAction === 'release' ? 'Pedido liberado.' : 'Conferência salva.') }); el.finishDayBtn.addEventListener('click', () => { const op = currentOperation(); if (!op || op.status !== 'kitchen_closed') return toast('Encerre a cozinha antes de finalizar o dia.', 'warn'); const p = pendingToFinish(op); if (p) return toast(`Ainda existem ${p} pedidos não finalizados.`, 'warn'); openOvernightCloseModal('day'); });
+    [el.dispatchSearch, el.dispatchFilter].forEach(x => x.addEventListener(x.tagName === 'INPUT' ? 'input' : 'change', renderDispatch)); el.clearDispatchFilters.addEventListener('click', () => { el.dispatchSearch.value = ''; el.dispatchFilter.value = ''; renderDispatch() }); el.dispatchGrid.addEventListener('change', e => { if (e.target.dataset.dField === 'change') { const card = e.target.closest('[data-dispatch-card]'), amt = card.querySelector('[data-d-field="changeAmount"]'); amt.disabled = !e.target.checked; if (!e.target.checked) amt.value = '' } }); el.dispatchGrid.addEventListener('click', e => { const b = e.target.closest('[data-d-action]'); if (!b) return; const op = currentOperation(), c = getCommand(op, b.dataset.id), card = e.target.closest('[data-dispatch-card]'); if (!c || !card) return; collectDispatch(card, c); const now = new Date().toISOString(); if (b.dataset.dAction === 'check') { c.dispatch.status = 'conferido'; c.dispatch.checkedAt = now } if (b.dataset.dAction === 'release') { c.dispatch.status = 'liberado'; c.dispatch.checkedAt ||= now; c.dispatch.releasedAt = now } save(); renderDispatch(); renderDashboard(); toast(b.dataset.dAction === 'release' ? 'Pedido liberado.' : 'Conferência salva.') }); if (el.finishDayBtn) el.finishDayBtn.addEventListener('click', () => { const op = currentOperation(); if (!op || op.status !== 'kitchen_closed') return toast('Encerre a cozinha antes de finalizar o dia.', 'warn'); const p = pendingToFinish(op); if (p) return toast(`Ainda existem ${p} pedidos não finalizados.`, 'warn'); openOvernightCloseModal('day'); });
     // relatórios
     el.historyList.addEventListener('click', e => { const x = e.target.closest('[data-report-op]'); if (x) { selectedReportOperationId = x.dataset.reportOp; renderReports() } }); el.reportCards.addEventListener('click', e => { const b = e.target.closest('[data-report-action]'); if (!b) return; const op = getOperation(selectedReportOperationId); if (!op) return; const a = b.dataset.reportAction; if (a === 'download-attendance') downloadHtml(`lista_presenca_${op.date}.html`, attendanceReport(op)); if (a === 'print-attendance') printHtml(attendanceReport(op)); if (a === 'download-production') downloadHtml(`resultado_montagem_${op.date}.html`, productionReport(op)); if (a === 'print-production') printHtml(productionReport(op)) }); el.backupBtn.addEventListener('click', () => { const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' }), url = URL.createObjectURL(blob), a = document.createElement('a'); a.href = url; a.download = `backup_imperial_${today()}.json`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); toast('Backup baixado.') }); el.restoreBtn.addEventListener('click', () => el.restoreFile.click()); el.restoreFile.addEventListener('change', async e => { const f = e.target.files[0]; if (!f) return; try { const d = JSON.parse(await f.text()); if (!Array.isArray(d.people) || !Array.isArray(d.operations)) throw new Error(); if (!confirm('Restaurar este backup e substituir os dados atuais?')) return; state.people = d.people; state.operations = d.operations; save(); selectedReportOperationId = null; renderAll(); toast('Backup restaurado.') } catch (err) { toast('Backup inválido.', 'error') } finally { e.target.value = '' } });
 
@@ -2272,26 +2272,26 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
     }
 
     renderDispatch = function () {
-      renderHeader(); const op = currentOperation(); el.manageTeamDispatchBtn.disabled = op?.status === 'completed';
+      renderHeader(); const op = currentOperation(); if (el.manageTeamDispatchBtn) el.manageTeamDispatchBtn.disabled = op?.status === 'completed';
       if (!op || op.status === 'draft') {
         el.dispatchGate.innerHTML = gateCard("Operação não iniciada", "Inicie a operação para usar o atendimento.", "Ir para equipe", "team", "users");
-        el.dispatchContent.classList.add('hidden'); el.finishDayBtn.disabled = true;
-        el.manageTeamDispatchBtn.classList.add('hidden');
-        el.finishDayBtn.classList.add('hidden');
+        el.dispatchContent.classList.add('hidden'); if (el.finishDayBtn) el.finishDayBtn.disabled = true;
+        el.manageTeamDispatchBtn?.classList.add('hidden');
+        el.finishDayBtn?.classList.add('hidden');
         return;
       }
       el.dispatchGate.innerHTML = ''; el.dispatchContent.classList.remove('hidden');
-      el.manageTeamDispatchBtn.classList.remove('hidden');
-      el.finishDayBtn.classList.remove('hidden');
+      el.manageTeamDispatchBtn?.classList.remove('hidden');
+      el.finishDayBtn?.classList.remove('hidden');
       if (op.status === 'completed') {
         el.dispatchGate.innerHTML = gateCard("Operação finalizada", "Todos os registros estão disponíveis nos relatórios.", "Abrir relatórios", "reports", "bar-chart-2");
-        el.manageTeamDispatchBtn.classList.add('hidden');
-        el.finishDayBtn.classList.add('hidden');
+        el.manageTeamDispatchBtn?.classList.add('hidden');
+        el.finishDayBtn?.classList.add('hidden');
       }
 
       const oven = ovenAvailable(op), all = dispatchQueue(op), waiting = all.filter(c => c.dispatch.status === 'aguardando').length,
         checked = all.filter(c => c.dispatch.status === 'conferido').length, delivery = all.filter(c => c.dispatch.status === 'entrega').length;
-      el.ovenReadyBadge.textContent = oven.length; el.dispatchQueueBadge.textContent = waiting + checked;
+      el.ovenReadyBadge.textContent = oven.length; if (el.dispatchQueueBadge) el.dispatchQueueBadge.textContent = waiting + checked;
       
       const kpis = [
         ['No forno', oven.length, 'bg-orange-50', 'text-orange-500', 'group-hover:bg-orange-100', 'bg-orange-100', '<i data-lucide="flame" class="w-4 h-4"></i>'],
@@ -2318,8 +2318,10 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
       const cs = all.filter(c => (!q || norm(`${c.number} ${c.assemblerName}`).includes(q)) && (!f || c.dispatch.status === f))
         .sort((a, b) => order[a.dispatch.status] - order[b.dispatch.status] || (b.dispatch.receivedAt || '').localeCompare(a.dispatch.receivedAt || ''));
       el.dispatchGrid.innerHTML = cs.map(dispatchCard).join(''); el.dispatchEmpty.classList.toggle('hidden', cs.length > 0);
-      el.finishDayBtn.disabled = op.status !== 'kitchen_closed' || pendingToFinish(op) > 0;
-      el.finishDayBtn.innerHTML = op.status === 'completed' ? '<i data-lucide="check-circle" class="w-4 h-4"></i> Dia finalizado' : pendingToFinish(op) > 0 ? `<i data-lucide="alert-circle" class="w-4 h-4"></i> Faltam ${pendingToFinish(op)} pedidos` : '<i data-lucide="check-circle" class="w-4 h-4"></i> Finalizar o dia';
+      if (el.finishDayBtn) {
+        el.finishDayBtn.disabled = op.status !== 'kitchen_closed' || pendingToFinish(op) > 0;
+        el.finishDayBtn.innerHTML = op.status === 'completed' ? '<i data-lucide="check-circle" class="w-4 h-4"></i> Dia finalizado' : pendingToFinish(op) > 0 ? `<i data-lucide="alert-circle" class="w-4 h-4"></i> Faltam ${pendingToFinish(op)} pedidos` : '<i data-lucide="check-circle" class="w-4 h-4"></i> Finalizar o dia';
+      }
       
       if (window.lucide) window.lucide.createIcons();
     };
@@ -2383,7 +2385,7 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
     });
 
     el.openDispatchIntakeBtn.addEventListener('click', () => openDispatchIntake());
-    el.openDispatchQueueBtn.addEventListener('click', () => el.dispatchQueuePanel.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+    if (el.openDispatchQueueBtn) el.openDispatchQueueBtn.addEventListener('click', () => el.dispatchQueuePanel.scrollIntoView({ behavior: 'smooth', block: 'start' }));
     el.ovenCommandSearch.addEventListener('input', () => renderOvenPicker(el.dispatchCommandId.value));
     el.ovenCommandList.addEventListener('click', e => {
       const b = e.target.closest('[data-oven-command]'); if (!b) return;

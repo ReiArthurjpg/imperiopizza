@@ -5,16 +5,6 @@
           <h2 class="text-2xl font-bold text-[#171717]">Atendimento / Despacho</h2>
           <p class="text-sm text-[#737373] mt-1">Puxe manualmente as comandas que já estão no forno, confira os complementos e sinalize a saída para entrega.</p>
         </div>
-        <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto shrink-0">
-          <button id="manageTeamDispatchBtn" class="w-full sm:w-auto px-4 py-2.5 bg-white border border-[#E7E7E7] text-[#171717] text-sm font-semibold rounded-lg hover:bg-gray-50 active:scale-[0.98] transition-all duration-150 shadow-sm flex justify-center items-center gap-2">
-            <i data-lucide="users" class="w-4 h-4"></i>
-            Acionar equipe
-          </button>
-          <button id="finishDayBtn" class="w-full sm:w-auto px-4 py-2.5 bg-emerald-600 text-white text-sm font-semibold rounded-lg hover:bg-emerald-700 active:scale-[0.98] transition-all duration-150 shadow-sm flex justify-center items-center gap-2">
-            <i data-lucide="check-circle" class="w-4 h-4"></i>
-            Finalizar o dia
-          </button>
-        </div>
       </div>
 
       <div id="dispatchGate"></div>
@@ -24,7 +14,7 @@
         <!-- SUBTOTAIS (KPIs) -->
         <div id="dispatchSubtotals" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 lg:gap-4"></div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 gap-4">
           <button id="openDispatchIntakeBtn" type="button" class="relative group bg-white border border-[#E5E7EB] hover:border-[#1F6FB2] rounded-xl p-5 shadow-sm transition-all duration-300 hover:shadow-md flex items-start gap-4 text-left overflow-hidden">
             <div class="absolute -right-6 -top-6 w-24 h-24 bg-blue-100 rounded-full blur-2xl opacity-40 group-hover:opacity-80 transition-opacity"></div>
             <div class="relative z-10 w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
@@ -34,18 +24,6 @@
             <div class="relative z-10">
               <strong class="block text-base font-bold text-[#171717] mb-1">Puxar do forno</strong>
               <small class="text-[13px] text-[#737373] leading-snug block">Veja as comandas que já entraram no forno e receba manualmente no atendimento.</small>
-            </div>
-          </button>
-
-          <button id="openDispatchQueueBtn" type="button" class="relative group bg-white border border-[#E5E7EB] hover:border-emerald-500 rounded-xl p-5 shadow-sm transition-all duration-300 hover:shadow-md flex items-start gap-4 text-left overflow-hidden">
-            <div class="absolute -right-6 -top-6 w-24 h-24 bg-emerald-100 rounded-full blur-2xl opacity-40 group-hover:opacity-80 transition-opacity"></div>
-            <div class="relative z-10 w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 group-hover:bg-emerald-600 group-hover:text-white transition-colors duration-300">
-              <i data-lucide="check-square" class="w-6 h-6"></i>
-              <span id="dispatchQueueBadge" class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-emerald-500 text-white text-[11px] font-bold flex items-center justify-center border-2 border-white shadow-sm">0</span>
-            </div>
-            <div class="relative z-10">
-              <strong class="block text-base font-bold text-[#171717] mb-1">Conferir pedidos</strong>
-              <small class="text-[13px] text-[#737373] leading-snug block">Atualize bebida, troco, molhos e sinalize quando saiu para o motoboy.</small>
             </div>
           </button>
         </div>
