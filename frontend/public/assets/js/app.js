@@ -2301,26 +2301,44 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
         d.change ? `<span class="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-100">Troco ${esc(d.changeAmount || '')}</span>` : '',
         d.ketchup ? '<span class="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-bold bg-red-50 text-red-700 border border-red-100">Ketchup</span>' : '',
         d.mayonnaise ? '<span class="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-100">Maionese</span>' : ''
+
       ].filter(Boolean).join(' ');
 
-      return `<tr class="border-b border-[#E7E7E7] hover:bg-gray-50/50 transition-colors ${isDelivery ? 'opacity-70 grayscale-[0.3]' : ''}">
-        <td class="p-4 font-bold text-[#171717]">#${String(c.number).padStart(3, '0')}</td>
-        <td class="p-4 text-sm text-[#737373] font-medium">${formatAssemblers(c)}</td>
-        <td class="p-4 text-sm text-[#171717] font-semibold">${fmt(commandEquivalent(c))}</td>
-        <td class="p-4">
-          <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${statusColor}">
-            <i data-lucide="${statusIcon}" class="w-3 h-3"></i>
-            ${statusLabel}
-          </span>
+      return `<tr class="hover:bg-[#F9FAFB] transition-colors group ${isDelivery ? 'opacity-70 grayscale-[0.3]' : ''}">
+        <td class="py-3 px-5 align-middle">
+          <div class="flex items-center gap-4">
+            
+            <div class="flex flex-col items-center shrink-0 gap-1.5 min-w-[70px]">
+              <div class="flex flex-col items-center justify-center w-14 h-14 bg-blue-50/50 border border-blue-100/50 rounded-[14px]">
+                <span class="text-[10px] font-bold text-[#1F6FB2]/60 uppercase tracking-wider leading-none mb-0.5">CMD</span>
+                <span class="text-[18px] font-black tracking-tighter text-[#1F6FB2] leading-none">${String(c.number).padStart(3, '0')}</span>
+              </div>
+              <span class="inline-flex items-center text-center px-1.5 py-0.5 rounded-[4px] text-[9px] font-extrabold tracking-wider uppercase whitespace-nowrap border ${statusColor}">
+                <i data-lucide="${statusIcon}" class="w-2.5 h-2.5 mr-1"></i>
+                ${statusLabel}
+              </span>
+            </div>
+            
+            <div class="flex flex-col justify-center gap-1">
+              <div class="flex items-center gap-2">
+                <span class="text-[15px] font-bold text-gray-900 tracking-tight leading-none">${formatAssemblers(c)}</span>
+                <div class="flex flex-wrap gap-1.5 ml-2">${chips}</div>
+              </div>
+              <span class="text-[13px] font-medium text-gray-500 leading-none">
+                ${fmt(commandEquivalent(c))} pizza${Number(commandEquivalent(c)) === 1 ? '' : 's'}
+              </span>
+              ${c.error?.active ? `<div class="mt-0.5"><span class="inline-flex items-center px-2 py-0.5 rounded-[5px] text-[10px] font-extrabold tracking-widest uppercase border border-red-200 bg-red-50 text-[#B5120B]"><i data-lucide="alert-circle" class="w-[10px] h-[10px] mr-1"></i>Erro: ${esc(c.error.type)}</span></div>` : ''}
+            </div>
+
+          </div>
         </td>
-        <td class="p-4">
-          <div class="flex flex-wrap gap-1.5">${chips || '<span class="text-xs text-[#9CA3AF] font-medium">Nenhum</span>'}</div>
-        </td>
-        <td class="p-4 text-right">
-          <button class="px-3 py-1.5 bg-white border border-[#E7E7E7] text-[#171717] text-xs font-semibold rounded-lg hover:bg-gray-50 active:scale-[0.98] transition-all shadow-sm flex items-center gap-1 ml-auto" data-open-dispatch="${c.id}">
-            <i data-lucide="${isDelivery ? 'eye' : 'edit-3'}" class="w-3.5 h-3.5"></i>
-            ${isDelivery ? 'Ver' : 'Conferir'}
-          </button>
+        <td class="py-4 pr-5 pl-3 text-right align-middle">
+          <div class="flex items-center justify-end gap-2">
+            <button class="px-4 py-2 bg-white border border-[#E7E7E7] text-[#171717] text-sm font-semibold rounded-lg hover:bg-gray-50 active:scale-[0.98] transition-all shadow-sm flex items-center gap-1.5" data-open-dispatch="${c.id}">
+              <i data-lucide="${isDelivery ? 'eye' : 'edit-3'}" class="w-4 h-4"></i>
+              ${isDelivery ? 'Ver' : 'Conferir'}
+            </button>
+          </div>
         </td>
       </tr>`;
     }

@@ -9,13 +9,14 @@
 
       <div id="dispatchGate"></div>
 
-      <div id="dispatchContent" class="hidden space-y-6">
+      <!-- Atendimento/Despacho Content -->
+      <div id="dispatchContent" class="hidden">
         
         <!-- SUBTOTAIS (KPIs) -->
-        <div id="dispatchSubtotals" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 lg:gap-4"></div>
+        <div id="dispatchSubtotals" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 lg:gap-4 mb-6"></div>
 
         <!-- FILTERS PANEL -->
-        <article class="bg-white rounded-xl border border-[#E7E7E7] shadow-[0_4px_12px_rgba(0,0,0,0.02)]">
+        <article class="bg-white rounded-xl border border-[#E7E7E7] shadow-[0_4px_12px_rgba(0,0,0,0.02)] mb-4">
           <div class="p-5 border-b border-[#E7E7E7] bg-gray-50/30">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
               <div>
@@ -71,18 +72,8 @@
           </div>
 
           <!-- List/Table mode -->
-          <div id="dispatchTableContainer" class="hidden overflow-x-auto border border-[#E7E7E7] rounded-xl bg-white">
-            <table class="w-full text-left border-collapse">
-              <thead>
-                <tr class="bg-gray-50 border-b border-[#E7E7E7]">
-                  <th class="p-4 text-xs font-bold text-[#737373] uppercase tracking-wider">Comanda</th>
-                  <th class="p-4 text-xs font-bold text-[#737373] uppercase tracking-wider">Montador</th>
-                  <th class="p-4 text-xs font-bold text-[#737373] uppercase tracking-wider">Equiv.</th>
-                  <th class="p-4 text-xs font-bold text-[#737373] uppercase tracking-wider">Status</th>
-                  <th class="p-4 text-xs font-bold text-[#737373] uppercase tracking-wider">Acompanhamentos</th>
-                  <th class="p-4 text-xs font-bold text-[#737373] uppercase tracking-wider text-right">Ação</th>
-                </tr>
-              </thead>
+          <div id="dispatchTableContainer" class="hidden overflow-x-auto w-full pb-4">
+            <table class="w-full text-left min-w-[600px] table-spaced" style="border-spacing: 0 2rem !important;">
               <tbody id="dispatchTableBody"></tbody>
             </table>
           </div>
