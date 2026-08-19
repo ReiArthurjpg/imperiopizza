@@ -33,11 +33,9 @@
                   </button>
                 </div>
                 <button id="openDispatchIntakeBtn" class="px-4 py-2.5 bg-[#1F6FB2] text-white text-sm font-semibold rounded-lg hover:bg-[#1a5e98] active:scale-[0.98] transition-all duration-150 shadow-[0_2px_8px_rgba(31,111,178,0.25)] border border-transparent flex justify-center items-center gap-2">
-                  <div class="relative flex items-center justify-center">
-                    <i data-lucide="flame" class="w-4 h-4"></i>
-                    <span id="ovenReadyBadge" class="absolute -top-2 -right-2 w-4.5 h-4.5 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center border border-white shadow-sm">0</span>
-                  </div>
-                  Puxar do forno
+                  <i data-lucide="flame" class="w-4 h-4"></i>
+                  <span>Puxar do forno</span>
+                  <span id="ovenReadyBadge" class="w-5 h-5 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center border border-white shadow-sm">0</span>
                 </button>
               </div>
             </div>
