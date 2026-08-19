@@ -1,9 +1,8 @@
-  <!-- REGISTER COMMAND MODAL — Premium Redesign -->
   <div id="registerCommandModal" class="modal-bg">
-    <div class="modal" style="max-width:540px; border-radius:20px; padding:0; overflow:hidden;">
+    <div class="modal flex flex-col" style="max-width:540px; border-radius:20px; padding:0; overflow:hidden; max-height: 90vh;">
 
       <!-- Header -->
-      <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+      <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100 shrink-0">
         <div>
           <h3 class="text-[15px] font-bold text-gray-900 leading-none">Registrar nova comanda</h3>
           <p class="text-[12px] text-gray-400 mt-0.5">A janela fica aberta para registros em sequência.</p>
@@ -17,7 +16,7 @@
       </div>
 
       <!-- Body -->
-      <div class="register-modal-body px-6 py-5 space-y-5 overflow-y-auto" style="max-height:70vh;">
+      <div class="register-modal-body px-6 py-5 space-y-5 flex-1 overflow-y-auto custom-scrollbar">
 
         <div class="space-y-1.5">
           <label class="text-[12px] font-semibold text-gray-500 uppercase tracking-wider">Montador responsável</label>
@@ -246,47 +245,95 @@
     </div>
   </div>
 
-  <div id="massBatchModal" class="modal-bg register-command-modal">
-    <div class="modal">
-      <div class="register-modal-head">
+  <div id="massBatchModal" class="modal-bg">
+    <div class="modal flex flex-col" style="max-width:540px; border-radius:20px; padding:0; overflow:hidden; max-height:90vh;">
+      
+      <!-- Header -->
+      <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100 bg-gradient-to-r from-blue-50/40 via-white to-indigo-50/40 shrink-0">
         <div>
-          <h3>Registrar batida de massa</h3>
-          <p>Os campos já vêm preenchidos com a receita padrão e podem ser ajustados para o consumo real.</p>
+          <h3 class="text-[16px] font-bold text-gray-900 leading-snug">Registrar batida de massa</h3>
+          <p class="text-[12px] text-gray-500 mt-0.5">Os campos já vêm preenchidos com a receita padrão e podem ser ajustados para o consumo real.</p>
         </div>
-        <button class="close" type="button" data-close-v4="massBatch">×</button>
+        <button type="button" class="w-8 h-8 flex items-center justify-center rounded-xl bg-gray-100/80 text-gray-500 hover:bg-gray-200 hover:text-gray-700 transition-colors" data-close-v4="massBatch">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
       </div>
 
-      <div class="register-modal-body">
-        <div class="register-flow-tip">Receita padrão: 10 kg farinha · 500 g açúcar · 120 g sal · 10 ovos · 900 ml óleo
-          · 3 L água · 100 g fermento.</div>
-
-        <div class="field"><label for="massWorkerSelect">Masseiro responsável</label><select
-            id="massWorkerSelect"></select></div>
-
-        <div class="mass-recipe-grid">
-          <div class="field"><label>Farinha (kg)</label><input id="batchFlourKg" type="number" min="0" step="0.1"
-              inputmode="decimal"></div>
-          <div class="field"><label>Açúcar (g)</label><input id="batchSugarG" type="number" min="0" step="1"
-              inputmode="numeric"></div>
-          <div class="field"><label>Sal (g)</label><input id="batchSaltG" type="number" min="0" step="1"
-              inputmode="numeric"></div>
-          <div class="field"><label>Ovos (un.)</label><input id="batchEggs" type="number" min="0" step="1"
-              inputmode="numeric"></div>
-          <div class="field"><label>Óleo (ml)</label><input id="batchOilMl" type="number" min="0" step="1"
-              inputmode="numeric"></div>
-          <div class="field"><label>Água (L)</label><input id="batchWaterL" type="number" min="0" step="0.1"
-              inputmode="decimal"></div>
-          <div class="field"><label>Fermento (g)</label><input id="batchYeastG" type="number" min="0" step="1"
-              inputmode="numeric"></div>
+      <!-- Body -->
+      <div class="px-6 py-5 space-y-5 flex-1 overflow-y-auto custom-scrollbar">
+        
+        <!-- Recipe Tip Banner -->
+        <div class="bg-emerald-50 border border-emerald-100 text-emerald-800 rounded-xl px-4 py-3 text-[12px] font-medium leading-relaxed">
+          <span class="font-bold text-emerald-950 block mb-0.5">Receita padrão:</span>
+          10 kg farinha · 500 g açúcar · 120 g sal · 10 ovos · 900 ml óleo · 3 L água · 100 g fermento.
         </div>
 
-        <div class="field"><label for="batchNote">Observação opcional</label><textarea id="batchNote" maxlength="180"
-            placeholder="Ex.: ajuste de água, massa mais firme..."></textarea></div>
+        <!-- Masseiro Responsável -->
+        <div class="space-y-1.5">
+          <label for="massWorkerSelect" class="text-[12px] font-semibold text-gray-500 uppercase tracking-wider">Masseiro responsável</label>
+          <div class="relative">
+            <select id="massWorkerSelect" required class="w-full appearance-none px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 focus:bg-white focus:border-[#1F6FB2] focus:ring-2 focus:ring-[#1F6FB2]/20 transition-all text-[14px] font-semibold text-gray-700 outline-none cursor-pointer"></select>
+            <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none">
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recipe Grid -->
+        <div class="grid grid-cols-2 gap-4">
+          <div class="space-y-1.5">
+            <label class="text-[12px] font-semibold text-gray-500 uppercase tracking-wider">Farinha (kg)</label>
+            <input id="batchFlourKg" type="number" min="0" step="0.1" inputmode="decimal" class="w-full px-4 py-3 text-[15px] font-bold text-gray-900 bg-gray-50 border border-gray-200 rounded-xl placeholder-gray-300 focus:outline-none focus:border-[#1F6FB2] focus:ring-2 focus:ring-blue-100 transition-all">
+          </div>
+          <div class="space-y-1.5">
+            <label class="text-[12px] font-semibold text-gray-500 uppercase tracking-wider">Açúcar (g)</label>
+            <input id="batchSugarG" type="number" min="0" step="1" inputmode="numeric" class="w-full px-4 py-3 text-[15px] font-bold text-gray-900 bg-gray-50 border border-gray-200 rounded-xl placeholder-gray-300 focus:outline-none focus:border-[#1F6FB2] focus:ring-2 focus:ring-blue-100 transition-all">
+          </div>
+          <div class="space-y-1.5">
+            <label class="text-[12px] font-semibold text-gray-500 uppercase tracking-wider">Sal (g)</label>
+            <input id="batchSaltG" type="number" min="0" step="1" inputmode="numeric" class="w-full px-4 py-3 text-[15px] font-bold text-gray-900 bg-gray-50 border border-gray-200 rounded-xl placeholder-gray-300 focus:outline-none focus:border-[#1F6FB2] focus:ring-2 focus:ring-blue-100 transition-all">
+          </div>
+          <div class="space-y-1.5">
+            <label class="text-[12px] font-semibold text-gray-500 uppercase tracking-wider">Ovos (un.)</label>
+            <input id="batchEggs" type="number" min="0" step="1" inputmode="numeric" class="w-full px-4 py-3 text-[15px] font-bold text-gray-900 bg-gray-50 border border-gray-200 rounded-xl placeholder-gray-300 focus:outline-none focus:border-[#1F6FB2] focus:ring-2 focus:ring-blue-100 transition-all">
+          </div>
+          <div class="space-y-1.5">
+            <label class="text-[12px] font-semibold text-gray-500 uppercase tracking-wider">Óleo (ml)</label>
+            <input id="batchOilMl" type="number" min="0" step="1" inputmode="numeric" class="w-full px-4 py-3 text-[15px] font-bold text-gray-900 bg-gray-50 border border-gray-200 rounded-xl placeholder-gray-300 focus:outline-none focus:border-[#1F6FB2] focus:ring-2 focus:ring-blue-100 transition-all">
+          </div>
+          <div class="space-y-1.5">
+            <label class="text-[12px] font-semibold text-gray-500 uppercase tracking-wider">Água (L)</label>
+            <input id="batchWaterL" type="number" min="0" step="0.1" inputmode="decimal" class="w-full px-4 py-3 text-[15px] font-bold text-gray-900 bg-gray-50 border border-gray-200 rounded-xl placeholder-gray-300 focus:outline-none focus:border-[#1F6FB2] focus:ring-2 focus:ring-blue-100 transition-all">
+          </div>
+          <div class="space-y-1.5 col-span-2">
+            <label class="text-[12px] font-semibold text-gray-500 uppercase tracking-wider">Fermento (g)</label>
+            <input id="batchYeastG" type="number" min="0" step="1" inputmode="numeric" class="w-full px-4 py-3 text-[15px] font-bold text-gray-900 bg-gray-50 border border-gray-200 rounded-xl placeholder-gray-300 focus:outline-none focus:border-[#1F6FB2] focus:ring-2 focus:ring-blue-100 transition-all">
+          </div>
+        </div>
+
+        <!-- Observação -->
+        <div class="space-y-1.5">
+          <label for="batchNote" class="text-[12px] font-semibold text-gray-500 uppercase tracking-wider">Observação opcional</label>
+          <textarea id="batchNote" class="w-full px-4 py-3 text-[14px] bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#1F6FB2] focus:ring-2 focus:ring-blue-100 resize-none h-20 text-gray-800 transition-all placeholder:text-gray-300" placeholder="Ex.: ajuste de água, massa mais firme..." maxlength="180"></textarea>
+        </div>
+
       </div>
 
-      <div class="register-modal-actions">
-        <button type="button" class="btn btn-ghost" data-close-v4="massBatch">Cancelar</button>
-        <button id="saveMassBatchBtn" type="button" class="btn btn-primary">Registrar batida</button>
+      <!-- Footer Actions -->
+      <div class="flex items-center justify-end gap-3 px-6 py-4 bg-gray-50/80 border-t border-gray-100 shrink-0">
+        <button type="button" data-close-v4="massBatch" class="w-full sm:w-auto inline-flex justify-center items-center px-4 py-2.5 text-[13px] font-semibold text-gray-500 bg-gray-100/80 border border-transparent rounded-xl hover:bg-gray-200/80 hover:text-gray-700 transition-colors">
+          <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          Cancelar
+        </button>
+        <button id="saveMassBatchBtn" type="button" class="w-full sm:w-auto inline-flex justify-center items-center px-5 py-2.5 text-[13px] font-bold text-white bg-[#2f9e64] rounded-xl hover:bg-[#248150] active:scale-[0.98] transition-all shadow-sm">
+          <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 21v-8H7v8M7 3v5h8"/>
+          </svg>
+          Salvar batida
+        </button>
       </div>
     </div>
   </div>
@@ -296,11 +343,11 @@
 
 
   <div id="editModal" class="modal-bg">
-    <form id="editForm" class="modal" style="max-width:540px; border-radius:20px; padding:0; overflow:hidden;">
+    <form id="editForm" class="modal flex flex-col" style="max-width:540px; border-radius:20px; padding:0; overflow:hidden; max-height:90vh;">
       <input id="editId" type="hidden">
       
       <!-- Header -->
-      <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+      <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100 shrink-0">
         <div>
           <h3 class="text-[15px] font-bold text-gray-900 leading-none">Editar comanda</h3>
           <p class="text-[12px] text-gray-400 mt-0.5">Altere os dados da comanda selecionada.</p>
@@ -311,7 +358,7 @@
       </div>
 
       <!-- Body -->
-      <div class="register-modal-body px-6 py-5 space-y-5 overflow-y-auto" style="max-height:70vh;">
+      <div class="register-modal-body px-6 py-5 space-y-5 flex-1 overflow-y-auto custom-scrollbar">
         
         <div class="space-y-1.5">
           <label class="text-[12px] font-semibold text-gray-500 uppercase tracking-wider">Montador</label>
@@ -421,13 +468,16 @@
       </div>
 
       <!-- Footer Actions -->
-      <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 px-6 py-4 bg-gray-50/80 border-t border-gray-100">
+      <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 px-6 py-4 bg-gray-50/80 border-t border-gray-100 shrink-0">
         <button id="deleteCommandBtn" type="button" class="w-full sm:w-auto inline-flex justify-center items-center px-4 py-2.5 text-[13px] font-bold text-red-600 bg-red-50 border border-red-100 rounded-xl hover:bg-red-100 transition-colors">
           <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
           Excluir
         </button>
         <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
-          <button type="button" data-close="edit" class="inline-flex items-center px-4 py-2.5 text-[13px] font-semibold text-gray-700 bg-gray-100 border border-transparent rounded-xl hover:bg-gray-200 transition-colors">
+          <button type="button" data-close="edit" class="inline-flex items-center px-4 py-2.5 text-[13px] font-semibold text-gray-500 bg-gray-100/80 border border-transparent rounded-xl hover:bg-gray-200/80 hover:text-gray-700 transition-colors">
+            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
             Cancelar
           </button>
           <button type="submit" class="inline-flex items-center px-5 py-2.5 text-[13px] font-bold text-white bg-[#2f9e64] rounded-xl hover:bg-[#248150] active:scale-[0.98] transition-all shadow-sm">
@@ -442,7 +492,7 @@
     </form>
   </div>
   <div id="errorModal" class="modal-bg">
-    <div class="modal !p-0 !max-w-[440px] !rounded-2xl !overflow-hidden border border-gray-100 shadow-2xl">
+    <div class="modal flex flex-col !p-0 !max-w-[440px] !rounded-2xl !overflow-hidden border border-gray-100 shadow-2xl" style="max-height:90vh;">
       
       <!-- Header -->
       <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100 bg-gradient-to-r from-red-50/40 to-white shrink-0">
@@ -456,10 +506,10 @@
       </div>
 
       <!-- Form -->
-      <form id="errorForm" class="flex flex-col">
+      <form id="errorForm" class="flex flex-col flex-1 overflow-hidden">
         <input id="errorId" type="hidden">
         
-        <div class="px-6 py-5 space-y-5">
+        <div class="px-6 py-5 space-y-5 flex-1 overflow-y-auto custom-scrollbar">
           
           <!-- Tipo -->
           <div class="space-y-1.5">
@@ -490,13 +540,16 @@
         </div>
 
         <!-- Footer -->
-        <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/50 flex flex-col-reverse sm:flex-row items-center justify-between gap-3">
+        <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/50 flex flex-col-reverse sm:flex-row items-center justify-between gap-3 shrink-0">
           <button id="clearErrorBtn" type="button" class="w-full sm:w-auto px-4 py-2.5 text-[13px] font-bold text-gray-500 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:text-gray-700 transition-all">
             Retirar erro
           </button>
           
           <div class="flex items-center gap-2 w-full sm:w-auto">
-            <button type="button" class="flex-1 sm:flex-none px-4 py-2.5 text-[13px] font-bold text-gray-600 bg-transparent hover:bg-gray-100 rounded-xl transition-all" data-close="error">
+            <button type="button" data-close="error" class="flex-1 sm:flex-none inline-flex items-center justify-center px-4 py-2.5 text-[13px] font-semibold text-gray-500 bg-gray-100/80 border border-transparent rounded-xl hover:bg-gray-200/80 hover:text-gray-700 transition-colors">
+              <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
               Cancelar
             </button>
             <button type="submit" class="inline-flex items-center justify-center px-5 py-2.5 text-[13px] font-bold text-white bg-[#2f9e64] rounded-xl hover:bg-[#248150] active:scale-[0.98] transition-all shadow-sm">
@@ -588,10 +641,9 @@
         <!-- Footer Actions -->
         <div class="flex items-center justify-end gap-3 px-6 py-4 bg-gray-50/80 border-t border-gray-100">
           <button type="button" data-close-v4="sweetAssembler"
-            class="inline-flex items-center px-4 py-2.5 text-[13px] font-semibold text-gray-700 bg-gray-100 border border-transparent rounded-xl hover:bg-gray-200 transition-colors">
-            <svg class="w-4 h-4 mr-1.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="10" stroke-width="2"/>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 9l-6 6M9 9l6 6"/>
+            class="inline-flex items-center px-4 py-2.5 text-[13px] font-semibold text-gray-500 bg-gray-100/80 border border-transparent rounded-xl hover:bg-gray-200/80 hover:text-gray-700 transition-colors">
+            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
             Cancelar
           </button>
