@@ -639,7 +639,7 @@
         .sort((a, b) => a.role.localeCompare(b.role, 'pt-BR') || a.name.localeCompare(b.name, 'pt-BR'))
         .filter(p => {
           const matchName   = !q || norm(p.name).includes(q);
-          const matchSector = !sector || p.role === sector;
+          const matchSector = !sector || p.role.includes(sector);
           return matchName && matchSector;
         });
     }
