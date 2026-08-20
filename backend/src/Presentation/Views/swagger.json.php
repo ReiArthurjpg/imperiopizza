@@ -598,6 +598,112 @@ $swagger = [
                     "500" => ["description" => "Erro interno do servidor"]
                 ]
             ]
+        ],
+        "/api/operations/current" => [
+            "get" => [
+                "tags" => ["Operação"],
+                "summary" => "Obter a operação ativa atual",
+                "responses" => ["200" => ["description" => "Sucesso"]]
+            ]
+        ],
+        "/api/operations/{operationId}/dispatch/queue" => [
+            "get" => [
+                "tags" => ["Despacho"],
+                "summary" => "Obter fila do despacho",
+                "parameters" => [
+                    ["name" => "operationId", "in" => "path", "required" => true, "schema" => ["type" => "string"]],
+                    ["name" => "search", "in" => "query", "required" => false, "schema" => ["type" => "string"]],
+                    ["name" => "status", "in" => "query", "required" => false, "schema" => ["type" => "string"]]
+                ],
+                "responses" => ["200" => ["description" => "Sucesso"]]
+            ]
+        ],
+        "/api/operations/{operationId}/dispatch/stats" => [
+            "get" => [
+                "tags" => ["Despacho"],
+                "summary" => "Obter KPIs do despacho",
+                "parameters" => [
+                    ["name" => "operationId", "in" => "path", "required" => true, "schema" => ["type" => "string"]]
+                ],
+                "responses" => ["200" => ["description" => "Sucesso"]]
+            ]
+        ],
+        "/api/operations/{operationId}/oven" => [
+            "get" => [
+                "tags" => ["Despacho"],
+                "summary" => "Obter comandas no forno aguardando despacho",
+                "parameters" => [
+                    ["name" => "operationId", "in" => "path", "required" => true, "schema" => ["type" => "string"]]
+                ],
+                "responses" => ["200" => ["description" => "Sucesso"]]
+            ]
+        ],
+        "/api/operations/{operationId}/dispatch/pull-from-oven" => [
+            "post" => [
+                "tags" => ["Despacho"],
+                "summary" => "Puxar comanda do forno para despacho",
+                "parameters" => [
+                    ["name" => "operationId", "in" => "path", "required" => true, "schema" => ["type" => "string"]]
+                ],
+                "requestBody" => [
+                    "content" => ["application/json" => ["schema" => ["type" => "object", "properties" => ["commandId" => ["type" => "string"]]]]]
+                ],
+                "responses" => ["200" => ["description" => "Sucesso"]]
+            ]
+        ],
+        "/api/operations/{operationId}/commands/{cmdId}/dispatch/check" => [
+            "post" => [
+                "tags" => ["Despacho"],
+                "summary" => "Conferir comanda",
+                "parameters" => [
+                    ["name" => "operationId", "in" => "path", "required" => true, "schema" => ["type" => "string"]],
+                    ["name" => "cmdId", "in" => "path", "required" => true, "schema" => ["type" => "string"]]
+                ],
+                "responses" => ["200" => ["description" => "Sucesso"]]
+            ]
+        ],
+        "/api/operations/{operationId}/commands/{cmdId}/dispatch/send-delivery" => [
+            "post" => [
+                "tags" => ["Despacho"],
+                "summary" => "Enviar para entrega",
+                "parameters" => [
+                    ["name" => "operationId", "in" => "path", "required" => true, "schema" => ["type" => "string"]],
+                    ["name" => "cmdId", "in" => "path", "required" => true, "schema" => ["type" => "string"]]
+                ],
+                "responses" => ["200" => ["description" => "Sucesso"]]
+            ]
+        ],
+        "/api/operations/{operationId}/commands/{cmdId}/dispatch/revert" => [
+            "post" => [
+                "tags" => ["Despacho"],
+                "summary" => "Reverter status de entrega",
+                "parameters" => [
+                    ["name" => "operationId", "in" => "path", "required" => true, "schema" => ["type" => "string"]],
+                    ["name" => "cmdId", "in" => "path", "required" => true, "schema" => ["type" => "string"]]
+                ],
+                "responses" => ["200" => ["description" => "Sucesso"]]
+            ]
+        ],
+        "/api/operations/{operationId}/commands/{cmdId}/dispatch" => [
+            "put" => [
+                "tags" => ["Despacho"],
+                "summary" => "Salvar informações de entrega da comanda (bebida, troco, notas)",
+                "parameters" => [
+                    ["name" => "operationId", "in" => "path", "required" => true, "schema" => ["type" => "string"]],
+                    ["name" => "cmdId", "in" => "path", "required" => true, "schema" => ["type" => "string"]]
+                ],
+                "responses" => ["200" => ["description" => "Sucesso"]]
+            ]
+        ],
+        "/api/operations/{operationId}/finish-day" => [
+            "post" => [
+                "tags" => ["Operação"],
+                "summary" => "Finalizar o dia de operação",
+                "parameters" => [
+                    ["name" => "operationId", "in" => "path", "required" => true, "schema" => ["type" => "string"]]
+                ],
+                "responses" => ["200" => ["description" => "Sucesso"]]
+            ]
         ]
     ]
 ];

@@ -162,85 +162,157 @@
   </div>
 
   <div id="settingsModal" class="modal-bg">
-    <div class="modal settings-modal">
-      <div class="modal-head">
+    <div class="modal flex flex-col" style="max-width:640px; border-radius:20px; padding:0; overflow:hidden; max-height:90vh;">
+      
+      <!-- Header -->
+      <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100 bg-gradient-to-r from-gray-50/40 via-white to-gray-50/40 shrink-0">
         <div>
-          <h3>Configurações de comandas</h3>
-          <p class="sub" style="margin:4px 0 0">Regras usadas na produção e no ranking.</p>
+          <h3 class="text-[16px] font-bold text-gray-900 leading-snug">Configurações de comandas</h3>
+          <p class="text-[12px] text-gray-500 mt-0.5">Regras usadas na produção e no ranking.</p>
         </div>
-        <button class="close" type="button" data-close-v4="settings">×</button>
+        <button type="button" class="w-8 h-8 flex items-center justify-center rounded-xl bg-gray-100/80 text-gray-500 hover:bg-gray-200 hover:text-gray-700 transition-colors" data-close-v4="settings">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
       </div>
 
-      <div class="settings-grid">
-        <div class="field"><label for="settingCommandMax">Numeração máxima da comanda</label><input
-            id="settingCommandMax" type="number" min="100" max="5000"></div>
-        <div class="field"><label for="settingDefaultPizzaQty">Quantidade padrão de pizzas</label><input
-            id="settingDefaultPizzaQty" type="number" min="0" max="20"></div>
-        <div class="field"><label for="settingVolcanoEq">1 pizza vulcão equivale a</label>
-          <div class="unit-input"><input id="settingVolcanoEq" type="number" min="1" max="10"
-              step="0.1"><span>pizzas</span></div>
+      <!-- Body -->
+      <div class="px-6 py-5 space-y-6 flex-1 overflow-y-auto custom-scrollbar">
+        
+        <div class="grid grid-cols-2 gap-4">
+          <div class="space-y-1.5">
+            <label for="settingCommandMax" class="text-[12px] font-semibold text-gray-800">Numeração máxima da comanda</label>
+            <input id="settingCommandMax" type="number" min="100" max="5000" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 focus:bg-white focus:border-[#1F6FB2] focus:ring-2 focus:ring-[#1F6FB2]/20 transition-all text-[14px] text-gray-700 outline-none">
+          </div>
+          <div class="space-y-1.5">
+            <label for="settingDefaultPizzaQty" class="text-[12px] font-semibold text-gray-800">Quantidade padrão de pizzas</label>
+            <input id="settingDefaultPizzaQty" type="number" min="0" max="20" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 focus:bg-white focus:border-[#1F6FB2] focus:ring-2 focus:ring-[#1F6FB2]/20 transition-all text-[14px] text-gray-700 outline-none">
+          </div>
         </div>
-        <div class="field"><label>Regra de esfirras</label>
-          <div class="settings-ratio"><input id="settingEsfihaGroup" type="number" min="1" max="50"><span>esfirras
-              =</span><input id="settingEsfihaEq" type="number" min="0.1" max="20" step="0.1"><span>pizzas</span></div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div class="space-y-1.5 flex flex-col">
+            <label for="settingVolcanoEq" class="text-[12px] font-semibold text-gray-800 h-[18px]">1 pizza vulcão equivale a</label>
+            <div class="flex items-center gap-2">
+              <input id="settingVolcanoEq" type="number" min="1" max="10" step="0.1" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 focus:bg-white focus:border-[#1F6FB2] focus:ring-2 focus:ring-[#1F6FB2]/20 transition-all text-[14px] text-gray-700 outline-none">
+              <span class="text-[12px] font-bold text-gray-500 whitespace-nowrap">pizzas</span>
+            </div>
+          </div>
+          <div class="space-y-1.5 flex flex-col">
+            <label class="text-[12px] font-semibold text-gray-800 h-[18px]">Regra de esfirras</label>
+            <div class="flex items-center gap-2">
+              <input id="settingEsfihaGroup" type="number" min="1" max="50" class="w-16 px-2 py-3 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 focus:bg-white focus:border-[#1F6FB2] focus:ring-2 focus:ring-[#1F6FB2]/20 transition-all text-[14px] text-center text-gray-700 outline-none">
+              <span class="text-[12px] font-bold text-gray-500 whitespace-nowrap">esfirras =</span>
+              <input id="settingEsfihaEq" type="number" min="0.1" max="20" step="0.1" class="w-16 px-2 py-3 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 focus:bg-white focus:border-[#1F6FB2] focus:ring-2 focus:ring-[#1F6FB2]/20 transition-all text-[14px] text-center text-gray-700 outline-none">
+              <span class="text-[12px] font-bold text-gray-500 whitespace-nowrap">pizzas</span>
+            </div>
+          </div>
         </div>
-        <div class="field"><label for="settingRecentCommands">Últimas comandas na janela</label><input
-            id="settingRecentCommands" type="number" min="3" max="15"></div>
+
+        <div class="space-y-1.5">
+          <label for="settingRecentCommands" class="text-[12px] font-semibold text-gray-800">Últimas comandas na janela</label>
+          <input id="settingRecentCommands" type="number" min="3" max="15" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 focus:bg-white focus:border-[#1F6FB2] focus:ring-2 focus:ring-[#1F6FB2]/20 transition-all text-[14px] text-gray-700 outline-none">
+        </div>
+
+        <div class="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-4 text-[12px] text-gray-500 leading-relaxed shadow-sm">
+          <strong class="text-gray-700">Como a equivalência funciona:</strong>
+          pizzas físicas entram normalmente; a vulcão recebe o adicional configurado; as esfirras são convertidas pela proporção definida. Pizza doce é apenas mapeada e não altera a equivalência.
+        </div>
       </div>
 
-      <div class="settings-note">
-        <strong>Como a equivalência funciona:</strong>
-        pizzas físicas entram normalmente; a vulcão recebe o adicional configurado; as esfirras são convertidas pela
-        proporção definida. Pizza doce é apenas mapeada e não altera a equivalência.
+      <!-- Footer Actions -->
+      <div class="flex items-center justify-end gap-3 px-6 py-4 bg-gray-50/80 border-t border-gray-100 shrink-0">
+        <button type="button" data-close-v4="settings"
+          class="inline-flex items-center px-4 py-2.5 text-[13px] font-semibold text-gray-700 bg-gray-100 border border-transparent rounded-xl hover:bg-gray-200 transition-colors">
+          <svg class="w-4 h-4 mr-1.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" stroke-width="2"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 9l-6 6M9 9l6 6"/>
+          </svg>
+          Cancelar
+        </button>
+        <button id="saveSettingsBtn" type="button"
+          class="inline-flex items-center px-5 py-2.5 text-[13px] font-bold text-white bg-[#2f9e64] rounded-xl hover:bg-[#248150] active:scale-[0.98] transition-all shadow-sm">
+          <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 21v-8H7v8M7 3v5h8"/>
+          </svg>
+          Salvar configurações
+        </button>
       </div>
 
-      <div class="actions end mobile-stack">
-        <button class="btn btn-ghost" type="button" data-close-v4="settings">Cancelar</button>
-        <button id="saveSettingsBtn" class="btn btn-primary" type="button">Salvar configurações</button>
-      </div>
     </div>
   </div>
 
-  <div id="dispatchCommandModal" class="modal-bg register-command-modal">
-    <div class="modal">
-      <div class="register-modal-head">
+  <div id="dispatchCommandModal" class="modal-bg">
+    <div class="modal flex flex-col" style="max-width:540px; border-radius:20px; padding:0; overflow:hidden; max-height:90vh;">
+      
+      <!-- Header -->
+      <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100 bg-gradient-to-r from-blue-50/40 via-white to-indigo-50/40 shrink-0">
         <div>
-          <h3 id="dispatchModalTitle">Puxar comanda do forno</h3>
-          <p id="dispatchModalSubtitle">Selecione uma comanda que já entrou no forno.</p>
+          <h3 id="dispatchModalTitle" class="text-[16px] font-bold text-gray-900 leading-snug">Puxar comanda do forno</h3>
+          <p id="dispatchModalSubtitle" class="text-[12px] text-gray-500 mt-0.5">Selecione uma comanda que já entrou no forno.</p>
         </div>
-        <button class="close" type="button" data-close-v4="dispatchCommand">×</button>
+        <button type="button" class="w-8 h-8 flex items-center justify-center rounded-xl bg-gray-100/80 text-gray-500 hover:bg-gray-200 hover:text-gray-700 transition-colors" data-close-v4="dispatchCommand">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
       </div>
 
-      <div class="register-modal-body">
+      <!-- Body -->
+      <div class="px-6 py-5 space-y-5 flex-1 overflow-y-auto custom-scrollbar">
         <input id="dispatchCommandId" type="hidden">
 
-        <div id="ovenCommandPickerBlock">
-          <div class="field"><label for="ovenCommandSearch">Comandas disponíveis no forno</label><input
-              id="ovenCommandSearch" type="text" inputmode="numeric" placeholder="Buscar número ou montador"></div>
-          <div id="ovenCommandList" class="oven-command-list"></div>
+        <!-- Comandas disponíveis -->
+        <div id="ovenCommandPickerBlock" class="space-y-1.5">
+          <label for="ovenCommandSearch" class="text-[12px] font-semibold text-gray-500 uppercase tracking-wider">Comandas disponíveis no forno</label>
+          <div class="relative">
+            <input id="ovenCommandSearch" type="text" inputmode="numeric" placeholder="Buscar número ou montador" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 focus:bg-white focus:border-[#1F6FB2] focus:ring-2 focus:ring-[#1F6FB2]/20 transition-all text-[14px] text-gray-700 outline-none placeholder-gray-400">
+            <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none">
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </div>
+          </div>
+          <div id="ovenCommandList" class="mt-2 space-y-2"></div>
         </div>
 
         <div id="dispatchSelectedSummary" class="dispatch-selected-summary"></div>
 
-        <div class="dispatch-options dispatch-modal-options">
-          <label class="option"><input id="dispatchBeverage" type="checkbox"> Tem bebida</label>
-          <label class="option"><input id="dispatchChange" type="checkbox"> Precisa de troco</label>
-          <label class="option"><input id="dispatchKetchup" type="checkbox"> Ketchup</label>
-          <label class="option"><input id="dispatchMayonnaise" type="checkbox"> Maionese</label>
+        <!-- Opções adicionais (checkboxes) -->
+        <div class="grid grid-cols-2 gap-3">
+          <label class="flex items-center gap-3 p-3 bg-gray-50 border border-gray-100 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
+            <input id="dispatchBeverage" type="checkbox" class="w-4 h-4 text-[#1F6FB2] border-gray-300 rounded focus:ring-[#1F6FB2]">
+            <span class="text-[14px] font-medium text-gray-700">Tem bebida</span>
+          </label>
+          <label class="flex items-center gap-3 p-3 bg-gray-50 border border-gray-100 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
+            <input id="dispatchChange" type="checkbox" class="w-4 h-4 text-[#1F6FB2] border-gray-300 rounded focus:ring-[#1F6FB2]">
+            <span class="text-[14px] font-medium text-gray-700">Precisa de troco</span>
+          </label>
+          <label class="flex items-center gap-3 p-3 bg-gray-50 border border-gray-100 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
+            <input id="dispatchKetchup" type="checkbox" class="w-4 h-4 text-[#1F6FB2] border-gray-300 rounded focus:ring-[#1F6FB2]">
+            <span class="text-[14px] font-medium text-gray-700">Ketchup</span>
+          </label>
+          <label class="flex items-center gap-3 p-3 bg-gray-50 border border-gray-100 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
+            <input id="dispatchMayonnaise" type="checkbox" class="w-4 h-4 text-[#1F6FB2] border-gray-300 rounded focus:ring-[#1F6FB2]">
+            <span class="text-[14px] font-medium text-gray-700">Maionese</span>
+          </label>
         </div>
 
-        <div class="inline">
-          <div class="field"><label for="dispatchChangeAmount">Troco</label><input id="dispatchChangeAmount" type="text"
-              placeholder="Ex.: troco para R$ 100" disabled></div>
-          <div class="field"><label for="dispatchNote">Observação do atendimento</label><input id="dispatchNote"
-              type="text" maxlength="180" placeholder="Opcional"></div>
+        <!-- Informações finais -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="space-y-1.5">
+            <label for="dispatchChangeAmount" class="text-[12px] font-semibold text-gray-500 uppercase tracking-wider">Troco</label>
+            <input id="dispatchChangeAmount" type="text" placeholder="Ex.: troco para R$ 100" disabled class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 focus:bg-white focus:border-[#1F6FB2] focus:ring-2 focus:ring-[#1F6FB2]/20 transition-all text-[14px] text-gray-700 outline-none disabled:opacity-50 disabled:cursor-not-allowed placeholder-gray-400">
+          </div>
+          <div class="space-y-1.5">
+            <label for="dispatchNote" class="text-[12px] font-semibold text-gray-500 uppercase tracking-wider">Observação do atendimento</label>
+            <input id="dispatchNote" type="text" maxlength="180" placeholder="Opcional" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 focus:bg-white focus:border-[#1F6FB2] focus:ring-2 focus:ring-[#1F6FB2]/20 transition-all text-[14px] text-gray-700 outline-none placeholder-gray-400">
+          </div>
         </div>
       </div>
 
-      <div class="register-modal-actions dispatch-modal-actions">
-        <button id="receiveDispatchBtn" type="button" class="btn btn-primary">Receber no atendimento</button>
-        <button id="checkDispatchBtn" type="button" class="btn btn-soft hidden">Marcar conferido</button>
-        <button id="outForDeliveryBtn" type="button" class="btn btn-green hidden">Saiu para entrega</button>
+      <!-- Footer Actions -->
+      <div class="p-6 border-t border-gray-100 bg-gray-50/50 shrink-0 flex items-center justify-end gap-3">
+        <button type="button" class="px-5 py-2.5 text-[14px] font-semibold text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:text-gray-900 transition-all shadow-sm" data-close-v4="dispatchCommand">Cancelar</button>
+        <button id="receiveDispatchBtn" type="button" class="px-5 py-2.5 text-[14px] font-bold text-white bg-[#1F6FB2] hover:bg-[#1a5e98] active:scale-[0.98] border border-transparent rounded-xl shadow-[0_2px_8px_rgba(31,111,178,0.25)] transition-all">Receber no atendimento</button>
+        <button id="checkDispatchBtn" type="button" class="hidden px-5 py-2.5 text-[14px] font-bold text-white bg-[#8B5CF6] hover:bg-[#7C3AED] active:scale-[0.98] border border-transparent rounded-xl shadow-[0_2px_8px_rgba(139,92,246,0.25)] transition-all">Marcar conferido</button>
+        <button id="outForDeliveryBtn" type="button" class="hidden px-5 py-2.5 text-[14px] font-bold text-white bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] border border-transparent rounded-xl shadow-[0_2px_8px_rgba(5,150,105,0.25)] transition-all">Saiu para entrega</button>
       </div>
     </div>
   </div>

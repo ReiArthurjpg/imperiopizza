@@ -159,6 +159,80 @@ if ($uri === '/api/mass/recipe' && $method === 'GET') {
     exit;
 }
 
+// ---------------------------------------------------------
+// ROTAS DE ATENDIMENTO / DESPACHO
+// ---------------------------------------------------------
+
+if ($uri === '/api/operations/current' && $method === 'GET') {
+    require_once __DIR__ . '/../Controllers/ApiController.php';
+    $controller = new \App\Back\Presentation\Controllers\ApiController();
+    $controller->getCurrentOperation();
+    exit;
+}
+
+if (preg_match('/^\/api\/operations\/([a-zA-Z0-9_-]+)\/dispatch\/queue$/', $uri, $matches) && $method === 'GET') {
+    require_once __DIR__ . '/../Controllers/ApiController.php';
+    $controller = new \App\Back\Presentation\Controllers\ApiController();
+    $controller->getDispatchQueue($matches[1]);
+    exit;
+}
+
+if (preg_match('/^\/api\/operations\/([a-zA-Z0-9_-]+)\/dispatch\/stats$/', $uri, $matches) && $method === 'GET') {
+    require_once __DIR__ . '/../Controllers/ApiController.php';
+    $controller = new \App\Back\Presentation\Controllers\ApiController();
+    $controller->getDispatchStats($matches[1]);
+    exit;
+}
+
+if (preg_match('/^\/api\/operations\/([a-zA-Z0-9_-]+)\/oven$/', $uri, $matches) && $method === 'GET') {
+    require_once __DIR__ . '/../Controllers/ApiController.php';
+    $controller = new \App\Back\Presentation\Controllers\ApiController();
+    $controller->getOvenQueue($matches[1]);
+    exit;
+}
+
+if (preg_match('/^\/api\/operations\/([a-zA-Z0-9_-]+)\/dispatch\/pull-from-oven$/', $uri, $matches) && $method === 'POST') {
+    require_once __DIR__ . '/../Controllers/ApiController.php';
+    $controller = new \App\Back\Presentation\Controllers\ApiController();
+    $controller->pullFromOven($matches[1]);
+    exit;
+}
+
+if (preg_match('/^\/api\/operations\/([a-zA-Z0-9_-]+)\/commands\/([a-zA-Z0-9_-]+)\/dispatch\/check$/', $uri, $matches) && $method === 'POST') {
+    require_once __DIR__ . '/../Controllers/ApiController.php';
+    $controller = new \App\Back\Presentation\Controllers\ApiController();
+    $controller->checkDispatch($matches[1], $matches[2]);
+    exit;
+}
+
+if (preg_match('/^\/api\/operations\/([a-zA-Z0-9_-]+)\/commands\/([a-zA-Z0-9_-]+)\/dispatch\/send-delivery$/', $uri, $matches) && $method === 'POST') {
+    require_once __DIR__ . '/../Controllers/ApiController.php';
+    $controller = new \App\Back\Presentation\Controllers\ApiController();
+    $controller->sendDelivery($matches[1], $matches[2]);
+    exit;
+}
+
+if (preg_match('/^\/api\/operations\/([a-zA-Z0-9_-]+)\/commands\/([a-zA-Z0-9_-]+)\/dispatch\/revert$/', $uri, $matches) && $method === 'POST') {
+    require_once __DIR__ . '/../Controllers/ApiController.php';
+    $controller = new \App\Back\Presentation\Controllers\ApiController();
+    $controller->revertDispatch($matches[1], $matches[2]);
+    exit;
+}
+
+if (preg_match('/^\/api\/operations\/([a-zA-Z0-9_-]+)\/commands\/([a-zA-Z0-9_-]+)\/dispatch$/', $uri, $matches) && $method === 'PUT') {
+    require_once __DIR__ . '/../Controllers/ApiController.php';
+    $controller = new \App\Back\Presentation\Controllers\ApiController();
+    $controller->updateDispatch($matches[1], $matches[2]);
+    exit;
+}
+
+if (preg_match('/^\/api\/operations\/([a-zA-Z0-9_-]+)\/finish-day$/', $uri, $matches) && $method === 'POST') {
+    require_once __DIR__ . '/../Controllers/ApiController.php';
+    $controller = new \App\Back\Presentation\Controllers\ApiController();
+    $controller->finishDay($matches[1]);
+    exit;
+}
+
 // Swagger UI
 if ($uri === '/' || $uri === '/docs') {
     require_once __DIR__ . '/../Views/swagger.php';

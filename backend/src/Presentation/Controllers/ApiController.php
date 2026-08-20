@@ -516,17 +516,142 @@ class ApiController
         }
     }
 
+    
     public function getMassRecipe()
     {
-        $recipe = [
-            'flour_kg' => 10,
-            'sugar_g' => 500,
-            'salt_g' => 120,
-            'eggs' => 10,
-            'oil_ml' => 900,
-            'water_l' => 3,
-            'yeast_g' => 100
-        ];
-        $this->jsonResponse(['success' => true, 'data' => $recipe]);
+        try {
+            $recipe = [
+                'flour_kg' => 10,
+                'sugar_g' => 500,
+                'salt_g' => 120,
+                'eggs' => 10,
+                'oil_ml' => 900,
+                'water_l' => 3,
+                'yeast_g' => 100
+            ];
+            $this->jsonResponse(['success' => true, 'data' => $recipe]);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getCurrentOperation()
+    {
+        try {
+            $op = Operacao::getCurrent();
+            if (!$op) {
+                $this->jsonResponse(null);
+            }
+            $this->jsonResponse([
+                'id' => $op['id'],
+                'date' => $op['date'],
+                'status' => $op['status'],
+                'startedAt' => $op['started_at'],
+                'kitchenClosedAt' => $op['kitchen_closed_at'],
+                'completedAt' => $op['completed_at']
+            ]);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getDispatchQueue($opId)
+    {
+        try {
+            $search = $_GET['search'] ?? null;
+            $status = $_GET['status'] ?? null;
+            $queue = Comanda::getDispatchQueue($opId, $search, $status);
+            $this->jsonResponse($queue);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getDispatchStats($opId)
+    {
+        try {
+            $stats = Comanda::getDispatchStats($opId);
+            $this->jsonResponse($stats);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getOvenQueue($opId)
+    {
+        try {
+            $queue = Comanda::getOvenQueue($opId);
+            $this->jsonResponse($queue);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function pullFromOven($opId)
+    {
+        try {
+            $data = $this->getJsonInput();
+            if (empty($data['commandId'])) {
+                $this->jsonResponse(['error' => 'Command ID is required'], 400);
+            }
+            $cmd = Comanda::pullFromOven($opId, $data['commandId']);
+            $this->jsonResponse(['success' => true, 'command' => $cmd]);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function checkDispatch($opId, $cmdId)
+    {
+        try {
+            $data = $this->getJsonInput();
+            $dispatch = Comanda::checkDispatch($opId, $cmdId, $data);
+            $this->jsonResponse(['success' => true, 'dispatch' => $dispatch]);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function sendDelivery($opId, $cmdId)
+    {
+        try {
+            $data = $this->getJsonInput();
+            $dispatch = Comanda::sendDelivery($opId, $cmdId, $data['deliveryAt'] ?? null);
+            $this->jsonResponse(['success' => true, 'dispatch' => $dispatch]);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function revertDispatch($opId, $cmdId)
+    {
+        try {
+            $data = $this->getJsonInput();
+            Comanda::revertDispatch($opId, $cmdId, $data['reason'] ?? null);
+            $this->jsonResponse(['success' => true]);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function updateDispatch($opId, $cmdId)
+    {
+        try {
+            $data = $this->getJsonInput();
+            $updatedAt = Comanda::updateDispatch($opId, $cmdId, $data);
+            $this->jsonResponse(['success' => true, 'updatedAt' => $updatedAt]);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function finishDay($opId)
+    {
+        try {
+            $op = Operacao::finishDay($opId);
+            $this->jsonResponse(['success' => true, 'operation' => $op]);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['error' => $e->getMessage()], 500);
+        }
     }
 }
