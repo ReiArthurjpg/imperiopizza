@@ -1,5 +1,12 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteCond %{REQUEST_URI} !^/public/
-    RewriteRule ^(.*)$ public/$1 [L]
+
+    # If the URL starts with /api, route it to the backend
+    RewriteCond %{REQUEST_URI} ^/api/ [NC]
+    RewriteRule ^(.*)$ backend/public/index.php [L,QSA]
+    
+    # Otherwise, route everything else to frontend
+    RewriteCond %{REQUEST_URI} !^/frontend/public/
+    RewriteCond %{REQUEST_URI} !^/backend/public/
+    RewriteRule ^(.*)$ frontend/public/$1 [L,QSA]
 </IfModule>
