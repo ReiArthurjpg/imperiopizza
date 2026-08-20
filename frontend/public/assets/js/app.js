@@ -706,15 +706,10 @@
       // Ícones Lucide
       if (typeof lucide !== 'undefined') lucide.createIcons();
     }
-    function checkedTeam() { return [...document.querySelectorAll('[data-team-id]:checked')].map(i => { const p = getPerson(i.dataset.teamId); return { personId: p.id, name: p.name, role: p.role } }) }
+    function checkedTeam() { return currentOperation()?.team || []; }
     function renderCheckedTeam() {
-      // Tenta pegar pelo DOM (checkboxes marcados). Caso o DOM ainda não tenha
-      // sido renderizado (ex: ao recarregar a página), usa op.team salvo no estado.
-      const fromDom = [...document.querySelectorAll('[data-team-id]:checked')]
-        .map(i => { const p = getPerson(i.dataset.teamId); return p ? { personId: p.id, name: p.name, role: p.role } : null })
-        .filter(Boolean);
       const op = currentOperation();
-      const team = fromDom.length > 0 ? fromDom : (op?.team || []);
+      const team = op?.team || [];
       el.dayTeamGroups.innerHTML = teamHtml(team, '');
       // Atualiza badge de selecionados e KPI de presentes
       renderTeamKpis(op, state.people);
@@ -1094,7 +1089,29 @@ function dispatchCard(c) { const d = c.dispatch, cls = d.status === 'liberado' ?
     });
 
     // ── Equipe: Checkbox de presença ──
-    el.peopleChecklist.addEventListener('change', e => { const box = e.target.closest('[data-team-id]'); if (box && !box.checked && box.dataset.usedInProduction === '1') { box.checked = true; toast('Este montador já possui produção registrada e deve permanecer na equipe.', 'warn') } renderCheckedTeam() });
+    el.peopleChecklist.addEventListener('change', e => { 
+      const box = e.target.closest('[data-team-id]'); 
+      if (!box) return;
+      const op = ensureOperation();
+      const personId = box.dataset.teamId;
+      
+      if (!box.checked && box.dataset.usedInProduction === '1') { 
+        box.checked = true; 
+        toast('Este montador já possui produção registrada e deve permanecer na equipe.', 'warn');
+        return; 
+      }
+      
+      if (box.checked) {
+        if (!op.team.some(p => p.personId === personId)) {
+          const p = getPerson(personId);
+          if (p) op.team.push({ personId: p.id, name: p.name, role: p.role });
+        }
+      } else {
+        op.team = op.team.filter(p => p.personId !== personId);
+      }
+      
+      renderCheckedTeam(); 
+    });
     
     // ── Equipe: Clique nos botões de editar/excluir da lista de profissionais ──
     el.peopleChecklist.addEventListener('click', e => {
