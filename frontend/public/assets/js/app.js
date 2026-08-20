@@ -896,6 +896,7 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
     function openError(c) { el.errorId.value = c.id; el.errorType.value = c.error?.active ? c.error.type : ''; el.errorNote.value = c.error?.active ? c.error.note : ''; el.clearErrorBtn.disabled = !c.error?.active; el.errorModal.classList.add('show') }
 
     
+    
     async function renderDispatch() { 
       renderHeader(); 
       const op = currentOperation(); 
