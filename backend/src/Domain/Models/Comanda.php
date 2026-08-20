@@ -467,7 +467,7 @@ class Comanda
                   FROM comandas c 
                   LEFT JOIN comandas_lotes l ON c.operacao_id = l.operacao_id AND c.number >= l.comanda_inicio AND c.number <= l.comanda_fim
                   LEFT JOIN equipe e ON l.assembler_id = e.id 
-                  WHERE c.operacao_id = ? AND c.status = 'forno'
+                  WHERE c.operacao_id = ? AND c.status = 'pronto'
                   ORDER BY c.forno_time ASC");
                   
         $stmt->execute([$operacaoId]);

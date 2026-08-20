@@ -2336,12 +2336,12 @@ if (el.finishDayBtn) el.finishDayBtn.addEventListener('click', async () => {
     }
     function selectedDispatchHtml(c) {
       if (!c) return '';
-      return `<div class="bg-gray-50 rounded-xl p-4 border border-[#E7E7E7] mb-4">
+      return `<div class="p-4 bg-white border border-[#E7E7E7] shadow-sm rounded-xl mb-2">
         <div class="flex items-center justify-between mb-2">
-          <h4 class="text-lg font-bold text-[#171717]">Comanda #${String(c.number).padStart(3, '0')}</h4>
-          <span class="px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded-lg border border-blue-200">${statusText(c)}</span>
+          <h4 class="text-base font-bold text-[#171717]">Comanda #${String(c.number).padStart(3, '0')}</h4>
+          <span class="px-2 py-1 bg-blue-50 text-[#1F6FB2] text-[10px] font-bold rounded-md border border-blue-100 uppercase tracking-wider">${statusText(c)}</span>
         </div>
-        <p class="text-sm text-[#737373] mb-3">${formatAssemblers(c)} · ${fmt(commandEquivalent(c))} pizzas equivalentes</p>
+        <p class="text-xs text-[#737373] mb-3">${formatAssemblers(c)} · ${fmt(commandEquivalent(c))} pizzas equivalentes</p>
         <div class="flex flex-wrap gap-1.5">${specialTagsHtml(c)}</div>
       </div>`;
     }
@@ -2349,10 +2349,15 @@ if (el.finishDayBtn) el.finishDayBtn.addEventListener('click', async () => {
     function renderOvenPicker(selectedId = '') {
       const q = norm(el.ovenCommandSearch.value);
       const list = (window._ovenList || []).filter(c => !q || norm(`${c.number} ${c.assemblerName}`).includes(q));
-      el.ovenCommandList.innerHTML = list.length ? list.map(c => `<button type="button" class="oven-command-option ${c.id === selectedId ? 'selected' : ''}" data-oven-command="${c.id}">
-    <strong>#${String(c.number).padStart(3, '0')}</strong>
-    <span>${formatAssemblers(c)}<small>${num(c.pizzas)} físicas</small></span>
-    <span class="oven-eq">${fmt(c.equivalent)} equiv.</span>
+      el.ovenCommandList.innerHTML = list.length ? list.map(c => `<button type="button" class="w-full text-left px-4 py-3 rounded-xl border transition-all duration-200 flex items-center justify-between gap-3 ${c.id === selectedId ? 'bg-[#1F6FB2] border-[#1F6FB2] text-white shadow-[0_4px_12px_rgba(31,111,178,0.25)]' : 'bg-white border-[#E7E7E7] text-[#171717] hover:border-[#1F6FB2] hover:shadow-sm'}" data-oven-command="${c.id}">
+    <div class="flex items-center gap-4">
+      <strong class="text-lg font-black tracking-tight">#${String(c.number).padStart(3, '0')}</strong>
+      <div class="flex flex-col">
+        <span class="font-bold text-[13px] leading-tight ${c.id === selectedId ? 'text-white' : 'text-[#171717]'}">${formatAssemblers(c)}</span>
+        <span class="text-[11px] font-medium opacity-80 mt-0.5">${num(c.pizzas)} físicas</span>
+      </div>
+    </div>
+    <span class="text-[11px] font-bold px-2 py-1 rounded-md ${c.id === selectedId ? 'bg-white/20 text-white' : 'bg-gray-100 text-[#737373]'}">${fmt(c.equivalent)} eqv.</span>
   </button>`).join('') : empty('Nenhuma comanda no forno', 'Quando a cozinha marcar “entrou no forno”, ela aparecerá aqui.');
     }
 async function openDispatchIntake(commandId = '') {
@@ -2371,7 +2376,7 @@ async function openDispatchIntake(commandId = '') {
       try {
         const res = await fetch(`/api/operations/${op.id}/oven`);
         const data = await res.json();
-        const list = data.queue || [];
+        const list = Array.isArray(data) ? data : (data.queue || []);
         
         // Save globally to be filtered by renderOvenPicker
         window._ovenList = list;
