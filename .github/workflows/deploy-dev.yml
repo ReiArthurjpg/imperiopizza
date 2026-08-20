@@ -32,7 +32,7 @@ jobs:
           
       - name: 🛠️ Compilar Tailwind CSS
         run: |
-          npm ci
+          npm install
           npm run build
         working-directory: ./frontend
 
