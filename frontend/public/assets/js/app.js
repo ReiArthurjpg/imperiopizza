@@ -886,6 +886,11 @@ if (!op || op.status === 'draft') { el.productionGate.innerHTML = gateCard("Oper
       save();
       fetch('/api/comandas/status', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: c.id, status: c.status }) });
       renderProduction(); renderDispatch(); renderDashboard();
+      
+      if (dir === 'next' && c.status === 'pronto') {
+        showPage('dispatch');
+        setTimeout(() => { if (typeof openDispatchIntake === 'function') openDispatchIntake(c.id); }, 80);
+      }
     }
     function openEdit(c) { const op = currentOperation(); el.editId.value = c.id; el.editNumber.value = c.number; el.editQty.value = c.pizzas; el.editStatus.value = c.status; el.editNote.value = c.note || ''; el.editAssembler.innerHTML = assemblers(op).map(p => `<option value="${p.personId}" ${p.personId === c.assemblerId ? 'selected' : ''}>${esc(p.name)}</option>`).join(''); el.editModal.classList.add('show') }
     function openError(c) { el.errorId.value = c.id; el.errorType.value = c.error?.active ? c.error.type : ''; el.errorNote.value = c.error?.active ? c.error.note : ''; el.clearErrorBtn.disabled = !c.error?.active; el.errorModal.classList.add('show') }
@@ -2112,7 +2117,14 @@ if (el.finishDayBtn) el.finishDayBtn.addEventListener('click', async () => {
           c.status = 'cozinha';
         }
       }
-      c.updatedAt = now; save(); renderProduction(); renderDispatch(); renderDashboard();
+      c.updatedAt = now; save(); 
+      fetch('/api/comandas/status', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: c.id, status: c.status }) });
+      renderProduction(); renderDispatch(); renderDashboard();
+      
+      if (dir === 'next' && c.status === 'pronto') {
+        showPage('dispatch');
+        setTimeout(() => { if (typeof openDispatchIntake === 'function') openDispatchIntake(c.id); }, 80);
+      }
     };
 
     openEdit = function (c) {
@@ -2388,6 +2400,20 @@ async function openDispatchIntake(commandId = '') {
         const res = await fetch(`/api/operations/${op.id}/oven`);
         const data = await res.json();
         const list = Array.isArray(data) ? data : (data.queue || []);
+        
+        // Merge with local state to avoid race conditions (backend PUT might not have finished)
+        const localOven = ovenAvailable(op);
+        localOven.forEach(lc => {
+            if (!list.some(c => c.id === lc.id)) {
+                list.push({
+                    id: lc.id,
+                    number: lc.number,
+                    pizzas: lc.pizzas,
+                    assemblerName: lc.assemblerName || formatAssemblers(lc) || 'Desconhecido',
+                    readySince: lc.statusTimes?.forno || lc.createdAt
+                });
+            }
+        });
         
         // Save globally to be filtered by renderOvenPicker
         window._ovenList = list;
