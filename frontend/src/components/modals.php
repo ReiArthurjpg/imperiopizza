@@ -733,9 +733,9 @@
   </div>
   <!-- OVERNIGHT CLOSE MANDATORY MODAL -->
   <div id="overnightCloseModal" class="modal-bg">
-    <div class="modal" style="max-width:480px; border-radius:20px; padding:0; overflow:hidden;">
+    <div class="modal flex flex-col" style="max-width:480px; border-radius:20px; padding:0; overflow:hidden; max-height: 90vh;">
       <!-- Header -->
-      <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100 bg-linear-to-r from-slate-900 to-indigo-950 text-white">
+      <div class="shrink-0 flex items-center justify-between px-6 py-5 border-b border-gray-100 bg-linear-to-r from-slate-900 to-indigo-950 text-white">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center shrink-0">
             <svg class="w-5 h-5 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -756,7 +756,7 @@
       </div>
 
       <!-- Body -->
-      <div class="px-6 py-5 space-y-4 bg-white">
+      <div class="px-6 py-5 space-y-4 bg-white overflow-y-auto custom-scrollbar">
         <div class="p-3.5 bg-amber-50 border border-amber-200 rounded-xl flex items-start gap-3">
           <svg class="w-5 h-5 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
@@ -804,14 +804,14 @@
               Marcar todos
             </button>
           </div>
-          <div id="overnightTeamList" class="max-h-[180px] overflow-y-auto space-y-2 pr-1 custom-scrollbar">
+          <div id="overnightTeamList" class="space-y-2">
             <!-- Rendered dynamically -->
           </div>
         </div>
       </div>
 
       <!-- Footer Actions -->
-      <div class="flex items-center justify-end gap-3 px-6 py-4 bg-gray-50 border-t border-gray-100">
+      <div class="shrink-0 flex items-center justify-end gap-3 px-6 py-4 bg-gray-50 border-t border-gray-100">
         <button type="button" id="cancelOvernightBtn"
           class="px-4 py-2.5 text-[13px] font-semibold text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-100 transition-colors">
           Cancelar
