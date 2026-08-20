@@ -1,0 +1,57 @@
+name: Deploy de DEV para InfinityFree
+
+on:
+  push:
+    branches:
+      - dev
+
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Build e Deploy via FTP
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⬇️ Baixar código do repositório
+        uses: actions/checkout@v4
+
+      - name: 🐘 Configurar PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          
+      - name: 📦 Instalar dependências PHP
+        run: composer install --no-dev --optimize-autoloader
+        working-directory: ./backend
+
+      - name: 🟢 Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: 🛠️ Compilar Tailwind CSS
+        run: |
+          npm install
+          npm run build
+        working-directory: ./frontend
+
+      - name: 🚀 Enviar arquivos para InfinityFree
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ${{ secrets.FTP_TARGET }}
+          
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/docker/**
+            docker-compose.yml
+            tailwind.config.js
+            package.json
+            package-lock.json
+            README.md
+            LEIA-ME.txt
