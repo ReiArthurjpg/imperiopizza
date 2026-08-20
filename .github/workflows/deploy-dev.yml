@@ -23,6 +23,7 @@ jobs:
           
       - name: 📦 Instalar dependências PHP
         run: composer install --no-dev --optimize-autoloader
+        working-directory: ./backend
 
       - name: 🟢 Configurar Node.js
         uses: actions/setup-node@v4
@@ -33,6 +34,7 @@ jobs:
         run: |
           npm ci
           npm run build
+        working-directory: ./frontend
 
       - name: 🚀 Enviar arquivos para InfinityFree
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
