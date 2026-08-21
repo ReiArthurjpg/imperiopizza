@@ -83,3 +83,72 @@
     transform: rotate(45deg);
     margin-bottom: 0.15rem;
 }
+
+/* Botão principal de login (Entrar) com transição suave para amarelo no hover */
+.btn-submit {
+    width: 100%;
+    background-color: #D92D20; /* Vermelho Imperial */
+    color: #FFFFFF;
+    font-weight: 600;
+    padding: 0.875rem 1rem; /* py-3.5 px-4 */
+    border-radius: 0.5rem; /* rounded-lg */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem; /* gap-2 */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    border: none;
+}
+
+.btn-submit:hover {
+    background-color: #F59E0B; /* Amarelo/Dourado do logo (Amber-500) */
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+}
+
+.btn-submit:active {
+    background-color: #D97706; /* Amarelo mais escuro ao pressionar */
+    transform: scale(0.985);
+    box-shadow: none;
+}
+
+.btn-submit:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(217, 45, 32, 0.25);
+}
+
+/* Botão do Google secundário com hover/active aprimorados */
+.btn-google {
+    width: 100%;
+    background-color: #FFFFFF;
+    border: 1px solid #D1D5DB; /* gray-300 */
+    color: #374151; /* gray-700 */
+    font-weight: 600; /* font-semibold */
+    border-radius: 0.5rem; /* rounded-lg */
+    padding: 0.875rem 1rem; /* py-3.5 px-4 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem; /* gap-3 */
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+.btn-google:hover {
+    background-color: #F3F4F6; /* gray-100 (mais visível que gray-50) */
+    border-color: #9CA3AF; /* gray-400 */
+    color: #111827; /* gray-900 */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+.btn-google:active {
+    background-color: #E5E7EB; /* gray-200 */
+    transform: scale(0.985); /* Micro-animação sutil ao pressionar */
+    box-shadow: none;
+}
+
+.btn-google:focus {
+    outline: none;
+    border-color: #4285F4; /* Azul Google para foco */
+    box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.15);
+}
