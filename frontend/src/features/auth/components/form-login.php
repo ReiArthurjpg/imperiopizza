@@ -27,14 +27,6 @@
         </div>
     </div>
 
-    <!-- Manter conectado -->
-    <div class="flex items-center pt-2">
-        <input type="checkbox" id="remember" name="remember" class="checkbox-minimal">
-        <label for="remember" class="ml-2.5 block text-sm font-medium text-gray-700 cursor-pointer select-none">
-            Manter conectado
-        </label>
-    </div>
-
     <!-- Botão Entrar -->
     <button type="submit" class="w-full bg-imperial-red hover:bg-[#B91C1C] text-white font-semibold py-3.5 px-4 rounded-lg transition-colors duration-200 mt-8 flex justify-center items-center gap-2">
         Entrar no Sistema
