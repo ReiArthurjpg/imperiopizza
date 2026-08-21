@@ -1,49 +1,116 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#B5120B" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title><?= $title ?? 'Login | Imperial Pizza' ?></title>
-  
-  <!-- Tailwind CSS via CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-          }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imperial OS - Autenticação</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        // Uma paleta mais sóbria, focada no vermelho imperial
+                        imperial: {
+                            red: '#D92D20', // Vermelho principal vibrante mas sólido
+                            dark: '#111111', // Preto rico para contrastes
+                            light: '#F9FAFB', // Fundo quase branco
+                            border: '#E5E7EB'
+                        }
+                    }
+                }
+            }
         }
-      }
-    }
-  </script>
-  
-  <!-- Google Fonts Inter -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  
-  <!-- Estilos base do projeto -->
-  <link rel="stylesheet" href="/assets/css/app.css?v=<?= filemtime(__DIR__ . '/../../public/assets/css/app.css') ?>" />
-  
-  <!-- Lucide Icons CDN -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Inputs mais flats, sem sombras exageradas */
+        .input-minimal {
+            appearance: none;
+            background-color: transparent;
+            border: 1px solid #D1D5DB; /* gray-300 */
+            border-radius: 0.5rem; /* rounded-lg */
+            padding: 0.875rem 1rem; /* px-4 py-3.5 */
+            font-size: 1rem;
+            line-height: 1.5;
+            width: 100%;
+            transition: all 0.2s ease;
+        }
+
+        .input-minimal:focus {
+            outline: none;
+            border-color: #D92D20; /* imperial-red */
+            box-shadow: 0 0 0 3px rgba(217, 45, 32, 0.1);
+        }
+
+        .input-minimal::placeholder {
+            color: #9CA3AF; /* gray-400 */
+        }
+
+        /* Ícone dentro do input */
+        .input-group {
+            position: relative;
+        }
+        
+        .input-group i {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6B7280; /* gray-500 */
+            transition: color 0.2s ease;
+        }
+
+        .input-group:focus-within i:not(.toggle-password) {
+            color: #D92D20;
+        }
+
+        /* Checkbox quadrado simples e direto */
+        .checkbox-minimal {
+            appearance: none;
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 1px solid #D1D5DB;
+            border-radius: 0.25rem;
+            background-color: white;
+            cursor: pointer;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .checkbox-minimal:checked {
+            background-color: #D92D20;
+            border-color: #D92D20;
+        }
+
+        .checkbox-minimal:checked::after {
+            content: '';
+            width: 0.35rem;
+            height: 0.7rem;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+            margin-bottom: 0.15rem;
+        }
+    </style>
 </head>
-<body class="bg-[#F7F7F5] min-h-screen overflow-x-hidden font-sans selection:bg-[#B5120B] selection:text-white flex flex-col">
-
-  <main class="flex-1 w-full flex flex-col !p-0 !m-0">
+<body class="bg-imperial-light min-h-screen flex text-gray-900">
     <?= $content ?>
-  </main>
-
-  <!-- Scripts -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
-      }
-    });
-  </script>
 </body>
 </html>
