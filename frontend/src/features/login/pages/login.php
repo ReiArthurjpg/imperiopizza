@@ -5,12 +5,12 @@
         <!-- ========================================================================= -->
         <section class="w-full lg:w-[45%] xl:w-[40%] flex flex-col justify-center px-8 py-12 sm:px-12 md:px-20 bg-white shadow-[10px_0_30px_rgba(0,0,0,0.02)] z-10">
             
-            <div class="w-full max-w-sm mx-auto flex-grow flex flex-col justify-center">
+            <div class="w-full max-w-md mx-auto flex-grow flex flex-col justify-center">
                 
                 <div class="mb-10">
                     <!-- Logo/Identificação discreta -->
                     <div class="mb-8">
-                        <img src="/assets/images/logo.png" alt="Imperial Pizza Logo" class="h-16 w-auto object-contain mix-blend-multiply">
+                        <img src="/assets/images/logo.png" alt="Imperial Pizza Logo" class="w-56 object-contain mix-blend-multiply -ml-2">
                     </div>
                     
                     <h1 class="text-3xl font-bold tracking-tight mb-2 text-imperial-dark">Acesse sua conta</h1>
@@ -85,12 +85,12 @@
             </div>
 
             <!-- Conteúdo textual sobre a imagem -->
-            <div class="relative z-10 w-full max-w-2xl px-12 xl:px-24 flex flex-col justify-end h-full pb-24">
+            <div class="relative z-10 w-full max-w-2xl px-12 xl:px-24 flex flex-col justify-center h-full pt-40">
                 
                 <!-- Tag estilo "Badge" minimalista -->
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-white/10 backdrop-blur-sm border border-white/20 w-fit mb-6">
                     <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
-                    <span class="text-xs font-semibold text-white tracking-widest uppercase">Imperial OS v4.0</span>
+                    <span class="text-xs font-semibold text-white tracking-widest uppercase">Imperial v2.1</span>
                 </div>
                 
                 <!-- Título Forte e Elegante -->
