@@ -1,4 +1,5 @@
 <?php
+define('SRC', dirname(__DIR__) . '/src');
 
 // Frontend Entry Point
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);

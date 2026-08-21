@@ -13,7 +13,7 @@
                 
                 <div class="mb-10">
                     <!-- Logo Component -->
-                    <?php require_once __DIR__ . '/../components/logo.php'; ?>
+                    <?php require_once SRC . '/components/logo.php'; ?>
                     
                     <h1 class="text-3xl font-bold tracking-tight mb-2 text-imperial-dark">Acesse sua conta</h1>
                     <p class="text-gray-500 text-sm">Insira suas credenciais para entrar no Imperial OS.</p>
