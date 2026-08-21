@@ -6,7 +6,7 @@ $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 // Basic Router for Frontend
 $routes = [
     '/' => '../src/features/home/pages/home.php',
-    '/login' => '../src/features/login/pages/login.php',
+    '/login' => '../src/features/auth/pages/login.php',
     '/pdv' => '../src/features/pdv/pages/pdv.php',
     '/comandas' => '../src/features/comandas/pages/comandas.php',
     '/cozinha' => '../src/features/cozinha/pages/cozinha.php',
