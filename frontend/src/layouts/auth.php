@@ -31,7 +31,7 @@
   <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="bg-[#0F1115] min-h-screen overflow-x-hidden font-sans selection:bg-[#D92D20] selection:text-white flex flex-col">
+<body class="bg-[#F7F7F5] min-h-screen overflow-x-hidden font-sans selection:bg-[#B5120B] selection:text-white flex flex-col">
 
   <main class="flex-1 w-full flex flex-col !p-0 !m-0">
     <?= $content ?>
