@@ -4,8 +4,8 @@
     <div class="space-y-1.5">
         <label for="username" class="block text-sm font-semibold text-gray-700">Usuário</label>
         <div class="input-group">
-            <i class="ph ph-user text-xl left-3"></i>
-            <input type="text" id="username" name="username" placeholder="Digite seu usuário" class="input-minimal pl-10" required>
+            <i class="ph ph-user text-xl"></i>
+            <input type="text" id="username" name="username" placeholder="Digite seu usuário" class="input-minimal" required>
         </div>
     </div>
 
@@ -15,8 +15,8 @@
             <label for="password" class="block text-sm font-semibold text-gray-700">Senha</label>
         </div>
         <div class="input-group">
-            <i class="ph ph-lock-key text-xl left-3"></i>
-            <input type="password" id="password" name="password" placeholder="Sua senha" class="input-minimal pl-10 pr-12" required>
+            <i class="ph ph-lock-key text-xl"></i>
+            <input type="password" id="password" name="password" placeholder="Sua senha" class="input-minimal" required>
             
             <button type="button" onclick="togglePasswordVisibility()" class="absolute inset-y-0 right-0 px-3 flex items-center justify-center focus:outline-none" tabindex="-1">
                 <i class="ph ph-eye text-xl toggle-password hover:text-gray-700 transition-colors" id="togglePasswordIcon"></i>

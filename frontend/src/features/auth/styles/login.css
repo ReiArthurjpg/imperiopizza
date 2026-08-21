@@ -21,21 +21,37 @@
     color: #9CA3AF; /* gray-400 */
 }
 
-/* Ícone dentro do input */
+/* Container de input com ícones */
 .input-group {
     position: relative;
+    display: flex;
+    align-items: center;
 }
 
-.input-group i {
+/* Ícone da esquerda posicionado de forma fixa e correta */
+.input-group i:not(.toggle-password) {
     position: absolute;
+    left: 1rem;
     top: 50%;
     transform: translateY(-50%);
     color: #6B7280; /* gray-500 */
     transition: color 0.2s ease;
+    pointer-events: none; /* Garante que clique no ícone passe para o input */
+    z-index: 10;
 }
 
 .input-group:focus-within i:not(.toggle-password) {
     color: #D92D20;
+}
+
+/* Garante o espaçamento correto nos inputs para que o texto não sobreponha os ícones */
+.input-group .input-minimal {
+    padding-left: 2.75rem; /* Espaço seguro para o ícone esquerdo */
+}
+
+/* Caso o input group possua o botão de visualização de senha, adiciona espaço à direita */
+.input-group:has(button) .input-minimal {
+    padding-right: 3.25rem; /* Espaço seguro para o ícone de olho */
 }
 
 /* Checkbox quadrado simples e direto */
